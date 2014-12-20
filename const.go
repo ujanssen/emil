@@ -68,6 +68,6 @@ const (
 )
 
 var (
-	//FirstSquares to print the board
+	//FirstSquares of rank a to print the board
 	FirstSquares = [...]int{a8, a7, a6, a5, a4, a3, a2, a1}
 )
