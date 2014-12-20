@@ -1,7 +1,8 @@
 #A chess board
 
 The board has 64 squares arranged in an eight-by-eight grid.
-It has eight rows (called ranks and denoted with numbers 1 to 8) and eight columns (called files and denoted with letters a to h) of squares:
+The rows called ranks and denoted with numbers 1 to 8.
+The columns called files and denoted with letters a to h:
 
 <pre>
 a8 b8 c8 d8 e8 f8 g8 h8 
