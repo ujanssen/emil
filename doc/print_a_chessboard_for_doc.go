@@ -18,7 +18,7 @@ func printSqares() string {
 
 func printBoard() string {
 	files := "a  b  c  d  e  f  g  h "
-	s := "  " + files + " \n"
+	s := "   " + files + " \n"
 	rank := 8
 	for _, r := range emil.FirstSquares {
 		s += fmt.Sprintf("%d ", rank)
@@ -28,7 +28,7 @@ func printBoard() string {
 		s += fmt.Sprintf("%d\n", rank)
 		rank--
 	}
-	s += "  " + files + " \n"
+	s += "   " + files + " \n"
 	return s
 }
 func main() {

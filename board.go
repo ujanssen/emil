@@ -12,15 +12,6 @@ type Square struct {
 	index int
 }
 
-//SQUARES: the number of quares
-const SQUARES = 64
-
-//FILES: the files of a board
-const FILES = "abcdefgh"
-
-//BoardSquares the squares of the board
-var BoardSquares [SQUARES]*Square
-
 func (s *Square) String() string {
 	return s.name
 }
@@ -36,7 +27,7 @@ func newSquare(file string, rank, index int) *Square {
 }
 
 func init() {
-	// define boardSquares
+	// define BoardSquares
 	for j := 0; j < 8; j++ {
 		for i, file := range FILES {
 			index := i + j*8

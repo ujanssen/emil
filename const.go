@@ -1,6 +1,22 @@
 package emil
 
 const (
+	//FILES the files of a board
+	FILES = "abcdefgh"
+
+	//SQUARES the number of quares
+	SQUARES = 64
+)
+
+var (
+	//FirstSquares of rank a to print the board
+	FirstSquares = [...]int{a8, a7, a6, a5, a4, a3, a2, a1}
+
+	//BoardSquares an array of *Square of the board
+	BoardSquares [SQUARES]*Square
+)
+
+const (
 	a1 = 0
 	b1 = 1
 	c1 = 2
@@ -65,9 +81,4 @@ const (
 	f8 = 61
 	g8 = 62
 	h8 = 63
-)
-
-var (
-	//FirstSquares of rank a to print the board
-	FirstSquares = [...]int{a8, a7, a6, a5, a4, a3, a2, a1}
 )
