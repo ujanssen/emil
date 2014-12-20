@@ -6,11 +6,10 @@ import (
 )
 
 func printSqares() string {
-	files := "abcdefgh"
 	s := ""
-	for rank := 8; rank > 0; rank-- {
-		for file := 0; file < len(files); file++ {
-			s += fmt.Sprintf("%s%d ", string(files[file]), rank)
+	for _, index := range emil.FirstSquares {
+		for file := 0; file < 8; file++ {
+			s += fmt.Sprintf("%v ", emil.BoardSquares[index+file])
 		}
 		s += fmt.Sprintf("\n")
 	}
