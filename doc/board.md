@@ -16,8 +16,12 @@ a1 b1 c1 d1 e1 f1 g1 h1
 </pre>
 
 The board can be represented as an array of size 64.
-The square a1 has index 0, b1 has index 1, etc.
-And finally the square a8 has index 63:
+The square 
+a1 has index 0, 
+b1 has index 1, 
+c1 has index 2, ...,
+a2 has index 8, ..., and  
+h8 has index 63:
 
 <pre>
   a  b  c  d  e  f  g  h  
