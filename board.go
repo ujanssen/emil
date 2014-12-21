@@ -19,23 +19,27 @@ func (b *Board) String() string {
 	for _, r := range FirstSquares {
 		s += fmt.Sprintf("%d ", BoardSquares[r].rank)
 		for f := 0; f < 8; f++ {
-			switch b.squares[r+f] {
-			case WhiteKing:
-				s += "K "
-			case BlackKing:
-				s += "k "
-			case WhiteRock:
-				s += "R "
-			case BlackRock:
-				s += "r "
-			default:
-				s += "  "
-			}
+			s += fmt.Sprintf("%s ", symbol(b.squares[r+f]))
 		}
 		s += fmt.Sprintf("%d\n", BoardSquares[r].rank)
 	}
 	s += "  " + files + " \n"
 	return s
+}
+
+func symbol(piece int) string {
+	switch piece {
+	case WhiteKing:
+		return "K"
+	case BlackKing:
+		return "k"
+	case WhiteRock:
+		return "R"
+	case BlackRock:
+		return "r"
+	default:
+		return " "
+	}
 }
 
 //Setup a piece on a square
