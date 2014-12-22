@@ -61,6 +61,7 @@ func otherPlayer(player int) int {
 
 //Moves prints all moves for a piece on square
 func (b *Board) Moves(player int, testKingCapture bool) (string, bool) {
+	empty := ""
 	var result, list []*Move
 	for src, piece := range b.squares {
 		if isOwnPiece(player, piece) {
@@ -69,7 +70,7 @@ func (b *Board) Moves(player int, testKingCapture bool) (string, bool) {
 				for _, dst := range kingDestinationsFrom(src) {
 					capture := b.squares[dst]
 					if isKing(capture) {
-						return "", true
+						return empty, true
 					}
 					if capture == Empty {
 						list = append(list, newSilentMove(player, piece, src, dst))
@@ -82,7 +83,7 @@ func (b *Board) Moves(player int, testKingCapture bool) (string, bool) {
 					for _, dst := range dsts {
 						capture := b.squares[dst]
 						if isKing(capture) {
-							return "", true
+							return empty, true
 						}
 						if capture == Empty {
 							list = append(list, newSilentMove(player, piece, src, dst))
@@ -99,7 +100,7 @@ func (b *Board) Moves(player int, testKingCapture bool) (string, bool) {
 	}
 
 	if testKingCapture {
-		return "no KingCaptured", false
+		return empty, false
 	}
 
 	for _, m := range list {
