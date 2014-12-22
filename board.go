@@ -50,24 +50,15 @@ func (b *Board) Setup(piece, square int) {
 //Moves prints all moves for a piece on square
 func (b *Board) Moves(player int) string {
 	s := ""
-	if player == BLACK {
-		for i, piece := range b.squares {
-			if piece < 0 {
-				s += fmt.Sprintf("%s on %s: %s \n",
-					Pieces[piece],
-					BoardSquares[i],
-					destinations(piece, i))
-			}
-		}
-	} else {
-		for i, piece := range b.squares {
-			if piece > 0 {
-				s += fmt.Sprintf("%s on %s: %s \n",
-					Pieces[piece],
-					BoardSquares[i],
-					destinations(piece, i))
-			}
+	for i, piece := range b.squares {
+		if (player == WHITE && piece > 0) ||
+			(player == BLACK && piece < 0) {
+			s += fmt.Sprintf("%s on %s: %s \n",
+				Pieces[piece],
+				BoardSquares[i],
+				destinations(piece, i))
 		}
 	}
+
 	return s
 }

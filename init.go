@@ -8,6 +8,7 @@ func init() {
 			BoardSquares[index] = newSquare(string(file), j+1, index)
 		}
 	}
+
 	// define squaresDistances
 	for _, s := range BoardSquares {
 		for _, r := range FirstSquares {
@@ -22,5 +23,4 @@ func init() {
 		kingMoves[i] = kingDestinationsFrom(i)
 		rockMoves[i] = rockDestinationsFrom(i)
 	}
-
 }
