@@ -1,7 +1,4 @@
-golint const.go 
-golint board.go 
-golint doc/print_a_chessboard_for_doc.go 
-golint doc/setup_a_chessboard.go 
+find . -type f -name "*.go" -exec golint {} \;
 
 go run doc/print_a_chessboard_for_doc.go 
 go run doc/setup_a_chessboard.go 
