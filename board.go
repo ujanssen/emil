@@ -49,16 +49,22 @@ func (b *Board) Setup(piece, square int) {
 
 //Moves prints all moves for a piece on square
 func (b *Board) Moves(player int) string {
-	s := ""
-	for i, piece := range b.squares {
+	var list []*Move
+	for src, piece := range b.squares {
 		if (player == WHITE && piece > 0) ||
 			(player == BLACK && piece < 0) {
-			s += fmt.Sprintf("%s on %s: %s \n",
-				Pieces[piece],
-				BoardSquares[i],
-				destinations(piece, i))
+			switch abs(piece) {
+			case kingValue:
+				for _, dst := range kingDestinationsFrom(src) {
+					dstPiece := b.squares[dst]
+					if dstPiece == Empty {
+						list = append(list, newSilentMove(piece, src, dst))
+					}
+				}
+			case rockValue:
+			}
 		}
 	}
 
-	return s
+	return moveList(list)
 }

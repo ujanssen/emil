@@ -19,6 +19,7 @@ const (
 	kingValue = 10000
 	rockValue = 500
 
+	Empty     = 0
 	WhiteKing = kingValue
 	BlackKing = BLACK * kingValue
 	WhiteRock = rockValue
