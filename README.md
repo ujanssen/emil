@@ -11,6 +11,7 @@ So we need:
 - a chess board (done)
 - king and rock pieces (done)
 - movements for king and rock (done)
-- a search for best moves; delete illegal moves
+- delete illegal moves (done)
+- a search for best moves
 - some evaluation of the current position; plan for checkmate
 
