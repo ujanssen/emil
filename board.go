@@ -34,7 +34,7 @@ func (b *Board) Setup(piece, square int) {
 
 func (b *Board) isKingCapturedAfter(m *Move) bool {
 	_, kingCaptured := Search(b, otherPlayer(m.player), true)
-	return kingCaptured
+	return kingCaptured != nil
 }
 
 func (b *Board) doMove(m *Move) {

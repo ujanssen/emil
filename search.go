@@ -1,12 +1,15 @@
 package emil
 
 import (
+	"errors"
 	"fmt"
 )
 
+var errKingCapture = errors.New("king capture")
+
 //Search prints all moves for a piece on square
-func Search(b *Board, player int, testKingCapture bool) (string, bool) {
-	empty := ""
+func Search(b *Board, player int, onlyTestKingCapture bool) (empty string, err error) {
+	empty = ""
 	var result, list []*Move
 	for src, piece := range b.squares {
 		if isOwnPiece(player, piece) {
@@ -15,7 +18,7 @@ func Search(b *Board, player int, testKingCapture bool) (string, bool) {
 				for _, dst := range kingDestinationsFrom(src) {
 					capture := b.squares[dst]
 					if isKing(capture) {
-						return empty, true
+						return empty, errKingCapture
 					}
 					if capture == Empty {
 						list = append(list, newSilentMove(player, piece, src, dst))
@@ -28,7 +31,7 @@ func Search(b *Board, player int, testKingCapture bool) (string, bool) {
 					for _, dst := range dsts {
 						capture := b.squares[dst]
 						if isKing(capture) {
-							return empty, true
+							return empty, errKingCapture
 						}
 						if capture == Empty {
 							list = append(list, newSilentMove(player, piece, src, dst))
@@ -44,8 +47,8 @@ func Search(b *Board, player int, testKingCapture bool) (string, bool) {
 		}
 	}
 
-	if testKingCapture {
-		return empty, false
+	if onlyTestKingCapture {
+		return empty, nil
 	}
 
 	for _, m := range list {
@@ -60,5 +63,5 @@ func Search(b *Board, player int, testKingCapture bool) (string, bool) {
 		fmt.Printf("\n\n\n")
 	}
 
-	return moveList(result), false
+	return moveList(result), nil
 }
