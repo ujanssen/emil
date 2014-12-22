@@ -62,6 +62,14 @@ func (b *Board) Moves(player int) string {
 					}
 				}
 			case rockValue:
+				for _, dsts := range rockDestinationsFrom(src) {
+					for _, dst := range dsts {
+						dstPiece := b.squares[dst]
+						if dstPiece == Empty {
+							list = append(list, newSilentMove(piece, src, dst))
+						}
+					}
+				}
 			}
 		}
 	}
