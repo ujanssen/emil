@@ -7,7 +7,6 @@ const (
 )
 
 const (
-
 	//FILES the files of a board
 	FILES = "abcdefgh"
 
@@ -15,7 +14,7 @@ const (
 	SQUARES = 64
 )
 
-// Piece Values
+// Pieces values
 const (
 	kingValue = 10000
 	rockValue = 500
@@ -26,16 +25,14 @@ const (
 	BlackRock = BLACK * rockValue
 )
 
-// Directions in terms of board index
-const (
-	North     = 8
-	South     = -8
-	West      = -1
-	East      = 1
-	NorthWest = 7
-	NorthEast = 9
-	SouthWest = -9
-	SouthEast = -7
+// Pieces symbols
+var (
+	Pieces = map[int]string{
+		WhiteKing: "K",
+		BlackKing: "k",
+		WhiteRock: "R",
+		BlackRock: "r",
+	}
 )
 
 var (
@@ -44,12 +41,6 @@ var (
 
 	//BoardSquares an array of *Square of the board
 	BoardSquares [SQUARES]*Square
-
-	kingDirections = [...]int{North, South, West, East, NorthWest, NorthEast, SouthWest, SouthEast}
-	rookDirections = [...]int{North, South, West, East}
-
-	kingMoves [SQUARES][]int
-	rockMoves [SQUARES][][]int
 
 	squaresDistances [SQUARES][SQUARES]int
 )

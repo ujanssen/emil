@@ -1,5 +1,40 @@
 package emil
 
+// Directions in terms of board index
+const (
+	North     = 8
+	South     = -8
+	West      = -1
+	East      = 1
+	NorthWest = 7
+	NorthEast = 9
+	SouthWest = -9
+	SouthEast = -7
+)
+
+var (
+	kingDirections = [...]int{North, South, West, East, NorthWest, NorthEast, SouthWest, SouthEast}
+	rookDirections = [...]int{North, South, West, East}
+
+	kingMoves [SQUARES][]int
+	rockMoves [SQUARES][][]int
+)
+
+func destinations(piece, square int) string {
+	switch piece {
+	case WhiteKing:
+		return squareList(kingDestinationsFrom(square))
+	case BlackKing:
+		return squareList(kingDestinationsFrom(square))
+	case WhiteRock:
+		return squareLists(rockDestinationsFrom(square))
+	case BlackRock:
+		return squareLists(rockDestinationsFrom(square))
+	default:
+		panic("yet not implemented")
+	}
+}
+
 func kingDestinationsFrom(source int) []int {
 	var list []int
 	for _, d := range kingDirections {
