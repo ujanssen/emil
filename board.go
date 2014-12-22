@@ -60,7 +60,7 @@ func otherPlayer(player int) int {
 }
 
 //Moves prints all moves for a piece on square
-func (b *Board) Moves(player int, testKingCapture bool) string {
+func (b *Board) Moves(player int, testKingCapture bool) (string, bool) {
 	var result, list []*Move
 	for src, piece := range b.squares {
 		if isOwnPiece(player, piece) {
@@ -69,7 +69,7 @@ func (b *Board) Moves(player int, testKingCapture bool) string {
 				for _, dst := range kingDestinationsFrom(src) {
 					capture := b.squares[dst]
 					if isKing(capture) {
-						return "KingCaptured"
+						return "", true
 					}
 					if capture == Empty {
 						list = append(list, newSilentMove(player, piece, src, dst))
@@ -82,7 +82,7 @@ func (b *Board) Moves(player int, testKingCapture bool) string {
 					for _, dst := range dsts {
 						capture := b.squares[dst]
 						if isKing(capture) {
-							return "KingCaptured"
+							return "", true
 						}
 						if capture == Empty {
 							list = append(list, newSilentMove(player, piece, src, dst))
@@ -99,7 +99,7 @@ func (b *Board) Moves(player int, testKingCapture bool) string {
 	}
 
 	if testKingCapture {
-		return "no KingCaptured"
+		return "no KingCaptured", false
 	}
 
 	for _, m := range list {
@@ -114,14 +114,15 @@ func (b *Board) Moves(player int, testKingCapture bool) string {
 		fmt.Printf("\n\n\n")
 	}
 
-	return moveList(result)
+	return moveList(result), false
 }
 func isKing(piece int) bool {
 	return abs(piece) == kingValue
 }
 
 func (b *Board) isKingCapturedAfter(m *Move) bool {
-	return "KingCaptured" == b.Moves(otherPlayer(m.player), true)
+	_, kingCaptured := b.Moves(otherPlayer(m.player), true)
+	return kingCaptured
 }
 
 func (b *Board) doMove(m *Move) {
