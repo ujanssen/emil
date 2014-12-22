@@ -13,6 +13,6 @@ func main() {
 	board.Setup(emil.WhiteRock, emil.B8)
 	fmt.Printf("\n")
 	fmt.Printf("%s\n", board)
-	moves, _ := board.Moves(emil.BLACK, false)
+	moves, _ := emil.Search(board, emil.BLACK, false)
 	fmt.Printf("black:\n%s\n", moves)
 }
