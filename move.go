@@ -4,11 +4,13 @@ import (
 	"fmt"
 )
 
+// Move represents a move on the board
 type Move struct {
-	piece, capture, promotion int
-	source, destination       int
-	isCapture                 bool
-	isQueenside, isKingside   bool
+	player, piece           int
+	capture, promotion      int
+	source, destination     int
+	isCapture               bool
+	isQueenside, isKingside bool
 }
 
 func (m *Move) String() string {
@@ -24,8 +26,9 @@ func (m *Move) String() string {
 		BoardSquares[m.destination].name)
 }
 
-func newSilentMove(piece, src, dst int) *Move {
+func newSilentMove(player, piece, src, dst int) *Move {
 	return &Move{
+		player:      player,
 		piece:       piece,
 		capture:     Empty,
 		promotion:   Empty,
@@ -35,8 +38,9 @@ func newSilentMove(piece, src, dst int) *Move {
 		isQueenside: false,
 		isKingside:  false}
 }
-func newCaptureMove(piece, capture, src, dst int) *Move {
+func newCaptureMove(player, piece, capture, src, dst int) *Move {
 	return &Move{
+		player:      player,
 		piece:       piece,
 		capture:     capture,
 		promotion:   Empty,

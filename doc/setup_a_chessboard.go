@@ -14,6 +14,5 @@ func main() {
 	fmt.Printf("\n")
 	fmt.Printf("%s\n", board)
 
-	fmt.Printf("black:\n%s\n", board.Moves(emil.BLACK))
-	fmt.Printf("white:\n%s\n", board.Moves(emil.WHITE))
+	fmt.Printf("black:\n%s\n", board.Moves(emil.BLACK, false))
 }
