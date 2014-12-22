@@ -12,7 +12,13 @@ type Move struct {
 }
 
 func (m *Move) String() string {
-	return fmt.Sprintf("%s%s%s",
+	if !m.isCapture {
+		return fmt.Sprintf("%s%s%s",
+			Pieces[m.piece],
+			BoardSquares[m.source].name,
+			BoardSquares[m.destination].name)
+	}
+	return fmt.Sprintf("%s%sx%s",
 		Pieces[m.piece],
 		BoardSquares[m.source].name,
 		BoardSquares[m.destination].name)

@@ -47,26 +47,38 @@ func (b *Board) Setup(piece, square int) {
 	b.squares[square] = piece
 }
 
+func isOwnPiece(player, capture int) bool {
+	return (player == WHITE && capture > 0) ||
+		(player == BLACK && capture < 0)
+}
+
 //Moves prints all moves for a piece on square
 func (b *Board) Moves(player int) string {
 	var list []*Move
 	for src, piece := range b.squares {
-		if (player == WHITE && piece > 0) ||
-			(player == BLACK && piece < 0) {
+		if isOwnPiece(player, piece) {
 			switch abs(piece) {
 			case kingValue:
 				for _, dst := range kingDestinationsFrom(src) {
-					dstPiece := b.squares[dst]
-					if dstPiece == Empty {
+					capture := b.squares[dst]
+					if capture == Empty {
 						list = append(list, newSilentMove(piece, src, dst))
+					} else if !isOwnPiece(player, capture) {
+						list = append(list, newCaptureMove(piece, capture, src, dst))
+
 					}
 				}
 			case rockValue:
 				for _, dsts := range rockDestinationsFrom(src) {
 					for _, dst := range dsts {
-						dstPiece := b.squares[dst]
-						if dstPiece == Empty {
+						capture := b.squares[dst]
+						if capture == Empty {
 							list = append(list, newSilentMove(piece, src, dst))
+						} else if !isOwnPiece(player, capture) {
+							list = append(list, newCaptureMove(piece, capture, src, dst))
+							break
+						} else {
+							break // onOwnPiece
 						}
 					}
 				}
