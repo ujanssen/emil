@@ -63,35 +63,6 @@ func (b *Board) Moves(piece, square int) string {
 	}
 }
 
-func kingDestinationsFrom(source int) []int {
-	var list []int
-	for _, d := range kingDirections {
-		dst := source + d
-		if validIndex(dst) && squaresDistances[source][dst] == 1 {
-			list = append(list, dst)
-		}
-	}
-	return list
-}
-func rockDestinationsFrom(source int) [][]int {
-	var list [][]int
-	for _, d := range rookDirections {
-		var dstList []int
-		for step := 1; step < 8; step++ {
-			dst := source + (step * d)
-			if validIndex(dst) && squaresDistances[source][dst] == step && BoardSquares[source].isSameRankOrFile(BoardSquares[dst]) {
-				dstList = append(dstList, dst)
-			} else {
-				break
-			}
-		}
-		if len(dstList) > 0 {
-			list = append(list, dstList)
-		}
-	}
-	return list
-}
-
 func init() {
 	// define BoardSquares
 	for j := 0; j < 8; j++ {

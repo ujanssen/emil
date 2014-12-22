@@ -1,6 +1,13 @@
 package emil
 
+// Players
 const (
+	WHITE = 1
+	BLACK = -1
+)
+
+const (
+
 	//FILES the files of a board
 	FILES = "abcdefgh"
 
@@ -14,9 +21,9 @@ const (
 	rockValue = 500
 
 	WhiteKing = kingValue
-	BlackKing = -kingValue
+	BlackKing = BLACK * kingValue
 	WhiteRock = rockValue
-	BlackRock = -rockValue
+	BlackRock = BLACK * rockValue
 )
 
 // Directions in terms of board index

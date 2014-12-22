@@ -35,30 +35,6 @@ func (s *Square) isSameRankOrFile(o *Square) bool {
 	return s.rank == o.rank || s.file == o.file
 }
 
-func squareList(list []int) string {
-	r := "["
-	for i, s := range list {
-		if i > 0 {
-			r += ", "
-		}
-		r += BoardSquares[s].name
-	}
-	r += "]"
-	return r
-}
-
-func squareLists(lists [][]int) string {
-	r := "["
-	for i, list := range lists {
-		if i > 0 {
-			r += ", "
-		}
-		r += squareList(list)
-	}
-	r += "]"
-	return r
-}
-
 func validIndex(i int) bool {
 	if i >= A1 && i <= H8 {
 		return true
