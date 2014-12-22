@@ -34,23 +34,3 @@ func (s *Square) distance(o *Square) int {
 func (s *Square) isSameRankOrFile(o *Square) bool {
 	return s.rank == o.rank || s.file == o.file
 }
-
-func validIndex(i int) bool {
-	if i >= A1 && i <= H8 {
-		return true
-	}
-	return false
-}
-
-func abs(n int) int {
-	if n > 0 {
-		return n
-	}
-	return -n
-}
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}

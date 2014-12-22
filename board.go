@@ -27,21 +27,6 @@ func (b *Board) String() string {
 	return s
 }
 
-func symbol(piece int) string {
-	switch piece {
-	case WhiteKing:
-		return "K"
-	case BlackKing:
-		return "k"
-	case WhiteRock:
-		return "R"
-	case BlackRock:
-		return "r"
-	default:
-		return " "
-	}
-}
-
 //Setup a piece on a square
 func (b *Board) Setup(piece, square int) {
 	b.squares[square] = piece

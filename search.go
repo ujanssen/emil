@@ -4,18 +4,6 @@ import (
 	"fmt"
 )
 
-func isOwnPiece(player, capture int) bool {
-	return (player == WHITE && capture > 0) ||
-		(player == BLACK && capture < 0)
-}
-
-func otherPlayer(player int) int {
-	if player == WHITE {
-		return BLACK
-	}
-	return WHITE
-}
-
 //Search prints all moves for a piece on square
 func Search(b *Board, player int, testKingCapture bool) (string, bool) {
 	empty := ""
@@ -73,7 +61,4 @@ func Search(b *Board, player int, testKingCapture bool) (string, bool) {
 	}
 
 	return moveList(result), false
-}
-func isKing(piece int) bool {
-	return abs(piece) == kingValue
 }
