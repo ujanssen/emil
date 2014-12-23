@@ -87,10 +87,7 @@ func Search(b *Board, player int) (bestMove *Move) {
 	result := filterKingCaptures(b, player, list)
 	for _, m := range result {
 		score := evaluate(b, player, m)
-		if player == WHITE && score > bestScore {
-			bestScore = score
-			bestMove = m
-		} else if player == BLACK && score < bestScore {
+		if (player == WHITE && score > bestScore) || (player == BLACK && score < bestScore) {
 			bestScore = score
 			bestMove = m
 		}
