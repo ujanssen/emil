@@ -71,39 +71,54 @@ func filterKingCaptures(b *Board, player int, list []*Move) (result []*Move) {
 
 //Search best move for player on board
 func Search(b *Board, player int) (bestMove *Move) {
-	var bestScore int
+	bestMove, _ = deepSearch(b, player, 0, 1)
+	return bestMove
+}
 
+//Search best move for player on board
+func deepSearch(b *Board, player, deep, maxDeep int) (bestMove *Move, bestScore int) {
+	if DEBUG {
+		fmt.Printf("deepSearch: %s deep:%d %d\n", players[player], deep, maxDeep)
+		fmt.Printf("%s\n", b)
+	}
 	if player == WHITE {
 		bestScore = 2 * BlackKing
 	} else {
 		bestScore = 2 * WhiteKing
 	}
 
+	if deep == maxDeep {
+		score := evaluate(b)
+		if DEBUG {
+			println("maxDeep Score:", score)
+		}
+		return nil, score
+	}
+
 	list, err := generateMoveList(b, player)
 	if err != nil {
-		return nil
+		return nil, 0
 	}
 
 	result := filterKingCaptures(b, player, list)
+
 	for _, m := range result {
-		score := evaluate(b, player, m)
+		b.doMove(m)
+		_, score := deepSearch(b, otherPlayer(player), deep+1, maxDeep)
+		b.undoMove(m)
+
 		if (player == WHITE && score > bestScore) || (player == BLACK && score < bestScore) {
 			bestScore = score
 			bestMove = m
 		}
 	}
-	return bestMove
+	return bestMove, bestScore
 }
 
-func evaluate(b *Board, player int, m *Move) (score int) {
+func evaluate(b *Board) (score int) {
 	score = 0
-	b.doMove(m)
 	for _, p := range b.squares {
 		score += p
 	}
-	if DEBUG {
-		println("Score:", score)
-	}
-	b.undoMove(m)
 	return score
 }

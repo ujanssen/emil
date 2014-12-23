@@ -6,6 +6,13 @@ const (
 	BLACK = -1
 )
 
+var (
+	players = map[int]string{
+		WHITE: "white",
+		BLACK: "black",
+	}
+)
+
 // DEBUG set to true for log messages
 var DEBUG = false
 
