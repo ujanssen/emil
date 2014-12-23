@@ -15,8 +15,9 @@ func symbol(piece int) string {
 	}
 }
 
-func isKing(piece int) bool {
-	return abs(piece) == kingValue
+func isOtherKing(player, capture int) bool {
+	return (player == WHITE && capture == BlackKing) ||
+		(player == BLACK && capture == WhiteKing)
 }
 
 func isOwnPiece(player, capture int) bool {

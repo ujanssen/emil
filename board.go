@@ -33,24 +33,23 @@ func (b *Board) Setup(piece, square int) {
 }
 
 func (b *Board) doMove(m *Move) {
-	if DEBUG {
-		println("do move", m.String())
-	}
+	// if DEBUG {
+	// 	fmt.Printf("do move: %s\n", m)
+	// }
 	b.squares[m.source] = Empty
 	b.squares[m.destination] = m.piece
-	if DEBUG {
-
-		fmt.Printf("%s\n", b)
-	}
+	// if DEBUG {
+	// 	fmt.Printf("%s\n", b)
+	// }
 
 }
 func (b *Board) undoMove(m *Move) {
-	if DEBUG {
-		println("undo move", m.String())
-	}
+	// if DEBUG {
+	// 	fmt.Printf("do move: %s\n", m)
+	// }
 	b.squares[m.source] = m.piece
 	b.squares[m.destination] = m.capture
-	if DEBUG {
-		fmt.Printf("%s\n", b)
-	}
+	// if DEBUG {
+	// 	fmt.Printf("%s\n", b)
+	// }
 }
