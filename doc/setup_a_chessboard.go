@@ -10,9 +10,10 @@ func main() {
 	board := emil.NewBoard()
 	board.Setup(emil.WhiteKing, emil.F6)
 	board.Setup(emil.BlackKing, emil.G8)
-	board.Setup(emil.WhiteRock, emil.B8)
+	board.Setup(emil.WhiteRock, emil.B1)
+	board.Setup(emil.BlackRock, emil.A1)
 	fmt.Printf("\n")
 	fmt.Printf("%s\n", board)
-	moves, _ := emil.Search(board, emil.BLACK)
+	moves, _ := emil.Search(board, emil.WHITE)
 	fmt.Printf("black:\n%s\n", moves)
 }

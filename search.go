@@ -47,16 +47,7 @@ func generateMoveList(b *Board, player int) (list []*Move, err error) {
 	return list, err
 }
 
-//Search best move for player on board
-func Search(b *Board, player int) (empty string, err error) {
-	empty = ""
-	var result []*Move
-
-	list, err := generateMoveList(b, player)
-	if err != nil {
-		return empty, err
-	}
-
+func filterKingCaptures(b *Board, player int, list []*Move) (result []*Move) {
 	for _, m := range list {
 		if DEBUG {
 			println("TEST move", m.String())
@@ -75,6 +66,19 @@ func Search(b *Board, player int) (empty string, err error) {
 			fmt.Printf("\n\n\n")
 		}
 	}
+	return result
+}
+
+//Search best move for player on board
+func Search(b *Board, player int) (empty string, err error) {
+	empty = ""
+
+	list, err := generateMoveList(b, player)
+	if err != nil {
+		return empty, err
+	}
+
+	result := filterKingCaptures(b, player, list)
 
 	return moveList(result), nil
 }
