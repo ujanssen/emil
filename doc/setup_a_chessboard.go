@@ -17,7 +17,7 @@ func main() {
 
 	// emil.DEBUG = true
 
-	moves, _ := emil.Search(board, emil.WHITE)
+	move := emil.Search(board, emil.WHITE)
 
-	fmt.Printf("black:\n%s\n", moves)
+	fmt.Printf("black: %s\n", move)
 }
