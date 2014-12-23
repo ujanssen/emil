@@ -58,15 +58,21 @@ func Search(b *Board, player int, onlyTestKingCapture bool) (empty string, err e
 	}
 
 	for _, m := range list {
-		println("TEST move", m.String())
+		if DEBUG {
+			println("TEST move", m.String())
+		}
 		b.doMove(m)
 		if !b.isKingCapturedAfter(m) {
 			result = append(result, m)
 		} else {
-			println("KingCaptured")
+			if DEBUG {
+				println("KingCaptured")
+			}
 		}
 		b.undoMove(m)
-		fmt.Printf("\n\n\n")
+		if DEBUG {
+			fmt.Printf("\n\n\n")
+		}
 	}
 
 	return moveList(result), nil

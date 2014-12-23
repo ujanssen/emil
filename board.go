@@ -38,15 +38,24 @@ func (b *Board) isKingCapturedAfter(m *Move) bool {
 }
 
 func (b *Board) doMove(m *Move) {
-	println("do move", m.String())
+	if DEBUG {
+		println("do move", m.String())
+	}
 	b.squares[m.source] = Empty
 	b.squares[m.destination] = m.piece
-	fmt.Printf("%s\n", b)
+	if DEBUG {
+
+		fmt.Printf("%s\n", b)
+	}
 
 }
 func (b *Board) undoMove(m *Move) {
-	println("undo move", m.String())
+	if DEBUG {
+		println("undo move", m.String())
+	}
 	b.squares[m.source] = m.piece
 	b.squares[m.destination] = m.capture
-	fmt.Printf("%s\n", b)
+	if DEBUG {
+		fmt.Printf("%s\n", b)
+	}
 }

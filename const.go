@@ -6,6 +6,9 @@ const (
 	BLACK = -1
 )
 
+// DEBUG set to true for log messages
+var DEBUG = false
+
 const (
 	//FILES the files of a board
 	FILES = "abcdefgh"
