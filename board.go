@@ -32,11 +32,6 @@ func (b *Board) Setup(piece, square int) {
 	b.squares[square] = piece
 }
 
-func (b *Board) isKingCapturedAfter(m *Move) bool {
-	_, kingCaptured := Search(b, otherPlayer(m.player), true)
-	return kingCaptured != nil
-}
-
 func (b *Board) doMove(m *Move) {
 	if DEBUG {
 		println("do move", m.String())

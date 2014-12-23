@@ -62,7 +62,8 @@ func Search(b *Board, player int, onlyTestKingCapture bool) (empty string, err e
 			println("TEST move", m.String())
 		}
 		b.doMove(m)
-		if !b.isKingCapturedAfter(m) {
+		_, kingCaptured := Search(b, otherPlayer(m.player), true)
+		if kingCaptured == nil {
 			result = append(result, m)
 		} else {
 			if DEBUG {
