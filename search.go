@@ -72,6 +72,14 @@ func filterKingCaptures(b *Board, player int, list []*Move) (result []*Move) {
 //Search best move for player on board
 func Search(b *Board, player int) (empty string, err error) {
 	empty = ""
+	var bestMove *Move
+	var bestScore int
+
+	if player == WHITE {
+		bestScore = 2 * BlackKing
+	} else {
+		bestScore = 2 * WhiteKing
+	}
 
 	list, err := generateMoveList(b, player)
 	if err != nil {
@@ -79,6 +87,29 @@ func Search(b *Board, player int) (empty string, err error) {
 	}
 
 	result := filterKingCaptures(b, player, list)
+	for _, m := range result {
+		score := evaluate(b, player, m)
+		if player == WHITE && score > bestScore {
+			bestScore = score
+			bestMove = m
+		} else if player == BLACK && score < bestScore {
+			bestScore = score
+			bestMove = m
+		}
+	}
+	empty = fmt.Sprintf("[%s]", bestMove)
+	return empty, nil
+}
 
-	return moveList(result), nil
+func evaluate(b *Board, player int, m *Move) (score int) {
+	score = 0
+	b.doMove(m)
+	for _, p := range b.squares {
+		score += p
+	}
+	if DEBUG {
+		println("Score:", score)
+	}
+	b.undoMove(m)
+	return score
 }

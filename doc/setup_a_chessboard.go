@@ -14,6 +14,10 @@ func main() {
 	board.Setup(emil.BlackRock, emil.A1)
 	fmt.Printf("\n")
 	fmt.Printf("%s\n", board)
+
+	// emil.DEBUG = true
+
 	moves, _ := emil.Search(board, emil.WHITE)
+
 	fmt.Printf("black:\n%s\n", moves)
 }

@@ -48,8 +48,34 @@ func TestNoBlackMove(t *testing.T) {
 	board.Setup(emil.BlackKing, emil.E8)
 	board.Setup(emil.WhiteRock, emil.H8)
 
-	want := "[]"
+	want := "[<nil>]"
 	got, _ := emil.Search(board, emil.BLACK)
+	if got != want {
+		t.Errorf("the moves should be %s, got %s", want, got)
+	}
+}
+
+/*
+  a b c d e f g h
+8             k   8
+7                 7
+6         K       6
+5                 5
+4                 4
+3                 3
+2                 2
+1 r R             1
+  a b c d e f g h
+*/
+func TestRockCapture(t *testing.T) {
+	board := emil.NewBoard()
+	board.Setup(emil.WhiteKing, emil.F6)
+	board.Setup(emil.BlackKing, emil.G8)
+	board.Setup(emil.WhiteRock, emil.B1)
+	board.Setup(emil.BlackRock, emil.A1)
+
+	want := "[Rb1xa1]"
+	got, _ := emil.Search(board, emil.WHITE)
 	if got != want {
 		t.Errorf("the moves should be %s, got %s", want, got)
 	}
