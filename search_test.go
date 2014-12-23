@@ -24,7 +24,7 @@ func TestForTheOnlyBlackMove(t *testing.T) {
 	board.Setup(emil.WhiteRock, emil.B8)
 
 	want := "[kg8h7]"
-	got, _ := emil.Search(board, emil.BLACK, false)
+	got, _ := emil.Search(board, emil.BLACK)
 	if got != want {
 		t.Errorf("the moves should be %s, got %s", want, got)
 	}
@@ -49,7 +49,7 @@ func TestNoBlackMove(t *testing.T) {
 	board.Setup(emil.WhiteRock, emil.H8)
 
 	want := "[]"
-	got, _ := emil.Search(board, emil.BLACK, false)
+	got, _ := emil.Search(board, emil.BLACK)
 	if got != want {
 		t.Errorf("the moves should be %s, got %s", want, got)
 	}

@@ -48,7 +48,7 @@ func generateMoveList(b *Board, player int) (list []*Move, err error) {
 }
 
 //Search best move for player on board
-func Search(b *Board, player int, onlyTestKingCapture bool) (empty string, err error) {
+func Search(b *Board, player int) (empty string, err error) {
 	empty = ""
 	var result []*Move
 
