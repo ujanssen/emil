@@ -7,10 +7,8 @@ import (
 
 var errKingCapture = errors.New("king capture")
 
-//Search prints all moves for a piece on square
-func Search(b *Board, player int, onlyTestKingCapture bool) (empty string, err error) {
-	empty = ""
-	var result, list []*Move
+func gemMoveList(b *Board, player int) (list []*Move, err error) {
+	var empty []*Move
 	for src, piece := range b.squares {
 		if isOwnPiece(player, piece) {
 			switch abs(piece) {
@@ -46,9 +44,17 @@ func Search(b *Board, player int, onlyTestKingCapture bool) (empty string, err e
 			}
 		}
 	}
+	return list, err
+}
 
-	if onlyTestKingCapture {
-		return empty, nil
+//Search prints all moves for a piece on square
+func Search(b *Board, player int, onlyTestKingCapture bool) (empty string, err error) {
+	empty = ""
+	var result []*Move
+
+	list, err := gemMoveList(b, player)
+	if err != nil || onlyTestKingCapture {
+		return empty, err
 	}
 
 	for _, m := range list {
