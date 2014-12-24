@@ -12,6 +12,9 @@ So we need:
 - king and rock pieces (done)
 - movements for king and rock (done)
 - delete illegal moves (done)
-- create an endgame database for KkR
+- create an endgame database for KRK
+	- Step 1: Generating all possible positions
+	- Step 2: Evaluating positions using retrograde analysis
+	- Step 3: Verification
 - play for checkmate
 
