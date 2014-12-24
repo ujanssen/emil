@@ -61,7 +61,7 @@ func filterKingCaptures(b *Board, player int, list []*Move) (result []*Move) {
 
 //Search best move for player on board
 func Search(b *Board, player int) (bestMove *Move) {
-	bestMove, _ = deepSearch(b, player, 0, 5)
+	bestMove, _ = deepSearch(b, player, 0, 1)
 	return bestMove
 }
 
@@ -96,8 +96,9 @@ func deepSearch(b *Board, player, deep, maxDeep int) (bestMove *Move, bestScore 
 	}
 
 	for i, m := range result {
-		fmt.Printf("deepSearch: %s deep:%d, move[%d/%d]: %s\n", players[player], deep, i+1, len(result), m)
-
+		if DEBUG {
+			fmt.Printf("deepSearch: %s deep:%d, move[%d/%d]: %s\n", players[player], deep, i+1, len(result), m)
+		}
 		b.doMove(m)
 		_, score := deepSearch(b, otherPlayer(player), deep+1, maxDeep)
 		b.undoMove(m)

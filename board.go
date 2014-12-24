@@ -1,8 +1,11 @@
 package emil
 
 import (
+	"errors"
 	"fmt"
 )
+
+var errNotEmpty = errors.New("not empty")
 
 // Board with an array of field values, representing pieces
 type Board struct {
@@ -28,8 +31,12 @@ func (b *Board) String() string {
 }
 
 //Setup a piece on a square
-func (b *Board) Setup(piece, square int) {
+func (b *Board) Setup(piece, square int) (noError error) {
+	if b.squares[square] != Empty {
+		return errNotEmpty
+	}
 	b.squares[square] = piece
+	return noError
 }
 
 func (b *Board) doMove(m *Move) {
