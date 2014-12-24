@@ -6,6 +6,7 @@ import (
 )
 
 var errNotEmpty = errors.New("not empty")
+var errKingsToClose = errors.New("Kings to close")
 
 // Board with an array of field values, representing pieces
 type Board struct {
@@ -36,6 +37,14 @@ func (b *Board) Setup(piece, square int) (noError error) {
 		return errNotEmpty
 	}
 	b.squares[square] = piece
+	return noError
+}
+
+// KingsToClose
+func (b *Board) KingsToClose(squareA, squareB int) (noError error) {
+	if squaresDistances[squareA][squareB] <= 1 {
+		return errKingsToClose
+	}
 	return noError
 }
 

@@ -33,10 +33,17 @@ func main() {
 					continue
 				}
 
+				err = board.KingsToClose(wk, bk)
+				if err != nil {
+					continue
+				}
+
 				positions++
 			}
 		}
 	}
-	fmt.Printf("positions %d\n", positions)
+	fmt.Printf("all positions %d\n", 64*63*62)
+	fmt.Printf("valid positions %d\n", positions)
+	fmt.Printf("difference %d\n", 64*63*62-positions)
 
 }
