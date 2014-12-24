@@ -12,6 +12,6 @@ So we need:
 - king and rock pieces (done)
 - movements for king and rock (done)
 - delete illegal moves (done)
-- a search for best moves
-- some evaluation of the current position; plan for checkmate
+- create an endgame database for KkR
+- play for checkmate
 

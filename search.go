@@ -61,16 +61,12 @@ func filterKingCaptures(b *Board, player int, list []*Move) (result []*Move) {
 
 //Search best move for player on board
 func Search(b *Board, player int) (bestMove *Move) {
-	bestMove, _ = deepSearch(b, player, 0, 2)
+	bestMove, _ = deepSearch(b, player, 0, 5)
 	return bestMove
 }
 
 //Search best move for player on board
 func deepSearch(b *Board, player, deep, maxDeep int) (bestMove *Move, bestScore int) {
-	if DEBUG {
-		//fmt.Printf("deepSearch: %s deep:%d\n", players[player], deep)
-		//		fmt.Printf("%s\n", b)
-	}
 	if player == WHITE {
 		bestScore = 2 * BlackKing
 	} else {
