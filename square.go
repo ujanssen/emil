@@ -10,16 +10,19 @@ type Square struct {
 	file  string
 	rank  int
 	index int
+
+	isBorder bool
 }
 
 func newSquare(file string, rank, index int) *Square {
 	name := fmt.Sprintf("%v%d", file, rank)
 
 	return &Square{
-		name:  name,
-		file:  file,
-		rank:  rank,
-		index: index}
+		name:     name,
+		file:     file,
+		rank:     rank,
+		index:    index,
+		isBorder: isBorderSquare(file, rank)}
 }
 
 func (s *Square) String() string {
@@ -33,4 +36,14 @@ func (s *Square) distance(o *Square) int {
 
 func (s *Square) isSameRankOrFile(o *Square) bool {
 	return s.rank == o.rank || s.file == o.file
+}
+
+func isBorderSquare(file string, rank int) bool {
+	if rank == 1 || rank == 8 {
+		return true
+	}
+	if file == "a" || file == "h" {
+		return true
+	}
+	return false
 }

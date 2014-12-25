@@ -1,10 +1,8 @@
-emil
-====
+# emil
 
 Writing some go code to learn chess programming.
 
-First goal:
------------
+## First goal:
 
 The computer should win a game with a king and a rock against a king (KRK).
 So we need:
@@ -18,3 +16,11 @@ So we need:
 	- Step 3: Verification
 - play for checkmate
 
+
+### retrograde analysis:
+- generating all 249.984 (64*63*62) positions for KRK take 10s
+- filter 26.040 illegal positions, where the kings are to close
+- remaining 223.944 positions for analysis 
+- found 216 checkmates and 68 patt positions in < 1s, analysing only 13.144 positions where
+	- the black king is on a border square and
+	- the distance between the kings is 2

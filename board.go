@@ -10,7 +10,9 @@ var errKingsToClose = errors.New("Kings to close")
 
 // Board with an array of field values, representing pieces
 type Board struct {
-	squares []int
+	squares   []int
+	whiteKing int
+	blackKing int
 }
 
 // NewBoard creates a new Board
@@ -37,12 +39,17 @@ func (b *Board) Setup(piece, square int) (noError error) {
 		return errNotEmpty
 	}
 	b.squares[square] = piece
+	if piece == BlackKing {
+		b.blackKing = square
+	}
+	if piece == WhiteKing {
+		b.whiteKing = square
+	}
 	return noError
 }
 
-// KingsToClose
-func (b *Board) KingsToClose(squareA, squareB int) (noError error) {
-	if squaresDistances[squareA][squareB] <= 1 {
+func (b *Board) kingsToClose() (noError error) {
+	if squaresDistances[b.whiteKing][b.blackKing] <= 1 {
 		return errKingsToClose
 	}
 	return noError

@@ -46,12 +46,18 @@ func generateMoveList(b *Board, player int) (list []*Move, err error) {
 	}
 	return list, err
 }
+func isKingInCheck(b *Board, player int) (kingInCheck bool) {
+	_, kingCaptured := generateMoveList(b, otherPlayer(player))
+	if kingCaptured != nil {
+		return true
+	}
+	return false
 
+}
 func filterKingCaptures(b *Board, player int, list []*Move) (result []*Move) {
 	for _, m := range list {
 		b.doMove(m)
-		_, kingCaptured := generateMoveList(b, otherPlayer(m.player))
-		if kingCaptured == nil {
+		if !isKingInCheck(b, player) {
 			result = append(result, m)
 		}
 		b.undoMove(m)
