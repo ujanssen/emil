@@ -18,7 +18,7 @@ So we need:
 
 
 ### retrograde analysis:
-- generating all 249.984 (64*63*62) positions for KRK take 10s
+- generating all 249.984 (64 x 63 x 62) positions for KRK take 10s
 - filter 26.040 illegal positions, where the kings are to close
 - remaining 223.944 positions for analysis 
 - found 216 checkmates and 68 patt positions in < 1s, analysing only 13.144 positions where
