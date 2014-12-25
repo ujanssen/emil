@@ -24,6 +24,27 @@ type endGameDb struct {
 const unknown = -1
 const patt = -2
 
+func (db *endGameDb) Find(board *Board) (bestMove *Move) {
+	if DEBUG {
+		fmt.Printf("Find:\n%s\n", board.String())
+	}
+	if a, ok := db.positionDb[board.String()]; ok {
+		fmt.Printf("Found: positionDb with dtm %d\n", a.dtm)
+		if a.moves != nil && len(a.moves) > 0 {
+			return a.moves[0]
+		}
+	}
+	if a, ok := db.retros[0][board.String()]; ok {
+		if DEBUG {
+			fmt.Printf("Found: retros with dtm %d\n", a.dtm)
+		}
+		if a.moves != nil && len(a.moves) > 0 {
+			return a.moves[0]
+		}
+	}
+	return nil
+}
+
 func (db *endGameDb) addPosition(board *Board) {
 	a := &analysis{
 		dtm:   unknown,
@@ -32,8 +53,16 @@ func (db *endGameDb) addPosition(board *Board) {
 	db.positionDb[board.String()] = a
 }
 
-func (db *endGameDb) addAnalysis(a *analysis) {
-	db.retros[a.dtm][a.board.String()] = a
+func (db *endGameDb) addAnalysis(board *Board, dtm int, move *Move) {
+	a := &analysis{
+		dtm:   dtm,
+		board: board,
+		moves: make([]*Move, 0)}
+	if move != nil {
+		a.moves = append(a.moves, move.reverse())
+	}
+	db.positionDb[a.board.String()] = a
+	db.retros[dtm][a.board.String()] = a
 }
 
 func (db *endGameDb) positions() int {
@@ -66,7 +95,7 @@ func (db *endGameDb) retrogradeAnalysis() {
 		if move == nil {
 			if isKingInCheck(a.board, player) {
 				a.dtm = 0
-				db.addAnalysis(a)
+				db.addAnalysis(a.board, a.dtm, nil)
 				if DEBUG {
 					fmt.Printf("mate:\n%s\n", boardStr)
 				}
@@ -80,13 +109,13 @@ func (db *endGameDb) retrogradeAnalysis() {
 		}
 	}
 	end := time.Now()
+	if DEBUG {
+		fmt.Printf("searchedPositions %d\n", db.searchedPositions)
+		fmt.Printf("db.retros[0] %d\n", len(db.retros[0]))
+		fmt.Printf("found patt in 0 %d\n", db.pattIn0)
 
-	fmt.Printf("searchedPositions %d\n", db.searchedPositions)
-	fmt.Printf("db.retros[0] %d\n", len(db.retros[0]))
-	fmt.Printf("found patt in 0 %d\n", db.pattIn0)
-
-	fmt.Printf("duration %v\n", end.Sub(start))
-
+		fmt.Printf("duration %v\n", end.Sub(start))
+	}
 	//Suche alle Stellungen, bei denen Weiß am Zug ist und
 	//Weiß mindestens einen Zug hat, der zu einer Stellung unter 1. führt.
 	//Das sind alle Stellungen, in denen Weiß mit einem Zug matt setzen kann.
@@ -97,25 +126,30 @@ func (db *endGameDb) retrogradeAnalysis() {
 	for _, a := range db.retros[0] {
 		list := generateMoves(a.board, player)
 		moves := filterKingCaptures(a.board, player, list)
+		moves = filterKingCaptures(a.board, otherPlayer(player), list)
 		for i, m := range moves {
 			a.board.doMove(m)
 			newBoardStr := a.board.String()
 			if _, ok := db.retros[0][newBoardStr]; ok {
-				fmt.Printf("move[%d/%d]: %s found in db.retros[0]\n", i+1, len(moves), m.String())
+				if DEBUG {
+					fmt.Printf("move[%d/%d]: %s found in db.retros[0]\n", i+1, len(moves), m.String())
+				}
 				continue // new position is checkmate
 			}
-			a.dtm = 1
-			a.moves = append(a.moves, m)
-			db.retros[1][newBoardStr] = a
-			fmt.Printf("move[%d/%d]: %s added to db.retros[1]\n", i+1, len(moves), m.String())
+			db.addAnalysis(a.board, 1, m)
 
+			if DEBUG {
+				fmt.Printf("move[%d/%d]: %s added to db.retros[1]\n", i+1, len(moves), m.String())
+			}
 			a.board.undoMove(m)
 		}
 	}
 	end = time.Now()
 
-	fmt.Printf("db.retros[1] %d\n", len(db.retros[1]))
-	fmt.Printf("duration %v\n", end.Sub(start))
+	if DEBUG {
+		fmt.Printf("db.retros[1] %d\n", len(db.retros[1]))
+		fmt.Printf("duration %v\n", end.Sub(start))
+	}
 }
 
 func generateMoves(b *Board, player int) (list []*Move) {
@@ -158,16 +192,14 @@ func generateMoves(b *Board, player int) (list []*Move) {
 }
 
 // NewEndGameDb generates an end game DB for KRK
-func NewEndGameDb() {
+func NewEndGameDb() *endGameDb {
 	var err error
 	start := time.Now()
-	fmt.Printf("Generating all possible positions for KRK\n")
 
 	endGames := &endGameDb{
 		positionDb: make(map[string]*analysis),
 		retros:     make([]map[string]*analysis, 0)}
 
-	DEBUG = true
 	for wk := A1; wk <= H8; wk++ {
 		//for wk := E3; wk <= E3; wk++ {
 		if DEBUG {
@@ -203,10 +235,13 @@ func NewEndGameDb() {
 		}
 	}
 	end := time.Now()
-	fmt.Printf("all positions %d\n", 64*63*62)
-	fmt.Printf("endGames.positions() %d\n", endGames.positions())
-	fmt.Printf("difference %d\n", 64*63*62-endGames.positions())
-	fmt.Printf("duration %v\n", end.Sub(start))
-
+	if DEBUG {
+		fmt.Printf("all positions %d\n", 64*63*62)
+		fmt.Printf("endGames.positions() %d\n", endGames.positions())
+		fmt.Printf("difference %d\n", 64*63*62-endGames.positions())
+		fmt.Printf("duration %v\n", end.Sub(start))
+	}
 	endGames.retrogradeAnalysis()
+
+	return endGames
 }

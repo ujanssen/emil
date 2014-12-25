@@ -26,6 +26,19 @@ func (m *Move) String() string {
 		BoardSquares[m.destination].name)
 }
 
+func (m *Move) reverse() *Move {
+	return &Move{
+		player:      m.player,
+		piece:       m.piece,
+		capture:     m.capture,
+		promotion:   m.promotion,
+		source:      m.destination,
+		destination: m.source,
+		isCapture:   m.isCapture,
+		isQueenside: m.isQueenside,
+		isKingside:  m.isKingside}
+}
+
 func newSilentMove(player, piece, src, dst int) *Move {
 	return &Move{
 		player:      player,
