@@ -11,7 +11,8 @@ type analysis struct {
 	moves []*Move
 }
 
-type endGameDb struct {
+// EndGameDb to query for mate in 1,2, etc.
+type EndGameDb struct {
 	positionDb map[string]*analysis
 
 	retros []map[string]*analysis
@@ -24,15 +25,9 @@ type endGameDb struct {
 const unknown = -1
 const patt = -2
 
-func (db *endGameDb) Find(board *Board) (bestMove *Move) {
+func (db *EndGameDb) Find(board *Board) (bestMove *Move) {
 	if DEBUG {
 		fmt.Printf("Find:\n%s\n", board.String())
-	}
-	if a, ok := db.positionDb[board.String()]; ok {
-		fmt.Printf("Found: positionDb with dtm %d\n", a.dtm)
-		if a.moves != nil && len(a.moves) > 0 {
-			return a.moves[0]
-		}
 	}
 	if a, ok := db.retros[0][board.String()]; ok {
 		if DEBUG {
@@ -42,10 +37,18 @@ func (db *endGameDb) Find(board *Board) (bestMove *Move) {
 			return a.moves[0]
 		}
 	}
+	if a, ok := db.positionDb[board.String()]; ok {
+		if DEBUG {
+			fmt.Printf("Found: positionDb with dtm %d\n", a.dtm)
+		}
+		if a.moves != nil && len(a.moves) > 0 {
+			return a.moves[0]
+		}
+	}
 	return nil
 }
 
-func (db *endGameDb) addPosition(board *Board) {
+func (db *EndGameDb) addPosition(board *Board) {
 	a := &analysis{
 		dtm:   unknown,
 		board: board,
@@ -53,7 +56,7 @@ func (db *endGameDb) addPosition(board *Board) {
 	db.positionDb[board.String()] = a
 }
 
-func (db *endGameDb) addAnalysis(board *Board, dtm int, move *Move) {
+func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
 	a := &analysis{
 		dtm:   dtm,
 		board: board,
@@ -65,11 +68,11 @@ func (db *endGameDb) addAnalysis(board *Board, dtm int, move *Move) {
 	db.retros[dtm][a.board.String()] = a
 }
 
-func (db *endGameDb) positions() int {
+func (db *EndGameDb) positions() int {
 	return len(db.positionDb)
 }
 
-func (db *endGameDb) retrogradeAnalysis() {
+func (db *EndGameDb) retrogradeAnalysis() {
 	// find positions where black is checkmate
 	db.retros = append(db.retros, make(map[string]*analysis))
 
@@ -192,11 +195,11 @@ func generateMoves(b *Board, player int) (list []*Move) {
 }
 
 // NewEndGameDb generates an end game DB for KRK
-func NewEndGameDb() *endGameDb {
+func NewEndGameDb() *EndGameDb {
 	var err error
 	start := time.Now()
 
-	endGames := &endGameDb{
+	endGames := &EndGameDb{
 		positionDb: make(map[string]*analysis),
 		retros:     make([]map[string]*analysis, 0)}
 
