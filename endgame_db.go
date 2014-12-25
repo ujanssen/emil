@@ -6,8 +6,8 @@ import (
 )
 
 type analysis struct {
-	mateIn int
-	board  *Board
+	dtm   int // Depth to mate
+	board *Board
 }
 
 type endGameDb struct {
@@ -23,7 +23,7 @@ const unknown = -1
 const patt = -2
 
 func (db *endGameDb) addPosition(board *Board) {
-	a := &analysis{mateIn: unknown, board: board}
+	a := &analysis{dtm: unknown, board: board}
 	db.positionDb[board.String()] = a
 }
 
@@ -38,7 +38,7 @@ func (db *endGameDb) retrogradeAnalysis() {
 
 	player := BLACK
 	for boardStr, analysis := range db.positionDb {
-		if analysis.mateIn > unknown {
+		if analysis.dtm > unknown {
 			continue
 		}
 		// mate only on border square
@@ -55,13 +55,13 @@ func (db *endGameDb) retrogradeAnalysis() {
 		db.searchedPositions++
 		if move == nil {
 			if isKingInCheck(analysis.board, player) {
-				analysis.mateIn = 0
+				analysis.dtm = 0
 				db.mateIn0++
 				if DEBUG {
 					fmt.Printf("mate:\n%s\n", boardStr)
 				}
 			} else {
-				analysis.mateIn = patt
+				analysis.dtm = patt
 				db.pattIn0++
 				if DEBUG {
 					fmt.Printf("patt:\n%s\n", boardStr)
