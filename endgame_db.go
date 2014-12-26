@@ -1,9 +1,12 @@
 package emil
 
 import (
+	"errors"
 	"fmt"
 	"time"
 )
+
+var errNowNewAnalysis = errors.New("errNowNewAnalysis")
 
 type analysis struct {
 	analysisDone bool
@@ -95,7 +98,7 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 	}
 }
 
-func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) {
+func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 	start := time.Now()
 	db.dtmDb = append(db.dtmDb, make(map[string]bool))
 
@@ -113,7 +116,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) {
 	}
 
 	if DEBUG {
-		fmt.Printf("Positions %d\n", len(db.dtmDb[dtm-1]))
+		fmt.Printf("Start positions %d\n", len(db.dtmDb[dtm-1]))
 	}
 	for str := range db.dtmDb[dtm-1] {
 		a := db.positionDb[str]
@@ -134,18 +137,24 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) {
 		fmt.Printf("db.dtmDb[%d] %d\n", dtm, len(db.dtmDb[dtm]))
 		fmt.Printf("duration %v\n\n\n", end.Sub(start))
 	}
+
+	if len(db.dtmDb[dtm]) == 0 {
+		return errNowNewAnalysis
+	}
+	return noError
 }
 
 func (db *EndGameDb) retrogradeAnalysis() {
 	// find positions where black is checkmate
 	db.retrogradeAnalysisStep1()
-
-	db.retrogradeAnalysisStepN(1)
-	db.retrogradeAnalysisStepN(2)
-	db.retrogradeAnalysisStepN(3)
-	db.retrogradeAnalysisStepN(4)
-	db.retrogradeAnalysisStepN(5)
-
+	dtm := 1
+	for {
+		err := db.retrogradeAnalysisStepN(dtm)
+		if err != nil {
+			break
+		}
+		dtm++
+	}
 }
 
 func generateMoves(b *Board, player int) (list []*Move) {
