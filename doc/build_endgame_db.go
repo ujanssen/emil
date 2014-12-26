@@ -6,15 +6,21 @@ import (
 )
 
 func main() {
+	emil.DEBUG = true
 
 	board := emil.NewBoard()
-	board.Setup(emil.WhiteKing, emil.E6)
-	board.Setup(emil.BlackKing, emil.E8)
-	board.Setup(emil.WhiteRock, emil.H1)
+	board.Setup(emil.WhiteKing, emil.B5)
+	board.Setup(emil.BlackKing, emil.A7)
+	board.Setup(emil.WhiteRock, emil.H2)
 
 	db := emil.NewEndGameDb()
 
-	move := db.Find(board)
-	fmt.Printf("move should be Rh1h8, got %s", move)
-
+	for {
+		move := db.Find(board)
+		if move == nil {
+			break
+		}
+		fmt.Printf("move %s\n", move)
+		board = board.DoMove(move)
+	}
 }

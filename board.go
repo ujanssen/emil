@@ -54,6 +54,9 @@ func (b *Board) kingsToClose() (noError error) {
 	}
 	return noError
 }
+func (b *Board) DoMove(m *Move) (newBoard *Board) {
+	return b.doMove(m)
+}
 
 func (b *Board) doMove(m *Move) (newBoard *Board) {
 	// if DEBUG {

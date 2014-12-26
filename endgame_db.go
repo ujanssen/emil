@@ -6,7 +6,9 @@ import (
 )
 
 type analysis struct {
-	dtm   int // Depth to mate
+	analysisDone bool
+	dtm          int // Depth to mate
+
 	board *Board
 	move  *Move
 }
@@ -15,44 +17,24 @@ type analysis struct {
 type EndGameDb struct {
 	positionDb map[string]*analysis
 
-	retros []map[string]*analysis
-
-	pattIn0 int
+	dtmDb []map[string]bool
 
 	searchedPositions int
 }
-
-const unknown = -1
-const patt = -2
 
 func (db *EndGameDb) Find(board *Board) (bestMove *Move) {
 	if DEBUG {
 		fmt.Printf("Find:\n%s\n", board.String())
 	}
-	if a, ok := db.retros[0][board.String()]; ok {
-		if DEBUG {
-			fmt.Printf("Found: retros with dtm %d\n", a.dtm)
-		}
-		if a.move != nil {
-			return a.move
-		}
+	a := db.positionDb[board.String()]
+	if DEBUG {
+		fmt.Printf("Found: positionDb with dtm %d\n", a.dtm)
 	}
-	if a, ok := db.positionDb[board.String()]; ok {
-		if DEBUG {
-			fmt.Printf("Found: positionDb with dtm %d\n", a.dtm)
-		}
-		if a.move != nil {
-			return a.move
-		}
-	}
-	return nil
+	return a.move
 }
 
 func (db *EndGameDb) addPosition(board *Board) {
-	a := &analysis{
-		dtm:   unknown,
-		board: board}
-	db.positionDb[board.String()] = a
+	db.addAnalysis(board, -1, nil)
 }
 
 func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
@@ -62,25 +44,27 @@ func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
 	if move != nil {
 		a.move = move.reverse()
 	}
+	done := dtm >= 0
+	if done {
+		db.dtmDb[dtm][a.board.String()] = true
+	}
+	a.analysisDone = done
+
 	db.positionDb[a.board.String()] = a
-	db.retros[dtm][a.board.String()] = a
 }
 
 func (db *EndGameDb) positions() int {
 	return len(db.positionDb)
 }
 
-func (db *EndGameDb) retrogradeAnalysis() {
-	// find positions where black is checkmate
-	db.retros = append(db.retros, make(map[string]*analysis))
+// find positions where black is checkmate
+func (db *EndGameDb) retrogradeAnalysisStep1() {
+	db.dtmDb = append(db.dtmDb, make(map[string]bool))
 
 	start := time.Now()
 
 	player := BLACK
 	for boardStr, a := range db.positionDb {
-		if a.dtm > unknown {
-			continue
-		}
 		// mate only on border square
 		blackKingSquare := BoardSquares[a.board.blackKing]
 		if !blackKingSquare.isBorder {
@@ -96,15 +80,9 @@ func (db *EndGameDb) retrogradeAnalysis() {
 		if move == nil {
 			if isKingInCheck(a.board, player) {
 				a.dtm = 0
-				db.addAnalysis(a.board, a.dtm, nil)
+				db.addAnalysis(a.board, 0, nil)
 				if DEBUG {
 					fmt.Printf("mate:\n%s\n", boardStr)
-				}
-			} else {
-				a.dtm = patt
-				db.pattIn0++
-				if DEBUG {
-					fmt.Printf("patt:\n%s\n", boardStr)
 				}
 			}
 		}
@@ -112,44 +90,62 @@ func (db *EndGameDb) retrogradeAnalysis() {
 	end := time.Now()
 	if DEBUG {
 		fmt.Printf("searchedPositions %d\n", db.searchedPositions)
-		fmt.Printf("db.retros[0] %d\n", len(db.retros[0]))
-		fmt.Printf("found patt in 0 %d\n", db.pattIn0)
-
-		fmt.Printf("duration %v\n", end.Sub(start))
+		fmt.Printf("db.dtmDb[0] %d\n", len(db.dtmDb[0]))
+		fmt.Printf("duration %v\n\n\n", end.Sub(start))
 	}
-	//Suche alle Stellungen, bei denen Weiß am Zug ist und
-	//Weiß mindestens einen Zug hat, der zu einer Stellung unter 1. führt.
-	//Das sind alle Stellungen, in denen Weiß mit einem Zug matt setzen kann.
-	//Markiere diese Stellungen in der Datei.
-	start = time.Now()
-	db.retros = append(db.retros, make(map[string]*analysis))
-	player = WHITE
-	for _, a := range db.retros[0] {
+}
+
+func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) {
+	start := time.Now()
+	db.dtmDb = append(db.dtmDb, make(map[string]bool))
+
+	var player int
+	if dtm%2 == 0 {
+		player = BLACK
+		if DEBUG {
+			fmt.Printf("retrogradeAnalysis BLACK %d\n", dtm)
+		}
+	} else {
+		player = WHITE
+		if DEBUG {
+			fmt.Printf("retrogradeAnalysis WHITE %d\n", dtm)
+		}
+	}
+
+	if DEBUG {
+		fmt.Printf("Positions %d\n", len(db.dtmDb[dtm-1]))
+	}
+	for str := range db.dtmDb[dtm-1] {
+		a := db.positionDb[str]
 		list := generateMoves(a.board, player)
 		moves := filterKingCaptures(a.board, player, list)
 		moves = filterKingCaptures(a.board, otherPlayer(player), list)
-		for i, m := range moves {
+		for _, m := range moves {
 			newBoard := a.board.doMove(m)
-			newBoardStr := newBoard.String()
-			if _, ok := db.retros[0][newBoardStr]; ok {
-				if DEBUG {
-					fmt.Printf("move[%d/%d]: %s found in db.retros[0]\n", i+1, len(moves), m.String())
-				}
-				continue // new position is checkmate
-			}
-			db.addAnalysis(newBoard, 1, m)
-
-			if DEBUG {
-				fmt.Printf("move[%d/%d]: %s added to db.retros[1]\n", i+1, len(moves), m.String())
+			newAnalysis, ok := db.positionDb[newBoard.String()]
+			if ok && !newAnalysis.analysisDone {
+				db.addAnalysis(newBoard, dtm, m)
 			}
 		}
 	}
-	end = time.Now()
+	end := time.Now()
 
 	if DEBUG {
-		fmt.Printf("db.retros[1] %d\n", len(db.retros[1]))
-		fmt.Printf("duration %v\n", end.Sub(start))
+		fmt.Printf("db.dtmDb[%d] %d\n", dtm, len(db.dtmDb[dtm]))
+		fmt.Printf("duration %v\n\n\n", end.Sub(start))
 	}
+}
+
+func (db *EndGameDb) retrogradeAnalysis() {
+	// find positions where black is checkmate
+	db.retrogradeAnalysisStep1()
+
+	db.retrogradeAnalysisStepN(1)
+	db.retrogradeAnalysisStepN(2)
+	db.retrogradeAnalysisStepN(3)
+	db.retrogradeAnalysisStepN(4)
+	db.retrogradeAnalysisStepN(5)
+
 }
 
 func generateMoves(b *Board, player int) (list []*Move) {
@@ -198,7 +194,7 @@ func NewEndGameDb() *EndGameDb {
 
 	endGames := &EndGameDb{
 		positionDb: make(map[string]*analysis),
-		retros:     make([]map[string]*analysis, 0)}
+		dtmDb:      make([]map[string]bool, 0)}
 
 	for wk := A1; wk <= H8; wk++ {
 		//for wk := E3; wk <= E3; wk++ {
