@@ -56,11 +56,10 @@ func isKingInCheck(b *Board, player int) (kingInCheck bool) {
 }
 func filterKingCaptures(b *Board, player int, list []*Move) (result []*Move) {
 	for _, m := range list {
-		b.doMove(m)
-		if !isKingInCheck(b, player) {
+		newBoard := b.doMove(m)
+		if !isKingInCheck(newBoard, player) {
 			result = append(result, m)
 		}
-		b.undoMove(m)
 	}
 	return result
 }
@@ -105,9 +104,8 @@ func deepSearch(b *Board, player, deep, maxDeep int) (bestMove *Move, bestScore 
 		if DEBUG {
 			fmt.Printf("deepSearch: %s deep:%d, move[%d/%d]: %s\n", players[player], deep, i+1, len(result), m)
 		}
-		b.doMove(m)
-		_, score := deepSearch(b, otherPlayer(player), deep+1, maxDeep)
-		b.undoMove(m)
+		newBoard := b.doMove(m)
+		_, score := deepSearch(newBoard, otherPlayer(player), deep+1, maxDeep)
 
 		if (player == WHITE && score > bestScore) || (player == BLACK && score < bestScore) {
 			bestScore = score

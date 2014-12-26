@@ -131,20 +131,19 @@ func (db *EndGameDb) retrogradeAnalysis() {
 		moves := filterKingCaptures(a.board, player, list)
 		moves = filterKingCaptures(a.board, otherPlayer(player), list)
 		for i, m := range moves {
-			a.board.doMove(m)
-			newBoardStr := a.board.String()
+			newBoard := a.board.doMove(m)
+			newBoardStr := newBoard.String()
 			if _, ok := db.retros[0][newBoardStr]; ok {
 				if DEBUG {
 					fmt.Printf("move[%d/%d]: %s found in db.retros[0]\n", i+1, len(moves), m.String())
 				}
 				continue // new position is checkmate
 			}
-			db.addAnalysis(a.board, 1, m)
+			db.addAnalysis(newBoard, 1, m)
 
 			if DEBUG {
 				fmt.Printf("move[%d/%d]: %s added to db.retros[1]\n", i+1, len(moves), m.String())
 			}
-			a.board.undoMove(m)
 		}
 	}
 	end = time.Now()
