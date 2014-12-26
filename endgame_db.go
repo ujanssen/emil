@@ -8,7 +8,7 @@ import (
 type analysis struct {
 	dtm   int // Depth to mate
 	board *Board
-	moves []*Move
+	move  *Move
 }
 
 // EndGameDb to query for mate in 1,2, etc.
@@ -33,16 +33,16 @@ func (db *EndGameDb) Find(board *Board) (bestMove *Move) {
 		if DEBUG {
 			fmt.Printf("Found: retros with dtm %d\n", a.dtm)
 		}
-		if a.moves != nil && len(a.moves) > 0 {
-			return a.moves[0]
+		if a.move != nil {
+			return a.move
 		}
 	}
 	if a, ok := db.positionDb[board.String()]; ok {
 		if DEBUG {
 			fmt.Printf("Found: positionDb with dtm %d\n", a.dtm)
 		}
-		if a.moves != nil && len(a.moves) > 0 {
-			return a.moves[0]
+		if a.move != nil {
+			return a.move
 		}
 	}
 	return nil
@@ -51,18 +51,16 @@ func (db *EndGameDb) Find(board *Board) (bestMove *Move) {
 func (db *EndGameDb) addPosition(board *Board) {
 	a := &analysis{
 		dtm:   unknown,
-		board: board,
-		moves: make([]*Move, 0)}
+		board: board}
 	db.positionDb[board.String()] = a
 }
 
 func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
 	a := &analysis{
 		dtm:   dtm,
-		board: board,
-		moves: make([]*Move, 0)}
+		board: board}
 	if move != nil {
-		a.moves = append(a.moves, move.reverse())
+		a.move = move.reverse()
 	}
 	db.positionDb[a.board.String()] = a
 	db.retros[dtm][a.board.String()] = a
