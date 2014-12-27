@@ -1,6 +1,20 @@
 package emil
 
+import (
+	"log"
+	"os"
+	"runtime/pprof"
+)
+
 func init() {
+	if PROFILE {
+		f, err := os.Create("cpu.profile")
+		if err != nil {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+	}
+
 	// define BoardSquares
 	for j := 0; j < 8; j++ {
 		for i, file := range FILES {

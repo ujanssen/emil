@@ -13,8 +13,11 @@ var (
 	}
 )
 
-// DEBUG set to true for log messages
+// DEBUG set to write cpu.po
 var DEBUG = false
+
+// PROFILE set to true for log messages
+var PROFILE = false
 
 const (
 	//FILES the files of a board

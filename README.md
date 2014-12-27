@@ -24,3 +24,10 @@ So we need:
 - found 216 checkmates and 68 patt positions in < 1s, analysing only 13.144 positions where
 	- the black king is on a border square and
 	- the distance between the kings is 2
+
+
+### profiling:
+
+	$ go test
+	PASS
+	ok  	github.com/ujanssen/emil	171.641s
