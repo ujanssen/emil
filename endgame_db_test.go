@@ -89,3 +89,22 @@ func TestFindFiveMatesWithBlackKingOnE8(t *testing.T) {
 		t.Errorf("len(boards) should be 5, got %d", len(boards))
 	}
 }
+
+/*
+  a b c d e f g h
+8               k 8
+7                 7
+6                 6
+5                 5
+4                 4
+3                 3
+2                 2
+1                 1
+  a b c d e f g h
+*/
+func TestFind24MatesWithBlackKingOnH8(t *testing.T) {
+	boards := db.FindMate(emil.BlackKing, emil.H8)
+	if len(boards) != 24 {
+		t.Errorf("len(boards) should be 24, got %d", len(boards))
+	}
+}

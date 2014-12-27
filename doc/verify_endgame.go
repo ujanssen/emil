@@ -10,9 +10,12 @@ func main() {
 
 	db := emil.NewEndGameDb()
 
-	fmt.Println("db.FindMate(emil.BlackKing, emil.E8")
+	fmt.Println("db.FindMate(emil.BlackKing, emil.A8")
 
-	for _, b := range db.FindMate(emil.BlackKing, emil.E8) {
+	boards := db.FindMate(emil.BlackKing, emil.A8)
+	fmt.Printf("found %d boards\n\n", len(boards))
+
+	for _, b := range boards {
 		fmt.Printf("%s\n\n", b)
 	}
 }
