@@ -35,6 +35,13 @@ func (db *EndGameDb) Find(board *Board) (bestMove *Move) {
 	}
 	return a.move
 }
+func (db *EndGameDb) FindMates() (boards []*Board) {
+	for str := range db.dtmDb[0] {
+		a := db.positionDb[str]
+		boards = append(boards, a.board)
+	}
+	return boards
+}
 
 func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
 	for str := range db.dtmDb[0] {

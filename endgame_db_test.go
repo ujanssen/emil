@@ -108,3 +108,10 @@ func TestFind24MatesWithBlackKingOnH8(t *testing.T) {
 		t.Errorf("len(boards) should be 24, got %d", len(boards))
 	}
 }
+
+func TestFindAllMates(t *testing.T) {
+	boards := db.FindMates()
+	if len(boards) != 216 {
+		t.Errorf("len(boards) should be 216, got %d", len(boards))
+	}
+}
