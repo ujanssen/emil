@@ -97,12 +97,7 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 		fmt.Printf("duration %v\n\n\n", end.Sub(start))
 	}
 }
-
-func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
-	start := time.Now()
-	db.dtmDb = append(db.dtmDb, make(map[string]bool))
-
-	var player int
+func playerForStepN(dtm int) (player int) {
 	if dtm%2 == 0 {
 		player = BLACK
 		if DEBUG {
@@ -114,6 +109,14 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 			fmt.Printf("retrogradeAnalysis WHITE %d\n", dtm)
 		}
 	}
+	return player
+}
+
+func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
+	start := time.Now()
+	db.dtmDb = append(db.dtmDb, make(map[string]bool))
+
+	player := playerForStepN(dtm)
 
 	if DEBUG {
 		fmt.Printf("Start positions %d\n", len(db.dtmDb[dtm-1]))
