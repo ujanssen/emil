@@ -70,3 +70,22 @@ func TestFindMoveRe6h6(t *testing.T) {
 		}
 	}
 }
+
+/*
+  a b c d e f g h
+8 R R R   k   R R 8
+7                 7
+6         K       6
+5                 5
+4                 4
+3                 3
+2                 2
+1                 1
+  a b c d e f g h
+*/
+func TestFindFiveMatesWithBlackKingOnE8(t *testing.T) {
+	boards := db.FindMate(emil.BlackKing, emil.E8)
+	if len(boards) != 5 {
+		t.Errorf("len(boards) should be 5, got %d", len(boards))
+	}
+}
