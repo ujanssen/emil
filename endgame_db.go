@@ -140,7 +140,8 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 	}
 	for str := range db.dtmDb[dtm-1] {
 		a := db.positionDb[str]
-		list := generateMoves(a.board, player)
+		p := newPosition(a.board, player)
+		list := generateMoves(p)
 		moves := filterKingCaptures(a.board, player, list)
 		moves = filterKingCaptures(a.board, otherPlayer(player), list)
 		for _, m := range moves {
@@ -177,33 +178,33 @@ func (db *EndGameDb) retrogradeAnalysis() {
 	}
 }
 
-func generateMoves(b *Board, player int) (list []*Move) {
-	for src, piece := range b.squares {
-		if isOwnPiece(player, piece) {
+func generateMoves(p *position) (list []*Move) {
+	for src, piece := range p.board.squares {
+		if isOwnPiece(p.player, piece) {
 			switch abs(piece) {
 			case kingValue:
 				for _, dst := range kingDestinationsFrom(src) {
-					capture := b.squares[dst]
-					if isOtherKing(player, capture) {
+					capture := p.board.squares[dst]
+					if isOtherKing(p.player, capture) {
 						continue
 					}
 					if capture == Empty {
-						list = append(list, newSilentMove(player, piece, src, dst))
-					} else if !isOwnPiece(player, capture) {
-						list = append(list, newCaptureMove(player, piece, capture, src, dst))
+						list = append(list, newSilentMove(p.player, piece, src, dst))
+					} else if !isOwnPiece(p.player, capture) {
+						list = append(list, newCaptureMove(p.player, piece, capture, src, dst))
 					}
 				}
 			case rockValue:
 				for _, dsts := range rockDestinationsFrom(src) {
 					for _, dst := range dsts {
-						capture := b.squares[dst]
-						if isOtherKing(player, capture) {
+						capture := p.board.squares[dst]
+						if isOtherKing(p.player, capture) {
 							break
 						}
 						if capture == Empty {
-							list = append(list, newSilentMove(player, piece, src, dst))
-						} else if !isOwnPiece(player, capture) {
-							list = append(list, newCaptureMove(player, piece, capture, src, dst))
+							list = append(list, newSilentMove(p.player, piece, src, dst))
+						} else if !isOwnPiece(p.player, capture) {
+							list = append(list, newCaptureMove(p.player, piece, capture, src, dst))
 							break
 						} else {
 							break // onOwnPiece
