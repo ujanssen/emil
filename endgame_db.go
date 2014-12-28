@@ -172,8 +172,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 			found := 0
 			for _, m := range moves {
 				newBoard := a.board.doMove(m)
-				_, ok := db.dtmDb[dtm-1][newBoard.String()]
-				if ok {
+				if db.isMateForBlack(newBoard, dtm) {
 					found++
 				}
 			}
@@ -196,6 +195,15 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 		return errNowNewAnalysis
 	}
 	return noError
+}
+func (db *EndGameDb) isMateForBlack(board *Board, maxDtm int) bool {
+	for dtm := 0; dtm < maxDtm; dtm += 2 {
+		_, ok := db.dtmDb[dtm][board.String()]
+		if ok {
+			return true
+		}
+	}
+	return false
 }
 
 func (db *EndGameDb) retrogradeAnalysis() {
