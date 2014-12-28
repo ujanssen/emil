@@ -95,10 +95,12 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 			continue
 		}
 
+		p := newPosition(a.board, player)
+
 		move := Search(a.board, player)
 		db.searchedPositions++
 		if move == nil {
-			if isKingInCheck(a.board, player) {
+			if isKingInCheck(p) {
 				a.dtm = 0
 				db.addAnalysis(a.board, 0, nil)
 				if DEBUG {

@@ -46,8 +46,8 @@ func generateMoveList(b *Board, player int) (list []*Move, err error) {
 	}
 	return list, err
 }
-func isKingInCheck(b *Board, player int) (kingInCheck bool) {
-	_, kingCaptured := generateMoveList(b, otherPlayer(player))
+func isKingInCheck(p *position) (kingInCheck bool) {
+	_, kingCaptured := generateMoveList(p.board, otherPlayer(p.player))
 	if kingCaptured != nil {
 		return true
 	}
@@ -57,7 +57,8 @@ func isKingInCheck(b *Board, player int) (kingInCheck bool) {
 func filterKingCaptures(p *position, list []*Move) (result []*Move) {
 	for _, m := range list {
 		newBoard := p.board.doMove(m)
-		if !isKingInCheck(newBoard, p.player) {
+		newPos := newPosition(newBoard, p.player)
+		if !isKingInCheck(newPos) {
 			result = append(result, m)
 		}
 	}
