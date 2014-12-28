@@ -7,34 +7,34 @@ import (
 
 var errKingCapture = errors.New("king capture")
 
-func generateMoveList(b *Board, player int) (list []*Move, err error) {
+func generateMoveList(p *position) (list []*Move, err error) {
 	var empty []*Move
-	for src, piece := range b.squares {
-		if isOwnPiece(player, piece) {
+	for src, piece := range p.board.squares {
+		if isOwnPiece(p.player, piece) {
 			switch abs(piece) {
 			case kingValue:
 				for _, dst := range kingDestinationsFrom(src) {
-					capture := b.squares[dst]
-					if isOtherKing(player, capture) {
+					capture := p.board.squares[dst]
+					if isOtherKing(p.player, capture) {
 						return empty, errKingCapture
 					}
 					if capture == Empty {
-						list = append(list, newSilentMove(player, piece, src, dst))
-					} else if !isOwnPiece(player, capture) {
-						list = append(list, newCaptureMove(player, piece, capture, src, dst))
+						list = append(list, newSilentMove(p.player, piece, src, dst))
+					} else if !isOwnPiece(p.player, capture) {
+						list = append(list, newCaptureMove(p.player, piece, capture, src, dst))
 					}
 				}
 			case rockValue:
 				for _, dsts := range rockDestinationsFrom(src) {
 					for _, dst := range dsts {
-						capture := b.squares[dst]
-						if isOtherKing(player, capture) {
+						capture := p.board.squares[dst]
+						if isOtherKing(p.player, capture) {
 							return empty, errKingCapture
 						}
 						if capture == Empty {
-							list = append(list, newSilentMove(player, piece, src, dst))
-						} else if !isOwnPiece(player, capture) {
-							list = append(list, newCaptureMove(player, piece, capture, src, dst))
+							list = append(list, newSilentMove(p.player, piece, src, dst))
+						} else if !isOwnPiece(p.player, capture) {
+							list = append(list, newCaptureMove(p.player, piece, capture, src, dst))
 							break
 						} else {
 							break // onOwnPiece
@@ -47,7 +47,8 @@ func generateMoveList(b *Board, player int) (list []*Move, err error) {
 	return list, err
 }
 func isKingInCheck(p *position) (kingInCheck bool) {
-	_, kingCaptured := generateMoveList(p.board, otherPlayer(p.player))
+	newPosition := NewPosition(p.board, otherPlayer(p.player))
+	_, kingCaptured := generateMoveList(newPosition)
 	if kingCaptured != nil {
 		return true
 	}
@@ -87,7 +88,7 @@ func deepSearch(p *position, deep, maxDeep int) (bestMove *Move, bestScore int) 
 		return nil, score
 	}
 
-	list, err := generateMoveList(p.board, p.player)
+	list, err := generateMoveList(p)
 	if err != nil {
 		if DEBUG {
 			fmt.Printf("deepSearch: %s deep:%d, err:%s\n", players[p.player], deep, err)
