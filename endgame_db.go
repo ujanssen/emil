@@ -137,20 +137,51 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 
 	player := playerForStepN(dtm)
 
-	if DEBUG {
-		fmt.Printf("Start positions %d\n", len(db.dtmDb[dtm-1]))
-	}
-	for str := range db.dtmDb[dtm-1] {
-		a := db.positionDb[str]
-		p := NewPosition(a.board, player)
-		list := generateMoves(p)
-		moves := filterKingCaptures(p, list)
-		moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
-		for _, m := range moves {
-			newBoard := a.board.doMove(m)
-			newAnalysis, ok := db.positionDb[newBoard.String()]
-			if ok && !newAnalysis.analysisDone {
-				db.addAnalysis(newBoard, dtm, m)
+	if player == WHITE {
+		if DEBUG {
+			fmt.Printf("WHITE Start positions %d\n", len(db.dtmDb[dtm-1]))
+		}
+		for str := range db.dtmDb[dtm-1] {
+			a := db.positionDb[str]
+			p := NewPosition(a.board, player)
+			list := generateMoves(p)
+			moves := filterKingCaptures(p, list)
+			moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
+			for _, m := range moves {
+				newBoard := a.board.doMove(m)
+				newAnalysis, ok := db.positionDb[newBoard.String()]
+				if ok && !newAnalysis.analysisDone {
+					db.addAnalysis(newBoard, dtm, m)
+				}
+			}
+		}
+	} else {
+		// Suche alle Stellungen, bei denen Schwarz am Zug ist und
+		// **jeder** Zug von ihm zu einer Stellung unter 2. führt.
+		// Schwarz kann hier Matt in einem Zug nicht verhindern.
+		// Markiere diese Stellungen in der Datei.
+		if DEBUG {
+			fmt.Printf("BLACK Start positions %d\n", len(db.positionDb))
+		}
+		for _, a := range db.positionDb {
+			p := NewPosition(a.board, player)
+			list := generateMoves(p)
+			moves := filterKingCaptures(p, list)
+			moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
+
+			found := 0
+			for _, m := range moves {
+				newBoard := a.board.doMove(m)
+				_, ok := db.dtmDb[dtm-1][newBoard.String()]
+				if ok {
+					found++
+				}
+			}
+			if found == len(moves) {
+				for _, m := range moves {
+					newBoard := a.board.doMove(m)
+					db.addAnalysis(newBoard, dtm, m)
+				}
 			}
 		}
 	}
