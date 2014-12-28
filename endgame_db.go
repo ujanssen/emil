@@ -142,8 +142,8 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 		a := db.positionDb[str]
 		p := newPosition(a.board, player)
 		list := generateMoves(p)
-		moves := filterKingCaptures(a.board, player, list)
-		moves = filterKingCaptures(a.board, otherPlayer(player), list)
+		moves := filterKingCaptures(p, list)
+		moves = filterKingCaptures(newPosition(a.board, otherPlayer(player)), list)
 		for _, m := range moves {
 			newBoard := a.board.doMove(m)
 			newAnalysis, ok := db.positionDb[newBoard.String()]
