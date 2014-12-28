@@ -13,6 +13,8 @@ type Board struct {
 	squares   []int
 	whiteKing int
 	blackKing int
+
+	str string
 }
 
 // NewBoard creates a new Board
@@ -20,6 +22,9 @@ func NewBoard() *Board {
 	return &Board{squares: make([]int, SQUARES)}
 }
 func (b *Board) String() string {
+	if len(b.str) > 0 {
+		return b.str
+	}
 	files := "a b c d e f g h "
 	s := "  " + files + " \n"
 	for _, r := range FirstSquares {
@@ -30,6 +35,7 @@ func (b *Board) String() string {
 		s += fmt.Sprintf("%d\n", BoardSquares[r].rank)
 	}
 	s += "  " + files + " \n"
+	b.str = s
 	return s
 }
 

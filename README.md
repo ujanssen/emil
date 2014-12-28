@@ -31,3 +31,4 @@ So we need:
 	$ go test
 	PASS
 	ok  	github.com/ujanssen/emil	171.641s
+	ok  	github.com/ujanssen/emil	168.514s
