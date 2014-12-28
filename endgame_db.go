@@ -95,9 +95,9 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 			continue
 		}
 
-		p := newPosition(a.board, player)
+		p := NewPosition(a.board, player)
 
-		move := Search(a.board, player)
+		move := Search(p)
 		db.searchedPositions++
 		if move == nil {
 			if isKingInCheck(p) {
@@ -142,10 +142,10 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 	}
 	for str := range db.dtmDb[dtm-1] {
 		a := db.positionDb[str]
-		p := newPosition(a.board, player)
+		p := NewPosition(a.board, player)
 		list := generateMoves(p)
 		moves := filterKingCaptures(p, list)
-		moves = filterKingCaptures(newPosition(a.board, otherPlayer(player)), list)
+		moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
 		for _, m := range moves {
 			newBoard := a.board.doMove(m)
 			newAnalysis, ok := db.positionDb[newBoard.String()]

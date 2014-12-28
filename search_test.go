@@ -22,9 +22,10 @@ func TestForTheOnlyBlackMove(t *testing.T) {
 	board.Setup(emil.WhiteKing, emil.F6)
 	board.Setup(emil.BlackKing, emil.G8)
 	board.Setup(emil.WhiteRock, emil.B8)
+	p := emil.NewPosition(board, emil.BLACK)
 
 	want := "kg8h7"
-	got := emil.Search(board, emil.BLACK).String()
+	got := emil.Search(p).String()
 	if got != want {
 		t.Errorf("the moves should be %s, got %s", want, got)
 	}
@@ -47,9 +48,10 @@ func TestNoBlackMove(t *testing.T) {
 	board.Setup(emil.WhiteKing, emil.E6)
 	board.Setup(emil.BlackKing, emil.E8)
 	board.Setup(emil.WhiteRock, emil.H8)
+	p := emil.NewPosition(board, emil.BLACK)
 
 	var want *emil.Move
-	got := emil.Search(board, emil.BLACK)
+	got := emil.Search(p)
 	if got != want {
 		t.Errorf("the moves should be %s, got %s", want, got)
 	}
@@ -73,9 +75,10 @@ func TestRockCapture(t *testing.T) {
 	board.Setup(emil.BlackKing, emil.G8)
 	board.Setup(emil.WhiteRock, emil.B1)
 	board.Setup(emil.BlackRock, emil.A1)
+	p := emil.NewPosition(board, emil.WHITE)
 
 	want := "Rb1xa1"
-	got := emil.Search(board, emil.WHITE).String()
+	got := emil.Search(p).String()
 	if got != want {
 		t.Errorf("the moves should be %s, got %s", want, got)
 	}

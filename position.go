@@ -5,7 +5,7 @@ type position struct {
 	player int
 }
 
-func newPosition(board *Board, player int) *position {
+func NewPosition(board *Board, player int) *position {
 	return &position{
 		board:  board,
 		player: player}
