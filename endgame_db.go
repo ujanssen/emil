@@ -35,12 +35,16 @@ func (db *EndGameDb) Find(board *Board) (bestMove *Move) {
 	}
 	return a.move
 }
-func (db *EndGameDb) FindMates() (boards []*Board) {
-	for str := range db.dtmDb[0] {
+func (db *EndGameDb) FindMatesIn(dtm int) (boards []*Board) {
+	for str := range db.dtmDb[dtm] {
 		a := db.positionDb[str]
 		boards = append(boards, a.board)
 	}
 	return boards
+}
+
+func (db *EndGameDb) FindMates() (boards []*Board) {
+	return db.FindMatesIn(0)
 }
 
 func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
@@ -138,20 +142,39 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 	player := playerForStepN(dtm)
 
 	if player == WHITE {
-		if DEBUG {
-			fmt.Printf("WHITE Start positions %d\n", len(db.dtmDb[dtm-1]))
-		}
-		for str := range db.dtmDb[dtm-1] {
-			a := db.positionDb[str]
-			p := NewPosition(a.board, player)
-			list := generateMoves(p)
-			moves := filterKingCaptures(p, list)
-			moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
-			for _, m := range moves {
-				newBoard := a.board.doMove(m)
-				newAnalysis, ok := db.positionDb[newBoard.String()]
-				if ok && !newAnalysis.analysisDone {
-					db.addAnalysis(newBoard, dtm, m)
+		if dtm == 1 {
+			if DEBUG {
+				fmt.Printf("WHITE Start positions %d\n", len(db.dtmDb[dtm-1]))
+			}
+			for str := range db.dtmDb[dtm-1] {
+				a := db.positionDb[str]
+				p := NewPosition(a.board, player)
+				list := generateMoves(p)
+				moves := filterKingCaptures(p, list)
+				moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
+				for _, m := range moves {
+					newBoard := a.board.doMove(m)
+					newAnalysis, ok := db.positionDb[newBoard.String()]
+					if ok && !newAnalysis.analysisDone {
+						db.addAnalysis(newBoard, dtm, m)
+					}
+				}
+			}
+		} else {
+			if DEBUG {
+				fmt.Printf("WHITE Start positions %d\n", len(db.positionDb))
+			}
+			for _, a := range db.positionDb {
+				p := NewPosition(a.board, player)
+				list := generateMoves(p)
+				moves := filterKingCaptures(p, list)
+				moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
+
+				for _, m := range moves {
+					newBoard := a.board.doMove(m)
+					if db.isMateForWhite(newBoard, dtm) {
+						db.addAnalysis(newBoard, dtm, m)
+					}
 				}
 			}
 		}
@@ -205,12 +228,24 @@ func (db *EndGameDb) isMateForBlack(board *Board, maxDtm int) bool {
 	}
 	return false
 }
+func (db *EndGameDb) isMateForWhite(board *Board, maxDtm int) bool {
+	for dtm := 1; dtm < maxDtm; dtm += 2 {
+		_, ok := db.dtmDb[dtm][board.String()]
+		if ok {
+			return true
+		}
+	}
+	return false
+}
 
 func (db *EndGameDb) retrogradeAnalysis() {
 	// find positions where black is checkmate
 	db.retrogradeAnalysisStep1()
 	dtm := 1
 	for {
+		if dtm == 3 {
+			break
+		}
 		err := db.retrogradeAnalysisStepN(dtm)
 		if err != nil {
 			break
