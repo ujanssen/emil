@@ -57,8 +57,8 @@ func isKingInCheck(p *position) (kingInCheck bool) {
 func filterKingCaptures(p *position, list []*Move) (result []*Move) {
 	for _, m := range list {
 		newBoard := p.board.doMove(m)
-		newPos := NewPosition(newBoard, p.player)
-		if !isKingInCheck(newPos) {
+		newPosition := NewPosition(newBoard, p.player)
+		if !isKingInCheck(newPosition) {
 			result = append(result, m)
 		}
 	}
@@ -67,55 +67,56 @@ func filterKingCaptures(p *position, list []*Move) (result []*Move) {
 
 //Search best move for player on board
 func Search(p *position) (bestMove *Move) {
-	bestMove, _ = deepSearch(p.board, p.player, 0, 1)
+	bestMove, _ = deepSearch(p, 0, 1)
 	return bestMove
 }
 
 //Search best move for player on board
-func deepSearch(b *Board, player, deep, maxDeep int) (bestMove *Move, bestScore int) {
-	if player == WHITE {
+func deepSearch(p *position, deep, maxDeep int) (bestMove *Move, bestScore int) {
+	if p.player == WHITE {
 		bestScore = 2 * BlackKing
 	} else {
 		bestScore = 2 * WhiteKing
 	}
 
 	if deep == maxDeep {
-		score := evaluate(b)
+		score := evaluate(p.board)
 		if DEBUG {
-			fmt.Printf("deepSearch: %s deep:%d maxDeep Score %d\n", players[player], deep, score)
+			fmt.Printf("deepSearch: %s deep:%d maxDeep Score %d\n", players[p.player], deep, score)
 		}
 		return nil, score
 	}
 
-	list, err := generateMoveList(b, player)
+	list, err := generateMoveList(p.board, p.player)
 	if err != nil {
 		if DEBUG {
-			fmt.Printf("deepSearch: %s deep:%d, err:%s\n", players[player], deep, err)
+			fmt.Printf("deepSearch: %s deep:%d, err:%s\n", players[p.player], deep, err)
 		}
 		return nil, 0
 	}
-	p := NewPosition(b, player)
 	result := filterKingCaptures(p, list)
 
 	if DEBUG {
-		fmt.Printf("deepSearch: %s deep:%d, moves:%s\n", players[player], deep, moveList(result))
+		fmt.Printf("deepSearch: %s deep:%d, moves:%s\n", players[p.player], deep, moveList(result))
 	}
 
 	for i, m := range result {
 		if DEBUG {
-			fmt.Printf("deepSearch: %s deep:%d, move[%d/%d]: %s\n", players[player], deep, i+1, len(result), m)
+			fmt.Printf("deepSearch: %s deep:%d, move[%d/%d]: %s\n", players[p.player], deep, i+1, len(result), m)
 		}
-		newBoard := b.doMove(m)
-		_, score := deepSearch(newBoard, otherPlayer(player), deep+1, maxDeep)
+		newBoard := p.board.doMove(m)
+		newPosition := NewPosition(newBoard, otherPlayer(p.player))
 
-		if (player == WHITE && score > bestScore) || (player == BLACK && score < bestScore) {
+		_, score := deepSearch(newPosition, deep+1, maxDeep)
+
+		if (p.player == WHITE && score > bestScore) || (p.player == BLACK && score < bestScore) {
 			bestScore = score
 			bestMove = m
 		}
 	}
 	if DEBUG {
 		fmt.Printf("deepSearch: %s deep:%d, bestMove %s, bestScore %d\n",
-			players[player], deep, bestMove, bestScore)
+			players[p.player], deep, bestMove, bestScore)
 	}
 	return bestMove, bestScore
 }
