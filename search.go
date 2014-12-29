@@ -7,7 +7,7 @@ import (
 
 var errKingCapture = errors.New("king capture")
 
-func generateMoveList(p *position) (list []*Move, err error) {
+func generateMoveListWe(p *position) (list []*Move, err error) {
 	var empty []*Move
 	for src, piece := range p.board.squares {
 		if isOwnPiece(p.player, piece) {
@@ -46,9 +46,17 @@ func generateMoveList(p *position) (list []*Move, err error) {
 	}
 	return list, err
 }
+func IsTheKingInCheck(p *position) (kingInCheck bool) {
+	_, kingCaptured := generateMoveListWe(p)
+	if kingCaptured != nil {
+		return true
+	}
+	return false
+}
+
 func isKingInCheck(p *position) (kingInCheck bool) {
 	newPosition := NewPosition(p.board, otherPlayer(p.player))
-	_, kingCaptured := generateMoveList(newPosition)
+	_, kingCaptured := generateMoveListWe(newPosition)
 	if kingCaptured != nil {
 		return true
 	}
@@ -88,7 +96,7 @@ func deepSearch(p *position, deep, maxDeep int) (bestMove *Move, bestScore int) 
 		return nil, score
 	}
 
-	list, err := generateMoveList(p)
+	list, err := generateMoveListWe(p)
 	if err != nil {
 		if DEBUG {
 			fmt.Printf("deepSearch: %s deep:%d, err:%s\n", players[p.player], deep, err)

@@ -10,14 +10,17 @@ func main() {
 
 	fmt.Printf("A chess board\n")
 	board := emil.NewBoard()
-	board.Setup(emil.WhiteKing, emil.F6)
-	board.Setup(emil.BlackKing, emil.G8)
-	board.Setup(emil.WhiteRock, emil.B1)
-	board.Setup(emil.BlackRock, emil.A1)
-	fmt.Printf("\n")
-	fmt.Printf("%s\n", board)
+	board.Setup(emil.WhiteKing, emil.B5)
+	board.Setup(emil.WhiteRock, emil.H7)
 
-	move := emil.Search(board, emil.WHITE)
+	board.Setup(emil.BlackKing, emil.B8)
 
-	fmt.Printf("white: %s\n", move)
+	moves := emil.GenerateMoves(emil.NewPosition(board, emil.BLACK))
+
+	fmt.Printf("black:%s\n%s\n", board, moves)
+
+	for _, m := range moves {
+		b := board.DoMove(m)
+		fmt.Printf("black:%s=%v\n%s\n", m, emil.IsTheKingInCheck(emil.NewPosition(b, emil.WHITE)), b)
+	}
 }

@@ -169,18 +169,22 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 				continue
 			}
 			p := NewPosition(a.board, player)
-			list := generateMoves(p)
-			moves := filterKingCaptures(p, list)
-			moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
+			moves := GenerateMoves(p)
 
 			found := 0
 			for _, m := range moves {
 				newBoard := a.board.doMove(m)
 				if db.isMateIn1357(newBoard, dtm) {
 					found++
+					// if dtm == 4 {
+					// 	fmt.Printf("BLACK mate in 3 with %s\n%s\n", m, a.board)
+					// }
 				}
 			}
 
+			// if dtm == 4 {
+			// 	fmt.Printf("BLACK len=%d, found=%d\n", len(moves), found)
+			// }
 			if found == len(moves) {
 				for _, m := range moves {
 					db.addAnalysis(a.board, dtm, m)
@@ -234,7 +238,15 @@ func (db *EndGameDb) retrogradeAnalysis() {
 		dtm++
 	}
 }
-
+func GenerateMoves(p *position) (list []*Move) {
+	for _, m := range generateMoves(p) {
+		b := p.board.DoMove(m)
+		if !IsTheKingInCheck(NewPosition(b, WHITE)) {
+			list = append(list, m)
+		}
+	}
+	return list
+}
 func generateMoves(p *position) (list []*Move) {
 	for src, piece := range p.board.squares {
 		if isOwnPiece(p.player, piece) {
