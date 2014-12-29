@@ -142,40 +142,19 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 	player := playerForStepN(dtm)
 
 	if player == WHITE {
-		if dtm == 1 {
-			if DEBUG {
-				fmt.Printf("WHITE Start positions %d\n", len(db.dtmDb[dtm-1]))
-			}
-			for str := range db.dtmDb[dtm-1] {
-				a := db.positionDb[str]
-				p := NewPosition(a.board, player)
-				list := generateMoves(p)
-				moves := filterKingCaptures(p, list)
-				moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
-				for _, m := range moves {
-					newBoard := a.board.doMove(m)
-					newAnalysis, ok := db.positionDb[newBoard.String()]
-					if ok && !newAnalysis.analysisDone {
-						db.addAnalysis(newBoard, dtm, m)
-					}
-				}
-			}
-		} else {
-			if DEBUG {
-				fmt.Printf("WHITE Start positions %d\n", len(db.positionDb))
-			}
-			for _, a := range db.positionDb {
-				p := NewPosition(a.board, player)
-				list := generateMoves(p)
-				moves := filterKingCaptures(p, list)
-				moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
+		if DEBUG {
+			fmt.Printf("WHITE Start positions %d\n", len(db.positionDb))
+		}
+		for str := range db.dtmDb[dtm-1] {
+			a := db.positionDb[str]
+			p := NewPosition(a.board, player)
+			list := generateMoves(p)
+			moves := filterKingCaptures(p, list)
+			moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
 
-				for _, m := range moves {
-					newBoard := a.board.doMove(m)
-					if db.isMateForWhite(newBoard, dtm) {
-						db.addAnalysis(newBoard, dtm, m)
-					}
-				}
+			for _, m := range moves {
+				newBoard := a.board.doMove(m)
+				db.addAnalysis(newBoard, dtm, m)
 			}
 		}
 	} else {
@@ -202,7 +181,10 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 			if found == len(moves) {
 				for _, m := range moves {
 					newBoard := a.board.doMove(m)
-					db.addAnalysis(newBoard, dtm, m)
+					newAnalysis, ok := db.positionDb[newBoard.String()]
+					if ok && !newAnalysis.analysisDone {
+						db.addAnalysis(newBoard, dtm, m)
+					}
 				}
 			}
 		}
@@ -219,7 +201,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 	}
 	return noError
 }
-func (db *EndGameDb) isMateForBlack(board *Board, maxDtm int) bool {
+func (db *EndGameDb) isMateForWhite(board *Board, maxDtm int) bool {
 	for dtm := 0; dtm < maxDtm; dtm += 2 {
 		_, ok := db.dtmDb[dtm][board.String()]
 		if ok {
@@ -228,7 +210,7 @@ func (db *EndGameDb) isMateForBlack(board *Board, maxDtm int) bool {
 	}
 	return false
 }
-func (db *EndGameDb) isMateForWhite(board *Board, maxDtm int) bool {
+func (db *EndGameDb) isMateForBlack(board *Board, maxDtm int) bool {
 	for dtm := 1; dtm < maxDtm; dtm += 2 {
 		_, ok := db.dtmDb[dtm][board.String()]
 		if ok {
