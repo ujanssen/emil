@@ -9,8 +9,7 @@ import (
 var errNowNewAnalysis = errors.New("errNowNewAnalysis")
 
 type analysis struct {
-	analysisDone bool
-	dtm          int // Depth to mate
+	dtm int // Depth to mate
 
 	board *Board
 	move  *Move
@@ -68,11 +67,9 @@ func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
 	if move != nil {
 		a.move = move.reverse()
 	}
-	done := dtm >= 0
-	if done {
+	if dtm >= 0 {
 		db.dtmDb[dtm][a.board.String()] = true
 	}
-	a.analysisDone = done
 
 	db.positionDb[a.board.String()] = a
 }
@@ -166,6 +163,9 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 			fmt.Printf("BLACK Start positions %d\n", len(db.positionDb))
 		}
 		for _, a := range db.positionDb {
+			if db.isMateIn0246(a.board, dtm) {
+				continue
+			}
 			p := NewPosition(a.board, player)
 			list := generateMoves(p)
 			moves := filterKingCaptures(p, list)
@@ -174,17 +174,14 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 			found := 0
 			for _, m := range moves {
 				newBoard := a.board.doMove(m)
-				if db.isMateForBlack(newBoard, dtm) {
+				if db.isMateIn1357(newBoard, dtm) {
 					found++
 				}
 			}
+
 			if found == len(moves) {
 				for _, m := range moves {
-					newBoard := a.board.doMove(m)
-					newAnalysis, ok := db.positionDb[newBoard.String()]
-					if ok && !newAnalysis.analysisDone {
-						db.addAnalysis(newBoard, dtm, m)
-					}
+					db.addAnalysis(a.board, dtm, m)
 				}
 			}
 		}
@@ -201,7 +198,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 	}
 	return noError
 }
-func (db *EndGameDb) isMateForWhite(board *Board, maxDtm int) bool {
+func (db *EndGameDb) isMateIn0246(board *Board, maxDtm int) bool {
 	for dtm := 0; dtm < maxDtm; dtm += 2 {
 		_, ok := db.dtmDb[dtm][board.String()]
 		if ok {
@@ -210,7 +207,7 @@ func (db *EndGameDb) isMateForWhite(board *Board, maxDtm int) bool {
 	}
 	return false
 }
-func (db *EndGameDb) isMateForBlack(board *Board, maxDtm int) bool {
+func (db *EndGameDb) isMateIn1357(board *Board, maxDtm int) bool {
 	for dtm := 1; dtm < maxDtm; dtm += 2 {
 		_, ok := db.dtmDb[dtm][board.String()]
 		if ok {

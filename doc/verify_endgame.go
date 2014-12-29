@@ -9,21 +9,15 @@ func main() {
 	emil.DEBUG = true
 
 	db := emil.NewEndGameDb()
-	/*
-		fmt.Println("db.FindMate(emil.BlackKing, emil.A8")
-		boards := db.FindMate(emil.BlackKing, emil.A8)
+
+	for dtm := 0; dtm <= 2; dtm++ {
+		fmt.Println("db.FindMatesIn", dtm)
+		boards := db.FindMatesIn(dtm)
 		fmt.Printf("found %d boards\n\n", len(boards))
-		for _, b := range boards {
-			fmt.Printf("%s\n\n", b)
+
+		for i, b := range boards {
+			fmt.Printf("%d\n%s\n\n", i+1, b)
 		}
-		fmt.Println("---------------\n\n")
-	*/
-	fmt.Println("db.FindMatesIn1")
-
-	boards := db.FindMatesIn(1)
-	fmt.Printf("found %d boards\n\n", len(boards))
-
-	for i, b := range boards {
-		fmt.Printf("%d\n%s\n\n", i+1, b)
+		fmt.Printf("\n\n\n")
 	}
 }
