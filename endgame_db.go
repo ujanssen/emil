@@ -35,9 +35,17 @@ func (db *EndGameDb) Find(board *Board) (bestMove *Move) {
 	return a.move
 }
 func (db *EndGameDb) FindMatesIn(dtm int) (boards []*Board) {
-	for str := range db.dtmDb[dtm] {
-		a := db.positionDb[str]
-		boards = append(boards, a.board)
+	if dtm == -1 {
+		for _, a := range db.positionDb {
+			if a.dtm == -1 {
+				boards = append(boards, a.board)
+			}
+		}
+	} else {
+		for str := range db.dtmDb[dtm] {
+			a := db.positionDb[str]
+			boards = append(boards, a.board)
+		}
 	}
 	return boards
 }
