@@ -151,7 +151,9 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 
 			for _, m := range moves {
 				newBoard := a.board.doMove(m)
-				db.addAnalysis(newBoard, dtm, m)
+				if !db.isMateIn1357(newBoard, dtm) {
+					db.addAnalysis(newBoard, dtm, m)
+				}
 			}
 		}
 	} else {
@@ -222,7 +224,7 @@ func (db *EndGameDb) retrogradeAnalysis() {
 	db.retrogradeAnalysisStep1()
 	dtm := 1
 	for {
-		if dtm == 3 {
+		if dtm == 5 {
 			break
 		}
 		err := db.retrogradeAnalysisStepN(dtm)

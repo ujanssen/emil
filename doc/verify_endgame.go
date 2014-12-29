@@ -10,14 +10,18 @@ func main() {
 
 	db := emil.NewEndGameDb()
 
-	for dtm := 0; dtm <= 2; dtm++ {
+	for dtm := 0; dtm <= 4; dtm++ {
 		fmt.Println("db.FindMatesIn", dtm)
 		boards := db.FindMatesIn(dtm)
-		fmt.Printf("found %d boards\n\n", len(boards))
 
 		for i, b := range boards {
 			fmt.Printf("%d\n%s\n\n", i+1, b)
 		}
 		fmt.Printf("\n\n\n")
+	}
+
+	for dtm := 0; dtm <= 4; dtm++ {
+		boards := db.FindMatesIn(dtm)
+		fmt.Printf("db.FindMatesIn %d: %d boards\n\n", dtm, len(boards))
 	}
 }
