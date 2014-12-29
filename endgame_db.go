@@ -140,7 +140,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 
 	if player == WHITE {
 		if DEBUG {
-			fmt.Printf("WHITE Start positions %d\n", len(db.positionDb))
+			fmt.Printf("WHITE Start positions %d\n", len(db.dtmDb[dtm-1]))
 		}
 		for str := range db.dtmDb[dtm-1] {
 			a := db.positionDb[str]
@@ -161,8 +161,14 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 		// **jeder** Zug von ihm zu einer Stellung unter 2. führt.
 		// Schwarz kann hier Matt in einem Zug nicht verhindern.
 		// Markiere diese Stellungen in der Datei.
+		positions := 0
+		for _, a := range db.positionDb {
+			if db.isMateIn0246(a.board, dtm) {
+				positions++
+			}
+		}
 		if DEBUG {
-			fmt.Printf("BLACK Start positions %d\n", len(db.positionDb))
+			fmt.Printf("BLACK Start positions %d\n", len(db.positionDb)-positions)
 		}
 		for _, a := range db.positionDb {
 			if db.isMateIn0246(a.board, dtm) {
@@ -223,14 +229,15 @@ func (db *EndGameDb) isMateIn1357(board *Board, maxDtm int) bool {
 	return false
 }
 
+func (db *EndGameDb) MaxDtm() int {
+	return len(db.dtmDb)
+}
+
 func (db *EndGameDb) retrogradeAnalysis() {
 	// find positions where black is checkmate
 	db.retrogradeAnalysisStep1()
 	dtm := 1
 	for {
-		if dtm == 5 {
-			break
-		}
 		err := db.retrogradeAnalysisStepN(dtm)
 		if err != nil {
 			break
