@@ -153,29 +153,20 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 
 	positions := 0
 	if player == WHITE {
-		for _, a := range db.positionDb {
-			if db.isMateIn1357(a.board, dtm) >= 0 {
-				positions++
-			}
-		}
 		if DEBUG {
-			fmt.Printf("WHITE Start positions %d\n", len(db.positionDb)-positions)
+			fmt.Printf("WHITE Start positions %d\n", len(db.dtmDb[dtm-1]))
 		}
-		for _, a := range db.positionDb {
-			if db.isMateIn1357(a.board, dtm) >= 0 {
-				continue
-			}
+		for str := range db.dtmDb[dtm-1] {
+			a := db.positionDb[str]
 			p := NewPosition(a.board, player)
-			if IsTheKingInCheck(p) {
-				continue
-			}
-			moves := generateMoves(p)
+			list := generateMoves(p)
+			moves := filterKingCaptures(p, list)
+			moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
 
 			for _, m := range moves {
 				newBoard := a.board.doMove(m)
-				newDtm := db.isMateIn0246(newBoard, dtm)
-				if newDtm == dtm-1 {
-					db.addAnalysis(a.board, dtm, m)
+				if db.isMateIn1357(newBoard, dtm) < 0 {
+					db.addAnalysis(newBoard, dtm, m)
 				}
 			}
 		}
