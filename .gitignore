@@ -24,4 +24,4 @@ _testmain.go
 *.prof
 cpu.profile
 profile_endgame_db
-log
+log*
