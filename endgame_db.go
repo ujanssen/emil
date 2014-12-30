@@ -8,15 +8,22 @@ import (
 
 var errNowNewAnalysis = errors.New("errNowNewAnalysis")
 
-type Analysis struct {
-	dtm int // Depth to mate
-
-	board *Board
-	move  *Move
+type DTM struct {
+	dtm  int // Depth to mate
+	move *Move
 }
 
-func (a *Analysis) Move() *Move {
-	return a.move
+type Analysis struct {
+	board     *Board
+	dtmWhite  []*DTM
+	dtmWBlack []*DTM
+}
+
+func (a *Analysis) DTMs(player int) []*DTM {
+	if player == WHITE {
+		return a.dtmWhite
+	}
+	return a.dtmWBlack
 }
 func (a *Analysis) Board() *Board {
 	return a.board
@@ -35,7 +42,7 @@ func (db *EndGameDb) Find(board *Board) (bestMove *Move) {
 	}
 	a := db.positionDb[board.String()]
 	if DEBUG {
-		fmt.Printf("Found: positionDb with dtm %d\n", a.dtm)
+		fmt.Printf("Found: positionDb with dtms %v\n", a.dtms)
 	}
 	return a.move
 }
