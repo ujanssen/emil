@@ -25,6 +25,10 @@ func (a *Analysis) DTMs(player int) []*DTM {
 	}
 	return a.dtmWBlack
 }
+func (a *Analysis) addDTM(move *Move, dtm int) {
+	dtms := a.DTMs(move.player)
+	dtms = append(dtms, &DTM{move: move, dtm: dtm})
+}
 
 func (a *Analysis) BestMove(player int) (bestMove *Move) {
 	dtms := a.DTMs(player)
@@ -102,7 +106,7 @@ func (db *EndGameDb) addPosition(board *Board) {
 func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
 	a := db.positionDb[board.String()]
 	if move != nil {
-		a.move = move.reverse()
+		a.addDTM(move.reverse(), dtm)
 	}
 	if dtm >= 0 {
 		a.dtm = dtm
