@@ -180,10 +180,6 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 			}
 		}
 	} else {
-		// Suche alle Stellungen, bei denen Schwarz am Zug ist und
-		// **jeder** Zug von ihm zu einer Stellung unter 2. führt.
-		// Schwarz kann hier Matt in einem Zug nicht verhindern.
-		// Markiere diese Stellungen in der Datei.
 		for _, a := range db.positionDb {
 			if db.isMateIn0246(a.board, dtm) >= 0 {
 				positions++
