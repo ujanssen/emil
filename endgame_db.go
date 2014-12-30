@@ -13,6 +13,10 @@ type DTM struct {
 	move *Move
 }
 
+func (d *DTM) String() string {
+	return fmt.Sprintf("%d/%s", d.dtm, d.move)
+}
+
 type Analysis struct {
 	board     *Board
 	dtmWhite  []*DTM
@@ -115,10 +119,8 @@ func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
 				panic("playerForStep != move.player")
 			}
 		}
-
 		db.dtmDb[dtm][board.String()] = true
 	}
-
 }
 
 func (db *EndGameDb) positions() int {
@@ -148,7 +150,6 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 		move := Search(p)
 		if move == nil {
 			if isKingInCheck(p) {
-				a.dtm = 0
 				db.addAnalysis(a.board, 0, nil)
 				if DEBUG {
 					fmt.Printf("mate:\n%s\n", boardStr)

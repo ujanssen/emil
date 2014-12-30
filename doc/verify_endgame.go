@@ -18,7 +18,7 @@ func main() {
 		as := db.FindMatesIn(dtm)
 
 		for i, a := range as {
-			fmt.Printf("%d %s\n%s\n\n", i+1, a.Move(), a.Board())
+			fmt.Printf("%d %s\n%s\n\n", i+1, a.DTMs(playerForStepN(dtm)), a.Board())
 		}
 		fmt.Printf("\n\n\n")
 	}
@@ -29,4 +29,11 @@ func main() {
 	}
 
 	fmt.Printf("\n\n\nduration %v\n\n\n", end.Sub(start))
+}
+
+func playerForStepN(dtm int) (player int) {
+	if dtm%2 == 0 {
+		return emil.BLACK
+	}
+	return emil.WHITE
 }
