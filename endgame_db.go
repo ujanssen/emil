@@ -165,10 +165,10 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 			if db.isMateIn1357(a.board, dtm) >= 0 {
 				continue
 			}
-			if IsTheKingInCheck(NewPosition(a.board, WHITE)) {
+			p := NewPosition(a.board, player)
+			if IsTheKingInCheck(p) {
 				continue
 			}
-			p := NewPosition(a.board, player)
 			moves := generateMoves(p)
 
 			for _, m := range moves {
