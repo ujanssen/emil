@@ -59,12 +59,13 @@ func (db *EndGameDb) Find(p *position) (bestMove *Move) {
 	if DEBUG {
 		fmt.Printf("Found: positionDb with dtms %v\n", a.DTMs(p.player))
 	}
-	return a.move
+	return a.BestMove(p.player)
 }
+
 func (db *EndGameDb) FindMatesIn(dtm int) (as []*Analysis) {
 	if dtm == -1 {
 		for _, a := range db.positionDb {
-			if a.dtm == -1 {
+			if a.BestMove(WHITE) == nil && a.BestMove(BLACK) == nil {
 				as = append(as, a)
 			}
 		}
