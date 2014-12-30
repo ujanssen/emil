@@ -27,8 +27,6 @@ type EndGameDb struct {
 	positionDb map[string]*Analysis
 
 	dtmDb []map[string]bool
-
-	searchedPositions int
 }
 
 func (db *EndGameDb) Find(board *Board) (bestMove *Move) {
@@ -121,7 +119,6 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 		p := NewPosition(a.board, player)
 
 		move := Search(p)
-		db.searchedPositions++
 		if move == nil {
 			if isKingInCheck(p) {
 				a.dtm = 0
@@ -134,7 +131,6 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 	}
 	end := time.Now()
 	if DEBUG {
-		fmt.Printf("searchedPositions %d\n", db.searchedPositions)
 		fmt.Printf("db.dtmDb[0] %d\n", len(db.dtmDb[0]))
 		fmt.Printf("duration %v\n\n\n", end.Sub(start))
 	}
