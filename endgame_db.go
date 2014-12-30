@@ -71,13 +71,14 @@ func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
 }
 
 func (db *EndGameDb) addPosition(board *Board) {
-	db.addAnalysis(board, -1, nil)
+	a := &Analysis{
+		dtm:   -1,
+		board: board}
+	db.positionDb[a.board.String()] = a
 }
 
 func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
-	a := &Analysis{
-		dtm:   dtm,
-		board: board}
+	a := db.positionDb[board.String()]
 	if move != nil {
 		a.move = move.reverse()
 	}
@@ -89,10 +90,9 @@ func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
 			}
 		}
 
-		db.dtmDb[dtm][a.board.String()] = true
+		db.dtmDb[dtm][board.String()] = true
 	}
 
-	db.positionDb[a.board.String()] = a
 }
 
 func (db *EndGameDb) positions() int {
