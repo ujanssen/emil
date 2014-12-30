@@ -83,6 +83,7 @@ func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
 		a.move = move.reverse()
 	}
 	if dtm >= 0 {
+		a.dtm = dtm
 		if move != nil {
 			playerForStep := playerForStepN(dtm)
 			if playerForStep != move.player {
