@@ -25,6 +25,21 @@ func (a *Analysis) DTMs(player int) []*DTM {
 	}
 	return a.dtmWBlack
 }
+
+func (a *Analysis) BestMove(player int) (bestMove *Move) {
+	dtms := a.DTMs(player)
+	minDTM := 9999
+
+	// white minimizes DTM
+	for _, d := range dtms {
+		if d.dtm < minDTM {
+			minDTM = d.dtm
+			bestMove = d.move
+		}
+	}
+	return bestMove
+}
+
 func (a *Analysis) Board() *Board {
 	return a.board
 }
@@ -40,9 +55,9 @@ func (db *EndGameDb) Find(p *position) (bestMove *Move) {
 	if DEBUG {
 		fmt.Printf("Find:\n%s\n", p.board)
 	}
-	a := db.positionDb[board.String()]
+	a := db.positionDb[p.board.String()]
 	if DEBUG {
-		fmt.Printf("Found: positionDb with dtms %v\n", a.DTMs())
+		fmt.Printf("Found: positionDb with dtms %v\n", a.DTMs(p.player))
 	}
 	return a.move
 }
