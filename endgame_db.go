@@ -36,13 +36,13 @@ type EndGameDb struct {
 	dtmDb []map[string]bool
 }
 
-func (db *EndGameDb) Find(board *Board) (bestMove *Move) {
+func (db *EndGameDb) Find(p *position) (bestMove *Move) {
 	if DEBUG {
-		fmt.Printf("Find:\n%s\n", board.String())
+		fmt.Printf("Find:\n%s\n", p.board)
 	}
 	a := db.positionDb[board.String()]
 	if DEBUG {
-		fmt.Printf("Found: positionDb with dtms %v\n", a.dtms)
+		fmt.Printf("Found: positionDb with dtms %v\n", a.DTMs())
 	}
 	return a.move
 }
