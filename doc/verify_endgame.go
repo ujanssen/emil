@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	emil.DEBUG = false
+	emil.DEBUG = true
 
 	start := time.Now()
 	db := emil.NewEndGameDb()
@@ -15,17 +15,17 @@ func main() {
 
 	for dtm := -1; dtm < db.MaxDtm(); dtm++ {
 		fmt.Println("db.FindMatesIn", dtm)
-		boards := db.FindMatesIn(dtm)
+		as := db.FindMatesIn(dtm)
 
-		for i, b := range boards {
-			fmt.Printf("%d\n%s\n\n", i+1, b)
+		for i, a := range as {
+			fmt.Printf("%d %s\n%s\n\n", i+1, a.Move(), a.Board())
 		}
 		fmt.Printf("\n\n\n")
 	}
 
 	for dtm := -1; dtm < db.MaxDtm(); dtm++ {
-		boards := db.FindMatesIn(dtm)
-		fmt.Printf("db.FindMatesIn %d: %d boards\n", dtm, len(boards))
+		as := db.FindMatesIn(dtm)
+		fmt.Printf("db.FindMatesIn %d: %d boards\n", dtm, len(as))
 	}
 
 	fmt.Printf("\n\n\nduration %v\n\n\n", end.Sub(start))
