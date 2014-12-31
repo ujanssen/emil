@@ -271,6 +271,9 @@ func (db *EndGameDb) retrogradeAnalysis() {
 	db.retrogradeAnalysisStep1()
 	dtm := 1
 	for {
+		if dtm == 2 {
+			return
+		}
 		err := db.retrogradeAnalysisStepN(dtm)
 		if err != nil {
 			break
