@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+var IN_TEST = false
 var errNowNewAnalysis = errors.New("errNowNewAnalysis")
 
 // EndGameDb to query for mate in 1,2, etc.
@@ -229,6 +230,9 @@ func (db *EndGameDb) retrogradeAnalysis() {
 		err := db.retrogradeAnalysisStepN(dtm)
 		if err != nil {
 			break
+		}
+		if IN_TEST {
+			return
 		}
 		dtm++
 	}

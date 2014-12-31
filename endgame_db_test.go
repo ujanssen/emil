@@ -8,6 +8,7 @@ import (
 var db *emil.EndGameDb
 
 func init() {
+	emil.IN_TEST = true
 	db = emil.NewEndGameDb()
 }
 
@@ -60,7 +61,7 @@ func TestFindMoveRe6h6(t *testing.T) {
 	board.Setup(emil.WhiteRock, emil.E6)
 
 	want := "Re6h6"
-	move := db.Find(emil.NewPosition(board, emil.BLACK))
+	move := db.Find(emil.NewPosition(board, emil.WHITE))
 	if move == nil {
 		t.Errorf("the move should be %s, got nil", want)
 	} else {
