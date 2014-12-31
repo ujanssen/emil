@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	emil.IN_TEST = true
 	emil.DEBUG = true
 
 	start := time.Now()
@@ -18,10 +19,7 @@ func main() {
 		as := db.FindMatesIn(dtm)
 
 		for i, a := range as {
-			fmt.Printf("%d\nWHITE:%s\nBLACK:%s\n%s\n\n", i+1,
-				a.DTMs(emil.WHITE),
-				a.DTMs(emil.BLACK),
-				a.Board())
+			fmt.Printf("%d\n%s\n\n", i+1, a)
 		}
 		fmt.Printf("\n\n\n")
 	}

@@ -48,7 +48,7 @@ func TestEmptyBoardBlack(t *testing.T) {
 1               R 1
   a b c d e f g h
 */
-func TestFindMoveRh1h8(t *testing.T) {
+func TestPrintFEN(t *testing.T) {
 	board := emil.NewBoard()
 	board.Setup(emil.WhiteKing, emil.E6)
 	board.Setup(emil.BlackKing, emil.E8)

@@ -21,6 +21,13 @@ type Analysis struct {
 	moves map[string]bool
 }
 
+func (a *Analysis) String() string {
+	return fmt.Sprintf("WHITE:%s\nBLACK:%s\n%s\nFEN: %s\n\n",
+		a.dtmWhite,
+		a.dtmWBlack,
+		a.board, NewPosition(a.board, WHITE))
+}
+
 func (a *Analysis) DTMs(player int) []*DTM {
 	if player == WHITE {
 		return a.dtmWhite
