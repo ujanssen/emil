@@ -17,11 +17,20 @@ import (
 1                 1
   a b c d e f g h
 */
-func TestEmptyBoard(t *testing.T) {
+func TestEmptyBoardWhite(t *testing.T) {
 	board := emil.NewBoard()
 
 	want := "8/8/8/8/8/8/8/8 w"
 	got := emil.NewPosition(board, emil.WHITE).String()
+	if got != want {
+		t.Errorf("the move should be %s, got %s", want, got)
+	}
+}
+func TestEmptyBoardBlack(t *testing.T) {
+	board := emil.NewBoard()
+
+	want := "8/8/8/8/8/8/8/8 b"
+	got := emil.NewPosition(board, emil.BLACK).String()
 	if got != want {
 		t.Errorf("the move should be %s, got %s", want, got)
 	}
