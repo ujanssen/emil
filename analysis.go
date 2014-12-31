@@ -17,6 +17,8 @@ type Analysis struct {
 	board     *Board
 	dtmWhite  []*DTM
 	dtmWBlack []*DTM
+
+	moves map[string]bool
 }
 
 func (a *Analysis) DTMs(player int) []*DTM {
@@ -26,11 +28,20 @@ func (a *Analysis) DTMs(player int) []*DTM {
 	return a.dtmWBlack
 }
 func (a *Analysis) addDTM(move *Move, dtm int) {
+	if _, ok = moves[move.String()]; ok {
+		return // we have this move allready
+	}
+	moves[move.String()] = true
+
 	if move.player == WHITE {
 		a.dtmWhite = append(a.dtmWhite, &DTM{move: move, dtm: dtm})
 	} else {
 		a.dtmWBlack = append(a.dtmWBlack, &DTM{move: move, dtm: dtm})
 	}
+}
+
+func (a *Analysis) playerHaveDTMs() bool {
+	return (len(a.dtmWhite) + len(a.dtmWBlack)) > 0
 }
 
 func (a *Analysis) BestMove(player int) (bestMove *Move) {

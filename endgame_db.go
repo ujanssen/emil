@@ -29,7 +29,7 @@ func (db *EndGameDb) Find(p *position) (bestMove *Move) {
 func (db *EndGameDb) FindMatesIn(dtm int) (as []*Analysis) {
 	if dtm == -1 {
 		for _, a := range db.positionDb {
-			if a.BestMove(WHITE) == nil && a.BestMove(BLACK) == nil {
+			if a.playerHaveDTMs() {
 				as = append(as, a)
 			}
 		}
@@ -59,7 +59,8 @@ func (db *EndGameDb) addPosition(board *Board) {
 	a := &Analysis{
 		dtmWhite:  make([]*DTM, 0),
 		dtmWBlack: make([]*DTM, 0),
-		board:     board}
+		board:     board,
+		moves:     make(map[string]bool)}
 	db.positionDb[a.board.String()] = a
 }
 
@@ -146,9 +147,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 
 			for _, m := range moves {
 				newBoard := a.board.doMove(m)
-				if db.isMateIn1357(newBoard, dtm) < 0 {
-					db.addAnalysis(newBoard, dtm, m)
-				}
+				db.addAnalysis(newBoard, dtm, m)
 			}
 		}
 	} else {
@@ -227,9 +226,6 @@ func (db *EndGameDb) retrogradeAnalysis() {
 	db.retrogradeAnalysisStep1()
 	dtm := 1
 	for {
-		if dtm == 4 {
-			return
-		}
 		err := db.retrogradeAnalysisStepN(dtm)
 		if err != nil {
 			break
