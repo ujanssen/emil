@@ -30,7 +30,7 @@ func TestFindMoveRh1h8(t *testing.T) {
 	board.Setup(emil.WhiteRock, emil.H1)
 
 	want := "Rh1h8"
-	move := db.Find(board)
+	move := db.Find(emil.NewPosition(board, emil.WHITE))
 	if move == nil {
 		t.Errorf("the move should be %s, got nil", want)
 	} else {
@@ -60,7 +60,7 @@ func TestFindMoveRe6h6(t *testing.T) {
 	board.Setup(emil.WhiteRock, emil.E6)
 
 	want := "Re6h6"
-	move := db.Find(board)
+	move := db.Find(emil.NewPosition(board, emil.BLACK))
 	if move == nil {
 		t.Errorf("the move should be %s, got nil", want)
 	} else {
