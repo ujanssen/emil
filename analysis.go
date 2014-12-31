@@ -22,10 +22,11 @@ type Analysis struct {
 }
 
 func (a *Analysis) String() string {
-	return fmt.Sprintf("WHITE:%s\nBLACK:%s\n%s\nFEN: %s\n\n",
+	return fmt.Sprintf("WHITE: %s\nBLACK: %s\nFEN: %s\n%s\n",
 		a.dtmWhite,
 		a.dtmWBlack,
-		a.board, NewPosition(a.board, WHITE))
+		NewPosition(a.board, WHITE),
+		a.board)
 }
 
 func (a *Analysis) DTMs(player int) []*DTM {

@@ -19,7 +19,7 @@ func main() {
 		as := db.FindMatesIn(dtm)
 
 		for i, a := range as {
-			fmt.Printf("%d\n%s\n\n", i+1, a)
+			fmt.Printf("%d\n%s\n", i+1, a)
 		}
 		fmt.Printf("\n\n\n")
 	}
