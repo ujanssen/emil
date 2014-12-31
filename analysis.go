@@ -26,8 +26,11 @@ func (a *Analysis) DTMs(player int) []*DTM {
 	return a.dtmWBlack
 }
 func (a *Analysis) addDTM(move *Move, dtm int) {
-	dtms := a.DTMs(move.player)
-	dtms = append(dtms, &DTM{move: move, dtm: dtm})
+	if move.player == WHITE {
+		a.dtmWhite = append(a.dtmWhite, &DTM{move: move, dtm: dtm})
+	} else {
+		a.dtmWBlack = append(a.dtmWBlack, &DTM{move: move, dtm: dtm})
+	}
 }
 
 func (a *Analysis) BestMove(player int) (bestMove *Move) {
@@ -41,6 +44,7 @@ func (a *Analysis) BestMove(player int) (bestMove *Move) {
 			bestMove = d.move
 		}
 	}
+	// TODO best move for black
 	return bestMove
 }
 
