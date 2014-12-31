@@ -28,10 +28,10 @@ func (a *Analysis) DTMs(player int) []*DTM {
 	return a.dtmWBlack
 }
 func (a *Analysis) addDTM(move *Move, dtm int) {
-	if _, ok = moves[move.String()]; ok {
+	if _, ok := a.moves[move.String()]; ok {
 		return // we have this move allready
 	}
-	moves[move.String()] = true
+	a.moves[move.String()] = true
 
 	if move.player == WHITE {
 		a.dtmWhite = append(a.dtmWhite, &DTM{move: move, dtm: dtm})
