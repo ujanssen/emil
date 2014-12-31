@@ -6,21 +6,8 @@ import (
 	"time"
 )
 
+var IN_TEST = false
 var errNowNewAnalysis = errors.New("errNowNewAnalysis")
-
-type Analysis struct {
-	dtm int // Depth to mate
-
-	board *Board
-	move  *Move
-}
-
-func (a *Analysis) Move() *Move {
-	return a.move
-}
-func (a *Analysis) Board() *Board {
-	return a.board
-}
 
 // EndGameDb to query for mate in 1,2, etc.
 type EndGameDb struct {
@@ -29,20 +16,21 @@ type EndGameDb struct {
 	dtmDb []map[string]bool
 }
 
-func (db *EndGameDb) Find(board *Board) (bestMove *Move) {
+func (db *EndGameDb) Find(p *position) (bestMove *Move) {
 	if DEBUG {
-		fmt.Printf("Find:\n%s\n", board.String())
+		fmt.Printf("Find:\n%s\n", p.board)
 	}
-	a := db.positionDb[board.String()]
+	a := db.positionDb[p.board.String()]
 	if DEBUG {
-		fmt.Printf("Found: positionDb with dtm %d\n", a.dtm)
+		fmt.Printf("Found: positionDb with dtms %v\n", a.DTMs(p.player))
 	}
-	return a.move
+	return a.BestMove(p.player)
 }
+
 func (db *EndGameDb) FindMatesIn(dtm int) (as []*Analysis) {
 	if dtm == -1 {
 		for _, a := range db.positionDb {
-			if a.dtm == -1 {
+			if a.playerHaveDTMs() {
 				as = append(as, a)
 			}
 		}
@@ -70,28 +58,27 @@ func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
 
 func (db *EndGameDb) addPosition(board *Board) {
 	a := &Analysis{
-		dtm:   -1,
-		board: board}
+		dtmWhite:  make([]*DTM, 0),
+		dtmWBlack: make([]*DTM, 0),
+		board:     board,
+		moves:     make(map[string]bool)}
 	db.positionDb[a.board.String()] = a
 }
 
 func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
 	a := db.positionDb[board.String()]
 	if move != nil {
-		a.move = move.reverse()
+		a.addDTM(move.reverse(), dtm)
 	}
 	if dtm >= 0 {
-		a.dtm = dtm
 		if move != nil {
 			playerForStep := playerForStepN(dtm)
 			if playerForStep != move.player {
 				panic("playerForStep != move.player")
 			}
 		}
-
 		db.dtmDb[dtm][board.String()] = true
 	}
-
 }
 
 func (db *EndGameDb) positions() int {
@@ -121,7 +108,6 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 		move := Search(p)
 		if move == nil {
 			if isKingInCheck(p) {
-				a.dtm = 0
 				db.addAnalysis(a.board, 0, nil)
 				if DEBUG {
 					fmt.Printf("mate:\n%s\n", boardStr)
@@ -162,9 +148,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 
 			for _, m := range moves {
 				newBoard := a.board.doMove(m)
-				if db.isMateIn1357(newBoard, dtm) < 0 {
-					db.addAnalysis(newBoard, dtm, m)
-				}
+				db.addAnalysis(newBoard, dtm, m)
 			}
 		}
 	} else {
@@ -246,6 +230,9 @@ func (db *EndGameDb) retrogradeAnalysis() {
 		err := db.retrogradeAnalysisStepN(dtm)
 		if err != nil {
 			break
+		}
+		if IN_TEST {
+			return
 		}
 		dtm++
 	}

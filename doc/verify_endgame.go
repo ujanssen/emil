@@ -13,12 +13,15 @@ func main() {
 	db := emil.NewEndGameDb()
 	end := time.Now()
 
-	for dtm := -1; dtm < db.MaxDtm(); dtm++ {
+	for dtm := 1; dtm < db.MaxDtm(); dtm++ {
 		fmt.Println("db.FindMatesIn", dtm)
 		as := db.FindMatesIn(dtm)
 
 		for i, a := range as {
-			fmt.Printf("%d %s\n%s\n\n", i+1, a.Move(), a.Board())
+			fmt.Printf("%d\nWHITE:%s\nBLACK:%s\n%s\n\n", i+1,
+				a.DTMs(emil.WHITE),
+				a.DTMs(emil.BLACK),
+				a.Board())
 		}
 		fmt.Printf("\n\n\n")
 	}
