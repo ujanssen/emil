@@ -34,5 +34,11 @@ func (p *position) String() string {
 	s = strings.Replace(s, "   ", "3", -1)
 	s = strings.Replace(s, "  ", "2", -1)
 	s = strings.Replace(s, " ", "1", -1)
+
+	if p.player == WHITE {
+		s += " w"
+	} else {
+		s += " b"
+	}
 	return s
 }

@@ -20,7 +20,7 @@ import (
 func TestEmptyBoard(t *testing.T) {
 	board := emil.NewBoard()
 
-	want := "8/8/8/8/8/8/8/8"
+	want := "8/8/8/8/8/8/8/8 w"
 	got := emil.NewPosition(board, emil.WHITE).String()
 	if got != want {
 		t.Errorf("the move should be %s, got %s", want, got)
@@ -45,7 +45,7 @@ func TestFindMoveRh1h8(t *testing.T) {
 	board.Setup(emil.BlackKing, emil.E8)
 	board.Setup(emil.WhiteRock, emil.H1)
 
-	want := "4k3/8/4K3/8/8/8/8/7R"
+	want := "4k3/8/4K3/8/8/8/8/7R w"
 	got := emil.NewPosition(board, emil.WHITE).String()
 	if got != want {
 		t.Errorf("the move should be %s, got %s", want, got)
