@@ -25,3 +25,4 @@ _testmain.go
 cpu.profile
 profile_endgame_db
 log*
+EndGameDb.json
