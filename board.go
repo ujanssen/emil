@@ -3,6 +3,7 @@ package emil
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
 var errNotEmpty = errors.New("not empty")
@@ -25,6 +26,27 @@ func (b *Board) String() string {
 	if len(b.str) > 0 {
 		return b.str
 	}
+	s := ""
+	for _, r := range FirstSquares {
+		if len(s) > 0 {
+			s += "/"
+		}
+		for f := 0; f < 8; f++ {
+			s += fmt.Sprintf("%s", symbol(b.Squares[r+f]))
+		}
+	}
+	s = strings.Replace(s, "        ", "8", -1)
+	s = strings.Replace(s, "       ", "7", -1)
+	s = strings.Replace(s, "      ", "6", -1)
+	s = strings.Replace(s, "     ", "5", -1)
+	s = strings.Replace(s, "    ", "4", -1)
+	s = strings.Replace(s, "   ", "3", -1)
+	s = strings.Replace(s, "  ", "2", -1)
+	s = strings.Replace(s, " ", "1", -1)
+	b.str = s
+	return s
+}
+func (b *Board) Picture() string {
 	files := "a b c d e f g h "
 	s := "  " + files + " \n"
 	for _, r := range FirstSquares {
@@ -35,7 +57,6 @@ func (b *Board) String() string {
 		s += fmt.Sprintf("%d\n", BoardSquares[r].rank)
 	}
 	s += "  " + files + " \n"
-	b.str = s
 	return s
 }
 
