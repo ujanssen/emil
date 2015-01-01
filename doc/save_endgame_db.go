@@ -22,7 +22,7 @@ func main() {
 	fmt.Printf("\n\n\ncreate duration %v\n\n\n", end.Sub(start))
 
 	start = time.Now()
-	emil.SaveEndGameDb(db)
+	err := emil.SaveEndGameDb(db)
 	end = time.Now()
-	fmt.Printf("\n\n\nsave duration %v\n\n\n", end.Sub(start))
+	fmt.Printf("\n\n\nsave duration %v\nerr %v\n\n", end.Sub(start), err)
 }

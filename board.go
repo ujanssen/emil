@@ -10,7 +10,7 @@ var errKingsToClose = errors.New("Kings to close")
 
 // Board with an array of field values, representing pieces
 type Board struct {
-	squares   []int
+	squares   []int `json:"squares"`
 	whiteKing int
 	blackKing int
 

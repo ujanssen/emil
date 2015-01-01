@@ -5,8 +5,8 @@ import (
 )
 
 type DTM struct {
-	dtm  int // Depth to mate
-	move *Move
+	dtm  int   `json:"dtm"` // Depth to mate
+	move *Move `json:"move"`
 }
 
 func (d *DTM) String() string {
@@ -14,9 +14,9 @@ func (d *DTM) String() string {
 }
 
 type Analysis struct {
-	board     *Board
-	dtmWhite  []*DTM
-	dtmWBlack []*DTM
+	board     *Board `json:"board"`
+	dtmWhite  []*DTM `json:"dtmWhite"`
+	dtmWBlack []*DTM `json:"dtmWBlack"`
 
 	moves map[string]bool
 }

@@ -1,8 +1,10 @@
 package emil
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"time"
 )
 
@@ -11,7 +13,8 @@ var errNowNewAnalysis = errors.New("errNowNewAnalysis")
 
 // EndGameDb to query for mate in 1,2, etc.
 type EndGameDb struct {
-	positionDb map[string]*Analysis
+	start      time.Time            `json:"startTime"`
+	positionDb map[string]*Analysis `json:"analysis"`
 
 	dtmDb []map[string]bool
 }
@@ -286,15 +289,24 @@ func generateMoves(p *position) (list []*Move) {
 }
 
 // SaveEndGameDb saves the an end game DB for KRK to file
-func SaveEndGameDb(db *EndGameDb) {
+func SaveEndGameDb(db *EndGameDb) error {
+	filename := "EndGameDb.json"
+	fmt.Println("WriteDataToFile: ", filename)
+
+	b, err := json.Marshal(db)
+	if err != nil {
+		return err
+	}
+
+	return ioutil.WriteFile(filename, b, 0666)
 }
 
 // NewEndGameDb generates an end game DB for KRK
 func NewEndGameDb() *EndGameDb {
 	var err error
-	start := time.Now()
 
 	endGames := &EndGameDb{
+		start:      time.Now(),
 		positionDb: make(map[string]*Analysis),
 		dtmDb:      make([]map[string]bool, 0)}
 
@@ -337,7 +349,7 @@ func NewEndGameDb() *EndGameDb {
 		fmt.Printf("all positions %d\n", 64*63*62)
 		fmt.Printf("endGames.positions() %d\n", endGames.positions())
 		fmt.Printf("difference %d\n", 64*63*62-endGames.positions())
-		fmt.Printf("duration %v\n", end.Sub(start))
+		fmt.Printf("duration %v\n", end.Sub(endGames.start))
 	}
 	endGames.retrogradeAnalysis()
 

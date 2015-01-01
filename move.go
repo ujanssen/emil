@@ -6,11 +6,15 @@ import (
 
 // Move represents a move on the board
 type Move struct {
-	player, piece           int
-	capture, promotion      int
-	source, destination     int
-	isCapture               bool
-	isQueenside, isKingside bool
+	player      int `json:"player"`
+	piece       int `json:"piece"`
+	capture     int
+	promotion   int
+	source      int `json:"source"`
+	destination int `json:"destination"`
+	isCapture   bool
+	isQueenside bool
+	isKingside  bool
 }
 
 func (m *Move) String() string {
