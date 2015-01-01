@@ -6,15 +6,16 @@ import (
 
 // Move represents a move on the board
 type Move struct {
-	player      int  `json:"player"`
-	piece       int  `json:"piece"`
-	capture     int  `json:"capture"`
-	promotion   int  `json:"promotion"`
-	source      int  `json:"source"`
-	destination int  `json:"destination"`
-	isCapture   bool `json:"isCapture"`
-	isQueenside bool `json:"isQueenside"`
-	isKingside  bool `json:"isKingside"`
+	player      int
+	piece       int
+	capture     int
+	promotion   int
+	source      int
+	destination int
+	isCapture   bool
+	isQueenside bool
+	isKingside  bool
+	Str         string `json:"move"`
 }
 
 func (m *Move) String() string {
@@ -31,7 +32,7 @@ func (m *Move) String() string {
 }
 
 func (m *Move) reverse() *Move {
-	return &Move{
+	m2 := &Move{
 		player:      m.player,
 		piece:       m.piece,
 		capture:     m.capture,
@@ -41,10 +42,14 @@ func (m *Move) reverse() *Move {
 		isCapture:   m.isCapture,
 		isQueenside: m.isQueenside,
 		isKingside:  m.isKingside}
+
+	m2.Str = m2.String()
+	return m2
+
 }
 
 func newSilentMove(player, piece, src, dst int) *Move {
-	return &Move{
+	m := &Move{
 		player:      player,
 		piece:       piece,
 		capture:     Empty,
@@ -54,9 +59,11 @@ func newSilentMove(player, piece, src, dst int) *Move {
 		isCapture:   false,
 		isQueenside: false,
 		isKingside:  false}
+	m.Str = m.String()
+	return m
 }
 func newCaptureMove(player, piece, capture, src, dst int) *Move {
-	return &Move{
+	m := &Move{
 		player:      player,
 		piece:       piece,
 		capture:     capture,
@@ -66,6 +73,8 @@ func newCaptureMove(player, piece, capture, src, dst int) *Move {
 		isCapture:   true,
 		isQueenside: false,
 		isKingside:  false}
+	m.Str = m.String()
+	return m
 }
 
 func moveList(list []*Move) string {
