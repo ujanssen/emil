@@ -23,7 +23,7 @@ func (p *position) String() string {
 			s += "/"
 		}
 		for f := 0; f < 8; f++ {
-			s += fmt.Sprintf("%s", symbol(p.board.squares[r+f]))
+			s += fmt.Sprintf("%s", symbol(p.board.Squares[r+f]))
 		}
 	}
 	s = strings.Replace(s, "        ", "8", -1)
