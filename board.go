@@ -18,9 +18,16 @@ type Board struct {
 	str string
 }
 
-// NewBoard creates a new Board
+// NewBoard creates a new board
 func NewBoard() *Board {
 	return &Board{squares: make([]int, SQUARES)}
+}
+
+// Fen2Board creates a new board from a fen string
+func Fen2Board(fen string) *Board {
+	b := NewBoard()
+	b.str = fen
+	return b
 }
 func (b *Board) String() string {
 	if len(b.str) > 0 {
