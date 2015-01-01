@@ -15,7 +15,7 @@ func main() {
 	end := time.Now()
 	fmt.Printf("\n\n\nload duration %v\nerr %v\n\n", end.Sub(start), err)
 
-	if err != nil {
+	if err == nil {
 
 		fmt.Printf("len(db.AnalysisMap) %v\n\n", len(db.AnalysisMap))
 

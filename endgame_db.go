@@ -296,8 +296,16 @@ func LoadEndGameDb() (db *EndGameDb, err error) {
 	if err != nil {
 		return db, err
 	}
+	var data EndGameSave
+	err = json.Unmarshal(b, &data)
+	if err != nil {
+		return db, err
+	}
+	db = &EndGameDb{
+		Start:       time.Now(),
+		AnalysisMap: make(map[string]*Analysis),
+		dtmDb:       make([]map[string]bool, 0)}
 
-	err = json.Unmarshal(b, db)
 	return db, err
 }
 
