@@ -14,7 +14,7 @@ func (d *DTM) String() string {
 }
 
 type Analysis struct {
-	Board    *Board `json:"board"`
+	Board    *Board `json:"-"`
 	DtmWhite []*DTM `json:"dtmWhite"`
 	DtmBlack []*DTM `json:"dtmBlack"`
 

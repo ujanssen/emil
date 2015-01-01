@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	emil.IN_TEST = true
+	emil.IN_TEST = !true
 	emil.DEBUG = true
 
 	start := time.Now()

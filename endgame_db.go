@@ -16,7 +16,7 @@ type EndGameDb struct {
 	Start       time.Time            `json:"startTime"`
 	Duration    time.Duration        `json:"duration"`
 	AnalysisMap map[string]*Analysis `json:"analysis"`
-	dtmDb       []map[string]bool    `json:"dtms"`
+	dtmDb       []map[string]bool
 }
 
 func (db *EndGameDb) Find(p *position) (bestMove *Move) {
