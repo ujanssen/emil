@@ -52,7 +52,7 @@ func (db *EndGameDb) FindMates() (as []*Analysis) {
 func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
 	for str := range db.dtmDb[0] {
 		a := db.AnalysisMap[str]
-		if a.Board.squares[square] == piece {
+		if a.Board.Squares[square] == piece {
 			boards = append(boards, a.Board)
 		}
 	}
@@ -250,12 +250,12 @@ func GenerateMoves(p *position) (list []*Move) {
 	return list
 }
 func generateMoves(p *position) (list []*Move) {
-	for src, piece := range p.board.squares {
+	for src, piece := range p.board.Squares {
 		if isOwnPiece(p.player, piece) {
 			switch abs(piece) {
 			case kingValue:
 				for _, dst := range kingDestinationsFrom(src) {
-					capture := p.board.squares[dst]
+					capture := p.board.Squares[dst]
 					if isOtherKing(p.player, capture) {
 						continue
 					}
@@ -268,7 +268,7 @@ func generateMoves(p *position) (list []*Move) {
 			case rockValue:
 				for _, dsts := range rockDestinationsFrom(src) {
 					for _, dst := range dsts {
-						capture := p.board.squares[dst]
+						capture := p.board.Squares[dst]
 						if isOtherKing(p.player, capture) {
 							break
 						}
