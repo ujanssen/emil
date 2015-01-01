@@ -10,16 +10,16 @@ var errKingsToClose = errors.New("Kings to close")
 
 // Board with an array of field values, representing pieces
 type Board struct {
-	squares   []int `json:"squares"`
-	whiteKing int   `json:"whiteKing"`
-	blackKing int   `json:"blackKing"`
+	Squares   []int `json:"squares"`
+	whiteKing int
+	blackKing int
 
-	str string `json:"str"`
+	str string
 }
 
 // NewBoard creates a new Board
 func NewBoard() *Board {
-	return &Board{squares: make([]int, SQUARES)}
+	return &Board{Squares: make([]int, SQUARES)}
 }
 func (b *Board) String() string {
 	if len(b.str) > 0 {
@@ -30,7 +30,7 @@ func (b *Board) String() string {
 	for _, r := range FirstSquares {
 		s += fmt.Sprintf("%d ", BoardSquares[r].rank)
 		for f := 0; f < 8; f++ {
-			s += fmt.Sprintf("%s ", symbol(b.squares[r+f]))
+			s += fmt.Sprintf("%s ", symbol(b.Squares[r+f]))
 		}
 		s += fmt.Sprintf("%d\n", BoardSquares[r].rank)
 	}
@@ -41,10 +41,10 @@ func (b *Board) String() string {
 
 //Setup a piece on a square
 func (b *Board) Setup(piece, square int) (noError error) {
-	if b.squares[square] != Empty {
+	if b.Squares[square] != Empty {
 		return errNotEmpty
 	}
-	b.squares[square] = piece
+	b.Squares[square] = piece
 	if piece == BlackKing {
 		b.blackKing = square
 	}
@@ -71,9 +71,9 @@ func (b *Board) doMove(m *Move) (newBoard *Board) {
 	newBoard = NewBoard()
 	newBoard.whiteKing = b.whiteKing
 	newBoard.blackKing = b.blackKing
-	copy(newBoard.squares, b.squares)
-	newBoard.squares[m.source] = Empty
-	newBoard.squares[m.destination] = m.piece
+	copy(newBoard.Squares, b.Squares)
+	newBoard.Squares[m.source] = Empty
+	newBoard.Squares[m.destination] = m.piece
 	// if DEBUG {
 	// 	fmt.Printf("%s\n", b)
 	// }

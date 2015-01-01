@@ -6,11 +6,11 @@ import (
 
 type DTM struct {
 	Dtm  int   `json:"dtm"` // Depth to mate
-	move *Move `json:"move"`
+	Move *Move `json:"move"`
 }
 
 func (d *DTM) String() string {
-	return fmt.Sprintf("%d/%s", d.Dtm, d.move)
+	return fmt.Sprintf("%d/%s", d.Dtm, d.Move)
 }
 
 type Analysis struct {
@@ -42,9 +42,9 @@ func (a *Analysis) addDTM(move *Move, dtm int) {
 	a.moves[move.String()] = true
 
 	if move.player == WHITE {
-		a.DtmWhite = append(a.DtmWhite, &DTM{move: move, Dtm: dtm})
+		a.DtmWhite = append(a.DtmWhite, &DTM{Move: move, Dtm: dtm})
 	} else {
-		a.DtmBlack = append(a.DtmBlack, &DTM{move: move, Dtm: dtm})
+		a.DtmBlack = append(a.DtmBlack, &DTM{Move: move, Dtm: dtm})
 	}
 }
 
@@ -60,7 +60,7 @@ func (a *Analysis) BestMove(player int) (bestMove *Move) {
 	for _, d := range dtms {
 		if d.Dtm < minDTM {
 			minDTM = d.Dtm
-			bestMove = d.move
+			bestMove = d.Move
 		}
 	}
 	// TODO best move for black
