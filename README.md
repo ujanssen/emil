@@ -12,7 +12,7 @@ So we need:
 - delete illegal moves (done)
 - create an endgame database for KRK
 	- Step 1: Generating all possible positions (done)
-	- Step 2: Evaluating positions using retrograde analysis
+	- Step 2: Evaluating positions using retrograde analysis (done)
 	- Step 3: Verification
 - play for checkmate
 
