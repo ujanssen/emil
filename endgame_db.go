@@ -285,6 +285,10 @@ func generateMoves(p *position) (list []*Move) {
 	return list
 }
 
+// SaveEndGameDb saves the an end game DB for KRK to file
+func SaveEndGameDb(db *EndGameDb) {
+}
+
 // NewEndGameDb generates an end game DB for KRK
 func NewEndGameDb() *EndGameDb {
 	var err error
