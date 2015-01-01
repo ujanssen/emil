@@ -13,32 +13,33 @@ var errNowNewAnalysis = errors.New("errNowNewAnalysis")
 
 // EndGameDb to query for mate in 1,2, etc.
 type EndGameDb struct {
-	start      time.Time            `json:"startTime"`
-	positionDb map[string]*Analysis `json:"analysis"`
-	dtmDb      []map[string]bool    `json:"dtms"`
+	Start       time.Time            `json:"startTime"`
+	Duration    time.Duration        `json:"duration"`
+	AnalysisMap map[string]*Analysis `json:"analysis"`
+	dtmDb       []map[string]bool    `json:"dtms"`
 }
 
 func (db *EndGameDb) Find(p *position) (bestMove *Move) {
 	if DEBUG {
 		fmt.Printf("Find:\n%s\n", p.board)
 	}
-	a := db.positionDb[p.board.String()]
+	a := db.AnalysisMap[p.board.String()]
 	if DEBUG {
-		fmt.Printf("Found: positionDb with dtms %v\n", a.DTMs(p.player))
+		fmt.Printf("Found: AnalysisMap with dtms %v\n", a.DTMs(p.player))
 	}
 	return a.BestMove(p.player)
 }
 
 func (db *EndGameDb) FindMatesIn(dtm int) (as []*Analysis) {
 	if dtm == -1 {
-		for _, a := range db.positionDb {
+		for _, a := range db.AnalysisMap {
 			if a.playerHaveDTMs() {
 				as = append(as, a)
 			}
 		}
 	} else {
 		for str := range db.dtmDb[dtm] {
-			as = append(as, db.positionDb[str])
+			as = append(as, db.AnalysisMap[str])
 		}
 	}
 	return as
@@ -50,9 +51,9 @@ func (db *EndGameDb) FindMates() (as []*Analysis) {
 
 func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
 	for str := range db.dtmDb[0] {
-		a := db.positionDb[str]
-		if a.board.squares[square] == piece {
-			boards = append(boards, a.board)
+		a := db.AnalysisMap[str]
+		if a.Board.squares[square] == piece {
+			boards = append(boards, a.Board)
 		}
 	}
 	return boards
@@ -60,15 +61,15 @@ func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
 
 func (db *EndGameDb) addPosition(board *Board) {
 	a := &Analysis{
-		dtmWhite:  make([]*DTM, 0),
-		dtmWBlack: make([]*DTM, 0),
-		board:     board,
-		moves:     make(map[string]bool)}
-	db.positionDb[a.board.String()] = a
+		DtmWhite: make([]*DTM, 0),
+		DtmBlack: make([]*DTM, 0),
+		Board:    board,
+		moves:    make(map[string]bool)}
+	db.AnalysisMap[a.Board.String()] = a
 }
 
 func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
-	a := db.positionDb[board.String()]
+	a := db.AnalysisMap[board.String()]
 	if move != nil {
 		a.addDTM(move.reverse(), dtm)
 	}
@@ -84,7 +85,7 @@ func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
 }
 
 func (db *EndGameDb) positions() int {
-	return len(db.positionDb)
+	return len(db.AnalysisMap)
 }
 
 // find positions where black is checkmate
@@ -94,23 +95,23 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 	start := time.Now()
 
 	player := BLACK
-	for boardStr, a := range db.positionDb {
+	for boardStr, a := range db.AnalysisMap {
 		// mate only on border square
-		blackKingSquare := BoardSquares[a.board.blackKing]
+		blackKingSquare := BoardSquares[a.Board.blackKing]
 		if !blackKingSquare.isBorder {
 			continue
 		}
 		// mate only with help from king
-		if squaresDistances[a.board.blackKing][a.board.whiteKing] > 2 {
+		if squaresDistances[a.Board.blackKing][a.Board.whiteKing] > 2 {
 			continue
 		}
 
-		p := NewPosition(a.board, player)
+		p := NewPosition(a.Board, player)
 
 		move := Search(p)
 		if move == nil {
 			if isKingInCheck(p) {
-				db.addAnalysis(a.board, 0, nil)
+				db.addAnalysis(a.Board, 0, nil)
 				if DEBUG {
 					fmt.Printf("mate:\n%s\n", boardStr)
 				}
@@ -142,37 +143,37 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 			fmt.Printf("WHITE Start positions %d\n", len(db.dtmDb[dtm-1]))
 		}
 		for str := range db.dtmDb[dtm-1] {
-			a := db.positionDb[str]
-			p := NewPosition(a.board, player)
+			a := db.AnalysisMap[str]
+			p := NewPosition(a.Board, player)
 			list := generateMoves(p)
 			moves := filterKingCaptures(p, list)
-			moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
+			moves = filterKingCaptures(NewPosition(a.Board, otherPlayer(player)), list)
 
 			for _, m := range moves {
-				newBoard := a.board.doMove(m)
+				newBoard := a.Board.doMove(m)
 				db.addAnalysis(newBoard, dtm, m)
 			}
 		}
 	} else {
-		for _, a := range db.positionDb {
-			if db.isMateIn0246(a.board, dtm) >= 0 {
+		for _, a := range db.AnalysisMap {
+			if db.isMateIn0246(a.Board, dtm) >= 0 {
 				positions++
 			}
 		}
 		if DEBUG {
-			fmt.Printf("BLACK Start positions %d\n", len(db.positionDb)-positions)
+			fmt.Printf("BLACK Start positions %d\n", len(db.AnalysisMap)-positions)
 		}
-		for _, a := range db.positionDb {
-			if db.isMateIn0246(a.board, dtm) >= 0 {
+		for _, a := range db.AnalysisMap {
+			if db.isMateIn0246(a.Board, dtm) >= 0 {
 				continue
 			}
-			p := NewPosition(a.board, player)
+			p := NewPosition(a.Board, player)
 			moves := GenerateMoves(p)
 
 			found := 0
 			maxDTM := -1
 			for _, m := range moves {
-				newBoard := a.board.doMove(m)
+				newBoard := a.Board.doMove(m)
 				newDtm := db.isMateIn1357(newBoard, dtm)
 				if newDtm > maxDTM {
 					maxDTM = newDtm
@@ -184,7 +185,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 
 			if found == len(moves) {
 				for _, m := range moves {
-					db.addAnalysis(a.board, maxDTM+1, m)
+					db.addAnalysis(a.Board, maxDTM+1, m)
 				}
 			}
 		}
@@ -308,9 +309,9 @@ func NewEndGameDb() *EndGameDb {
 	var err error
 
 	endGames := &EndGameDb{
-		start:      time.Now(),
-		positionDb: make(map[string]*Analysis),
-		dtmDb:      make([]map[string]bool, 0)}
+		Start:       time.Now(),
+		AnalysisMap: make(map[string]*Analysis),
+		dtmDb:       make([]map[string]bool, 0)}
 
 	for wk := A1; wk <= H8; wk++ {
 		//for wk := E3; wk <= E3; wk++ {
@@ -347,11 +348,12 @@ func NewEndGameDb() *EndGameDb {
 		}
 	}
 	end := time.Now()
+	endGames.Duration = end.Sub(endGames.Start)
 	if DEBUG {
 		fmt.Printf("all positions %d\n", 64*63*62)
 		fmt.Printf("endGames.positions() %d\n", endGames.positions())
 		fmt.Printf("difference %d\n", 64*63*62-endGames.positions())
-		fmt.Printf("duration %v\n", end.Sub(endGames.start))
+		fmt.Printf("duration %v\n", endGames.Duration)
 	}
 	endGames.retrogradeAnalysis()
 
