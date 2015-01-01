@@ -9,12 +9,12 @@ var errKingCapture = errors.New("king capture")
 
 func generateMoveListWe(p *position) (list []*Move, err error) {
 	var empty []*Move
-	for src, piece := range p.board.squares {
+	for src, piece := range p.board.Squares {
 		if isOwnPiece(p.player, piece) {
 			switch abs(piece) {
 			case kingValue:
 				for _, dst := range kingDestinationsFrom(src) {
-					capture := p.board.squares[dst]
+					capture := p.board.Squares[dst]
 					if isOtherKing(p.player, capture) {
 						return empty, errKingCapture
 					}
@@ -27,7 +27,7 @@ func generateMoveListWe(p *position) (list []*Move, err error) {
 			case rockValue:
 				for _, dsts := range rockDestinationsFrom(src) {
 					for _, dst := range dsts {
-						capture := p.board.squares[dst]
+						capture := p.board.Squares[dst]
 						if isOtherKing(p.player, capture) {
 							return empty, errKingCapture
 						}
@@ -132,7 +132,7 @@ func deepSearch(p *position, deep, maxDeep int) (bestMove *Move, bestScore int) 
 
 func evaluate(b *Board) (score int) {
 	score = 0
-	for _, p := range b.squares {
+	for _, p := range b.Squares {
 		score += p
 	}
 	return score
