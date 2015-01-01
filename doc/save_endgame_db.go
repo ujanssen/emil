@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/ujanssen/emil"
-	"os"
 	"time"
 )
 
@@ -27,11 +25,4 @@ func main() {
 	err := emil.SaveEndGameDb(db)
 	end = time.Now()
 	fmt.Printf("\n\n\nsave duration %v\nerr %v\n\n", end.Sub(start), err)
-
-	b, err := json.Marshal(db)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
-
-	os.Stdout.Write(b)
 }
