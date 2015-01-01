@@ -18,7 +18,7 @@ type Analysis struct {
 	dtmWhite  []*DTM `json:"dtmWhite"`
 	dtmWBlack []*DTM `json:"dtmWBlack"`
 
-	moves map[string]bool
+	moves map[string]bool `json:"moves"`
 }
 
 func (a *Analysis) String() string {

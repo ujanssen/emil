@@ -15,8 +15,7 @@ var errNowNewAnalysis = errors.New("errNowNewAnalysis")
 type EndGameDb struct {
 	start      time.Time            `json:"startTime"`
 	positionDb map[string]*Analysis `json:"analysis"`
-
-	dtmDb []map[string]bool
+	dtmDb      []map[string]bool    `json:"dtms"`
 }
 
 func (db *EndGameDb) Find(p *position) (bestMove *Move) {
