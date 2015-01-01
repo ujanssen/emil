@@ -11,6 +11,10 @@ import (
 var IN_TEST = false
 var errNowNewAnalysis = errors.New("errNowNewAnalysis")
 
+type EndGameSave struct {
+	AnalysisMap map[string]string `json:"analysis"`
+}
+
 // EndGameDb to query for mate in 1,2, etc.
 type EndGameDb struct {
 	Start       time.Time            `json:"startTime"`
@@ -287,14 +291,28 @@ func generateMoves(p *position) (list []*Move) {
 	}
 	return list
 }
+func LoadEndGameDb() (db *EndGameDb, err error) {
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return db, err
+	}
+
+	err = json.Unmarshal(b, db)
+	return db, err
+}
+
+const filename = "EndGameDb.json"
 
 // SaveEndGameDb saves the an end game DB for KRK to file
 func SaveEndGameDb(db *EndGameDb) error {
-	filename := "EndGameDb.json"
 	fmt.Println("WriteDataToFile: ", filename)
 
-	var data EndGameDb
-	data = *db
+	data := EndGameSave{AnalysisMap: make(map[string]string)}
+
+	for p, a := range db.AnalysisMap {
+		data.AnalysisMap[p] = fmt.Sprintf("%v", a.DtmWhite)
+
+	}
 
 	b, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
