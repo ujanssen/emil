@@ -293,7 +293,10 @@ func SaveEndGameDb(db *EndGameDb) error {
 	filename := "EndGameDb.json"
 	fmt.Println("WriteDataToFile: ", filename)
 
-	b, err := json.Marshal(db)
+	var data EndGameDb
+	data = *db
+
+	b, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return err
 	}
