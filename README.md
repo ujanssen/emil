@@ -13,8 +13,8 @@ So we need:
 - create an endgame database for KRK
 	- Step 1: Generating all possible positions (done)
 	- Step 2: Evaluating positions using retrograde analysis (done)
-	- Step 3: Verification
-- play for checkmate
+	- Step 3: Verification (done)
+- play for checkmate (done)
 
 
 ### retrograde analysis:
@@ -26,13 +26,7 @@ So we need:
 	- the distance between the kings is 2
 
 
-### profiling:
-
-	$ go test
-	PASS
-	ok  	github.com/ujanssen/emil	171.641s
-	ok  	github.com/ujanssen/emil	168.514s
-
+### numbers:
 
 	db.FindMatesIn 0:     216 boards
 	db.FindMatesIn 1:   1.512 boards
