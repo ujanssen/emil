@@ -13,6 +13,10 @@ func (d *DTM) String() string {
 	return fmt.Sprintf("%d/%s", d.Dtm, d.Move)
 }
 
+func DTMsFromString(s string) (list []*DTM) {
+	return list
+}
+
 type Analysis struct {
 	Board    *Board `json:"-"`
 	DtmWhite []*DTM `json:"dtmWhite"`
