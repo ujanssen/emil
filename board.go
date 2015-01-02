@@ -27,7 +27,48 @@ func NewBoard() *Board {
 func Fen2Board(fen string) *Board {
 	b := NewBoard()
 	b.str = fen
+
+	for fs, part := range strings.Split(fen, "/") {
+		fmt.Println(part, ":")
+		sq := FirstSquares[fs]
+		fmt.Println("Start:", BoardSquares[sq])
+		i := 0
+		for _, r := range part {
+			s := string(r)
+			switch s {
+			case "1", "8":
+				//nothing to do
+			case "7":
+				i += 6
+			case "6":
+				i += 5
+			case "5":
+				i += 4
+			case "4":
+				i += 3
+			case "3":
+				i += 2
+			case "2":
+				i += 1
+			default:
+				piece, ok := Symbols[s]
+				if !ok {
+					panic("can't parse " + s + " in " + part)
+				} else {
+					b.Setup(piece, sq+i)
+				}
+			}
+			i++
+		}
+		fmt.Println()
+		fmt.Println()
+		fmt.Println()
+	}
+	fmt.Println(b.Picture())
 	return b
+}
+func (b *Board) Square(i int) int {
+	return b.squares[i]
 }
 func (b *Board) String() string {
 	if len(b.str) > 0 {

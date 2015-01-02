@@ -47,6 +47,12 @@ var (
 		WhiteRock: "R",
 		BlackRock: "r",
 	}
+	Symbols = map[string]int{
+		"K": WhiteKing,
+		"k": BlackKing,
+		"R": WhiteRock,
+		"r": BlackRock,
+	}
 )
 
 var (
