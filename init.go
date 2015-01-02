@@ -30,7 +30,7 @@ func init() {
 				squaresDistances[s.index][r+f] = s.distance(BoardSquares[r+f])
 			}
 		}
-                squareMap[s.name]=s
+		squareMap[s.name] = s
 	}
 
 	// compute piece moves

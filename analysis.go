@@ -2,6 +2,8 @@ package emil
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 )
 
 type DTM struct {
@@ -14,6 +16,22 @@ func (d *DTM) String() string {
 }
 
 func DTMsFromString(s string) (list []*DTM) {
+	if s == "[]" {
+		return list
+	}
+	s = strings.Replace(s, "[", "", -1)
+	s = strings.Replace(s, "]", "", -1)
+
+	for _, item := range strings.Split(s, " ") {
+		parts := strings.Split(item, "/")
+		dtm, err := strconv.Atoi(parts[0])
+		if err != nil {
+			panic("can not parse " + parts[0] + " to integer")
+		}
+		move := MoveFromString(parts[1])
+		d := &DTM{Dtm: dtm}
+		list = append(list, d)
+	}
 	return list
 }
 

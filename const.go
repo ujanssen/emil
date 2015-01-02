@@ -62,7 +62,7 @@ var (
 	//BoardSquares an array of *Square of the board
 	BoardSquares [SQUARES]*Square
 
-        squareMap map[string]*Square
+	squareMap map[string]*Square
 
 	squaresDistances [SQUARES][SQUARES]int
 )

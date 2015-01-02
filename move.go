@@ -47,6 +47,20 @@ func (m *Move) reverse() *Move {
 	return m2
 
 }
+func MoveFromString(str string) *Move {
+	m := &Move{
+		player:      player,
+		piece:       piece,
+		capture:     Empty,
+		promotion:   Empty,
+		source:      src,
+		destination: dst,
+		isCapture:   false,
+		isQueenside: false,
+		isKingside:  false}
+	m.Str = m.str
+	return m
+}
 
 func newSilentMove(player, piece, src, dst int) *Move {
 	m := &Move{
