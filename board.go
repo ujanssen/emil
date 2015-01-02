@@ -29,9 +29,7 @@ func Fen2Board(fen string) *Board {
 	b.str = fen
 
 	for fs, part := range strings.Split(fen, "/") {
-		fmt.Println(part, ":")
 		sq := FirstSquares[fs]
-		fmt.Println("Start:", BoardSquares[sq])
 		i := 0
 		for _, r := range part {
 			s := string(r)
@@ -60,11 +58,7 @@ func Fen2Board(fen string) *Board {
 			}
 			i++
 		}
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
 	}
-	fmt.Println(b.Picture())
 	return b
 }
 func (b *Board) Square(i int) int {
