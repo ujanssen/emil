@@ -306,12 +306,16 @@ func LoadEndGameDb() (db *EndGameDb, err error) {
 		AnalysisMap: make(map[string]*Analysis),
 		dtmDb:       make([]map[string]bool, 0)}
 
+	for i := 0; i < 34; i++ {
+		db.dtmDb = append(db.dtmDb, make(map[string]bool))
+	}
+
 	for fen, v := range data.AnalysisMap {
 		board := Fen2Board(fen)
 		db.addPosition(board)
 		dtms := DTMsFromString(v)
 		for _, d := range dtms {
-			db.addAnalysis(board, d.Dtm, d.Move)
+			db.addAnalysis(board, d.Dtm, d.Move.reverse())
 		}
 	}
 
