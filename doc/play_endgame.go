@@ -13,14 +13,23 @@ func main() {
 	board.Setup(emil.BlackKing, emil.A8)
 	board.Setup(emil.WhiteRock, emil.G2)
 
-	db := emil.NewEndGameDb()
+	db, _ := emil.LoadEndGameDb()
 
 	for {
-		move := db.Find(board)
+		move := db.Find(emil.NewPosition(board, emil.WHITE))
 		if move == nil {
 			break
 		}
 		fmt.Printf("move %s\n", move)
 		board = board.DoMove(move)
+		fmt.Printf("%s\n", board.Picture())
+
+		move = emil.Search(emil.NewPosition(board, emil.BLACK))
+		if move == nil {
+			break
+		}
+		fmt.Printf("move %s\n", move)
+		board = board.DoMove(move)
+		fmt.Printf("%s\n", board.Picture())
 	}
 }
