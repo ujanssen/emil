@@ -18,6 +18,15 @@ type Move struct {
 	Str         string `json:"move"`
 }
 
+func (m *Move) Destination() int {
+	return m.destination
+}
+func (m *Move) Source() int {
+	return m.source
+}
+func (m *Move) Piece() int {
+	return m.piece
+}
 func (m *Move) String() string {
 	if !m.isCapture {
 		return fmt.Sprintf("%s%s%s",
@@ -47,18 +56,21 @@ func (m *Move) reverse() *Move {
 	return m2
 
 }
+
+// MoveFromString parses a string like Ke1e2
+// to a *Move
 func MoveFromString(str string) *Move {
 	m := &Move{
-		player:      player,
-		piece:       piece,
+		player:      WHITE,
+		piece:       Symbols[string(str[0])],
 		capture:     Empty,
 		promotion:   Empty,
-		source:      src,
-		destination: dst,
+		source:      squareMap[string(str[1:3])],
+		destination: squareMap[string(str[3:5])],
 		isCapture:   false,
 		isQueenside: false,
 		isKingside:  false}
-	m.Str = m.str
+	m.Str = str
 	return m
 }
 

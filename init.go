@@ -23,6 +23,7 @@ func init() {
 		}
 	}
 
+	squareMap = make(map[string]int)
 	// define squaresDistances
 	for _, s := range BoardSquares {
 		for _, r := range FirstSquares {
@@ -30,7 +31,7 @@ func init() {
 				squaresDistances[s.index][r+f] = s.distance(BoardSquares[r+f])
 			}
 		}
-		squareMap[s.name] = s
+		squareMap[s.name] = s.index
 	}
 
 	// compute piece moves

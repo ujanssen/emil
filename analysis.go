@@ -29,7 +29,7 @@ func DTMsFromString(s string) (list []*DTM) {
 			panic("can not parse " + parts[0] + " to integer")
 		}
 		move := MoveFromString(parts[1])
-		d := &DTM{Dtm: dtm}
+		d := &DTM{Dtm: dtm, Move: move}
 		list = append(list, d)
 	}
 	return list
