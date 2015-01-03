@@ -17,9 +17,9 @@ type EndGameSave struct {
 
 // EndGameDb to query for mate in 1,2, etc.
 type EndGameDb struct {
-	Start       time.Time            `json:"startTime"`
-	Duration    time.Duration        `json:"duration"`
-	AnalysisMap map[string]*Analysis `json:"analysis"`
+	Start       time.Time
+	Duration    time.Duration
+	AnalysisMap map[string]*Analysis
 	dtmDb       []map[string]bool
 }
 
