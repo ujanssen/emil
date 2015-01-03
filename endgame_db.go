@@ -64,11 +64,7 @@ func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
 }
 
 func (db *EndGameDb) addPosition(board *Board) {
-	a := &Analysis{
-		dtmWhite: make([]*DTM, 0),
-		dtmBlack: make([]*DTM, 0),
-		board:    board,
-		moves:    make(map[string]bool)}
+	a := NewAnalysis(board)
 	db.AnalysisMap[a.board.String()] = a
 }
 

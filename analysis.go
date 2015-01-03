@@ -50,7 +50,13 @@ func (a *Analysis) String() string {
 		NewPosition(a.board, WHITE),
 		a.board)
 }
-
+func NewAnalysis(board *Board) *Analysis {
+	return &Analysis{
+		dtmWhite: make([]*DTM, 0),
+		dtmBlack: make([]*DTM, 0),
+		board:    board,
+		moves:    make(map[string]bool)}
+}
 func (a *Analysis) DTMs(player int) []*DTM {
 	if player == WHITE {
 		return a.dtmWhite
