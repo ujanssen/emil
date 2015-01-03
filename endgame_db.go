@@ -315,7 +315,7 @@ func LoadEndGameDb() (db *EndGameDb, err error) {
 		db.addPosition(board)
 		dtms := DTMsFromString(v)
 		for _, d := range dtms {
-			db.addAnalysis(board, d.Dtm, d.Move.reverse())
+			db.addAnalysis(board, d.dtm, d.Move.reverse())
 		}
 	}
 
