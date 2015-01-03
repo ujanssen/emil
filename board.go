@@ -74,7 +74,7 @@ func (b *Board) String() string {
 			s += "/"
 		}
 		for f := 0; f < 8; f++ {
-			s += fmt.Sprintf("%s", symbol(b.squares[r+f]))
+			s += fmt.Sprintf("%s", Pieces[b.squares[r+f]])
 		}
 	}
 	s = strings.Replace(s, "        ", "8", -1)
@@ -94,11 +94,12 @@ func (b *Board) Picture() string {
 	for _, r := range FirstSquares {
 		s += fmt.Sprintf("%d ", BoardSquares[r].rank)
 		for f := 0; f < 8; f++ {
-			s += fmt.Sprintf("%s ", symbol(b.squares[r+f]))
+			s += fmt.Sprintf("%s ", Pieces[b.squares[r+f]])
 		}
 		s += fmt.Sprintf("%d\n", BoardSquares[r].rank)
 	}
 	s += "  " + files + " \n"
+	s += "FEN: " + b.String()
 	return s
 }
 
@@ -107,7 +108,9 @@ func (b *Board) Setup(piece, square int) (noError error) {
 	if b.squares[square] != Empty {
 		return errNotEmpty
 	}
+
 	b.squares[square] = piece
+
 	if piece == BlackKing {
 		b.blackKing = square
 	}

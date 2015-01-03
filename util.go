@@ -1,20 +1,5 @@
 package emil
 
-func symbol(piece int) string {
-	switch piece {
-	case WhiteKing:
-		return "K"
-	case BlackKing:
-		return "k"
-	case WhiteRock:
-		return "R"
-	case BlackRock:
-		return "r"
-	default:
-		return " "
-	}
-}
-
 func isOtherKing(player, capture int) bool {
 	return (player == WHITE && capture == BlackKing) ||
 		(player == BLACK && capture == WhiteKing)

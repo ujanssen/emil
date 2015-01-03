@@ -29,29 +29,65 @@ const (
 
 // Pieces values
 const (
-	kingValue = 10000
-	rockValue = 500
+	kingValue   = 10000
+	queenValue  = 900
+	rockValue   = 500
+	bishopValue = 300
+	knightValue = 301
+	pawnValue   = 100
 
-	Empty     = 0
+	Empty = 0
+
 	WhiteKing = kingValue
 	BlackKing = BLACK * kingValue
+
+	WhiteQueen = queenValue
+	BlackQueen = BLACK * queenValue
+
 	WhiteRock = rockValue
 	BlackRock = BLACK * rockValue
+
+	WhiteBishop = bishopValue
+	BlackBishop = BLACK * bishopValue
+
+	WhiteKnight = knightValue
+	BlackKnight = BLACK * knightValue
+
+	WhitePawn = pawnValue
+	BlackPawn = BLACK * pawnValue
 )
 
 // Pieces symbols
 var (
 	Pieces = map[int]string{
-		WhiteKing: "K",
-		BlackKing: "k",
-		WhiteRock: "R",
-		BlackRock: "r",
+		WhiteKing:   "K",
+		BlackKing:   "k",
+		WhiteQueen:  "Q",
+		BlackQueen:  "q",
+		WhiteRock:   "R",
+		BlackRock:   "r",
+		WhiteBishop: "B",
+		BlackBishop: "b",
+		WhiteKnight: "N",
+		BlackKnight: "n",
+		WhitePawn:   "P",
+		BlackPawn:   "p",
+		Empty:       " ",
 	}
 	Symbols = map[string]int{
 		"K": WhiteKing,
 		"k": BlackKing,
+		"Q": WhiteQueen,
+		"q": BlackQueen,
 		"R": WhiteRock,
 		"r": BlackRock,
+		"B": WhiteBishop,
+		"b": BlackBishop,
+		"N": WhiteKnight,
+		"n": BlackKnight,
+		"P": WhitePawn,
+		"p": BlackPawn,
+		" ": Empty,
 	}
 )
 
