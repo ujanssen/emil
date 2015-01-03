@@ -65,8 +65,8 @@ func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
 
 func (db *EndGameDb) addPosition(board *Board) {
 	a := &Analysis{
-		DtmWhite: make([]*DTM, 0),
-		DtmBlack: make([]*DTM, 0),
+		dtmWhite: make([]*DTM, 0),
+		dtmBlack: make([]*DTM, 0),
 		Board:    board,
 		moves:    make(map[string]bool)}
 	db.AnalysisMap[a.Board.String()] = a
@@ -331,8 +331,7 @@ func SaveEndGameDb(db *EndGameDb) error {
 	data := EndGameSave{AnalysisMap: make(map[string]string)}
 
 	for p, a := range db.AnalysisMap {
-		data.AnalysisMap[p] = fmt.Sprintf("%v", a.DtmWhite)
-
+		data.AnalysisMap[p] = fmt.Sprintf("%v", a.dtmWhite)
 	}
 
 	b, err := json.MarshalIndent(data, "", "  ")

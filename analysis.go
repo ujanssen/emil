@@ -37,26 +37,27 @@ func DTMsFromString(s string) (list []*DTM) {
 
 type Analysis struct {
 	Board    *Board `json:"-"`
-	DtmWhite []*DTM `json:"dtmWhite"`
-	DtmBlack []*DTM `json:"dtmBlack"`
+	dtmWhite []*DTM `json:"dtmWhite"`
+	dtmBlack []*DTM `json:"dtmBlack"`
 
 	moves map[string]bool
 }
 
 func (a *Analysis) String() string {
 	return fmt.Sprintf("WHITE: %s\nBLACK: %s\nFEN: %s\n%s\n",
-		a.DtmWhite,
-		a.DtmBlack,
+		a.dtmWhite,
+		a.dtmBlack,
 		NewPosition(a.Board, WHITE),
 		a.Board)
 }
 
 func (a *Analysis) DTMs(player int) []*DTM {
 	if player == WHITE {
-		return a.DtmWhite
+		return a.dtmWhite
 	}
-	return a.DtmBlack
+	return a.dtmBlack
 }
+
 func (a *Analysis) addDTM(move *Move, dtm int) {
 	if _, ok := a.moves[move.String()]; ok {
 		return // we have this move allready
@@ -64,14 +65,14 @@ func (a *Analysis) addDTM(move *Move, dtm int) {
 	a.moves[move.String()] = true
 
 	if move.player == WHITE {
-		a.DtmWhite = append(a.DtmWhite, &DTM{move: move, dtm: dtm})
+		a.dtmWhite = append(a.dtmWhite, &DTM{move: move, dtm: dtm})
 	} else {
-		a.DtmBlack = append(a.DtmBlack, &DTM{move: move, dtm: dtm})
+		a.dtmBlack = append(a.dtmBlack, &DTM{move: move, dtm: dtm})
 	}
 }
 
 func (a *Analysis) playerHaveDTMs() bool {
-	return (len(a.DtmWhite) + len(a.DtmBlack)) > 0
+	return (len(a.dtmWhite) + len(a.dtmBlack)) > 0
 }
 
 func (a *Analysis) BestMove(player int) (bestMove *Move) {
