@@ -8,29 +8,25 @@ import (
 
 var errNowNewAnalysis = errors.New("errNowNewAnalysis")
 
-func (db *EndGameDb) addPosition(board *Board) {
+func (db *EndGameDb) addAnalysis(board *Board) {
 	a := NewAnalysis(board)
 	db.AnalysisMap[a.board.String()] = a
 }
 
-func (db *EndGameDb) addAnalysis(board *Board, dtm int, move *Move) {
+func (db *EndGameDb) addDTMToAnalysis(board *Board, dtm int, move *Move) {
 	a := db.AnalysisMap[board.String()]
 	if move != nil {
 		a.addDTM(move.reverse(), dtm)
 	}
 	if dtm >= 0 {
+		db.dtmDb[dtm][board.String()] = true
 		if move != nil {
 			playerForStep := playerForStepN(dtm)
 			if playerForStep != move.player {
 				panic("playerForStep != move.player")
 			}
 		}
-		db.dtmDb[dtm][board.String()] = true
 	}
-}
-
-func (db *EndGameDb) positions() int {
-	return len(db.AnalysisMap)
 }
 
 // find positions where black is checkmate
@@ -56,7 +52,7 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 		move := Search(p)
 		if move == nil {
 			if isKingInCheck(p) {
-				db.addAnalysis(a.board, 0, nil)
+				db.addDTMToAnalysis(a.board, 0, nil)
 				if DEBUG {
 					fmt.Printf("mate:\n%s\n", boardStr)
 				}
@@ -96,7 +92,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 
 			for _, m := range moves {
 				newBoard := a.board.doMove(m)
-				db.addAnalysis(newBoard, dtm, m)
+				db.addDTMToAnalysis(newBoard, dtm, m)
 			}
 		}
 	} else {
@@ -130,7 +126,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 
 			if found == len(moves) {
 				for _, m := range moves {
-					db.addAnalysis(a.board, maxDTM+1, m)
+					db.addDTMToAnalysis(a.board, maxDTM+1, m)
 				}
 			}
 		}

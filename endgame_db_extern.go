@@ -97,10 +97,10 @@ func LoadEndGameDb() (db *EndGameDb, err error) {
 
 	for fen, v := range data.AnalysisMap {
 		board := Fen2Board(fen)
-		db.addPosition(board)
+		db.addAnalysis(board)
 		dtms := DTMsFromString(v)
 		for _, d := range dtms {
-			db.addAnalysis(board, d.dtm, d.move.reverse())
+			db.addDTMToAnalysis(board, d.dtm, d.move.reverse())
 		}
 	}
 
@@ -129,7 +129,7 @@ func SaveEndGameDb(db *EndGameDb) error {
 func NewEndGameDb() *EndGameDb {
 	var err error
 
-	endGames := &EndGameDb{
+	db := &EndGameDb{
 		Start:       time.Now(),
 		AnalysisMap: make(map[string]*Analysis),
 		dtmDb:       make([]map[string]bool, 0)}
@@ -164,19 +164,21 @@ func NewEndGameDb() *EndGameDb {
 					continue
 				}
 
-				endGames.addPosition(board)
+				db.addAnalysis(board)
 			}
 		}
 	}
 	end := time.Now()
-	endGames.Duration = end.Sub(endGames.Start)
+	db.Duration = end.Sub(db.Start)
 	if DEBUG {
-		fmt.Printf("all positions %d\n", 64*63*62)
-		fmt.Printf("endGames.positions() %d\n", endGames.positions())
-		fmt.Printf("difference %d\n", 64*63*62-endGames.positions())
-		fmt.Printf("duration %v\n", endGames.Duration)
-	}
-	endGames.retrogradeAnalysis()
+		positions := len(db.AnalysisMap)
 
-	return endGames
+		fmt.Printf("all positions %d\n", 64*63*62)
+		fmt.Printf("endGames.positions() %d\n", positions)
+		fmt.Printf("difference %d\n", 64*63*62-positions)
+		fmt.Printf("duration %v\n", db.Duration)
+	}
+	db.retrogradeAnalysis()
+
+	return db
 }
