@@ -8,11 +8,11 @@ import (
 
 type DTM struct {
 	dtm  int // Depth to mate
-	Move *Move
+	move *Move
 }
 
 func (d *DTM) String() string {
-	return fmt.Sprintf("%d/%s", d.dtm, d.Move)
+	return fmt.Sprintf("%d/%s", d.dtm, d.move)
 }
 
 func DTMsFromString(s string) (list []*DTM) {
@@ -29,7 +29,7 @@ func DTMsFromString(s string) (list []*DTM) {
 			panic("can not parse " + parts[0] + " to integer")
 		}
 		move := MoveFromString(parts[1])
-		d := &DTM{dtm: dtm, Move: move}
+		d := &DTM{dtm: dtm, move: move}
 		list = append(list, d)
 	}
 	return list
@@ -64,9 +64,9 @@ func (a *Analysis) addDTM(move *Move, dtm int) {
 	a.moves[move.String()] = true
 
 	if move.player == WHITE {
-		a.DtmWhite = append(a.DtmWhite, &DTM{Move: move, dtm: dtm})
+		a.DtmWhite = append(a.DtmWhite, &DTM{move: move, dtm: dtm})
 	} else {
-		a.DtmBlack = append(a.DtmBlack, &DTM{Move: move, dtm: dtm})
+		a.DtmBlack = append(a.DtmBlack, &DTM{move: move, dtm: dtm})
 	}
 }
 
@@ -82,7 +82,7 @@ func (a *Analysis) BestMove(player int) (bestMove *Move) {
 	for _, d := range dtms {
 		if d.dtm < minDTM {
 			minDTM = d.dtm
-			bestMove = d.Move
+			bestMove = d.move
 		}
 	}
 	// TODO best move for black
