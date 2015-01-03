@@ -36,7 +36,7 @@ func DTMsFromString(s string) (list []*DTM) {
 }
 
 type Analysis struct {
-	Board    *Board `json:"-"`
+	board    *Board `json:"-"`
 	dtmWhite []*DTM `json:"dtmWhite"`
 	dtmBlack []*DTM `json:"dtmBlack"`
 
@@ -47,8 +47,8 @@ func (a *Analysis) String() string {
 	return fmt.Sprintf("WHITE: %s\nBLACK: %s\nFEN: %s\n%s\n",
 		a.dtmWhite,
 		a.dtmBlack,
-		NewPosition(a.Board, WHITE),
-		a.Board)
+		NewPosition(a.board, WHITE),
+		a.board)
 }
 
 func (a *Analysis) DTMs(player int) []*DTM {
