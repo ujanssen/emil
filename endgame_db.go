@@ -91,7 +91,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 			moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
 
 			for _, m := range moves {
-				newBoard := a.board.doMove(m)
+				newBoard := a.board.DoMove(m)
 				db.addDTMToAnalysis(newBoard, dtm, m)
 			}
 		}
@@ -114,7 +114,7 @@ func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
 			found := 0
 			maxDTM := -1
 			for _, m := range moves {
-				newBoard := a.board.doMove(m)
+				newBoard := a.board.DoMove(m)
 				newDtm := db.isMateIn1357(newBoard, dtm)
 				if newDtm > maxDTM {
 					maxDTM = newDtm

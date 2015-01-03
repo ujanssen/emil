@@ -124,21 +124,11 @@ func (b *Board) kingsToClose() (noError error) {
 	return noError
 }
 func (b *Board) DoMove(m *Move) (newBoard *Board) {
-	return b.doMove(m)
-}
-
-func (b *Board) doMove(m *Move) (newBoard *Board) {
-	// if DEBUG {
-	// 	fmt.Printf("do move: %s\n", m)
-	// }
 	newBoard = NewBoard()
 	newBoard.whiteKing = b.whiteKing
 	newBoard.blackKing = b.blackKing
 	copy(newBoard.squares, b.squares)
 	newBoard.squares[m.source] = Empty
 	newBoard.squares[m.destination] = m.piece
-	// if DEBUG {
-	// 	fmt.Printf("%s\n", b)
-	// }
 	return newBoard
 }
