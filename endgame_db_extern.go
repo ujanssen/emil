@@ -70,7 +70,7 @@ func (db *EndGameDb) MaxDtm() int {
 func GenerateMoves(p *position) (list []*Move) {
 	for _, m := range generateMoves(p) {
 		b := p.board.DoMove(m)
-		if !IsTheKingInCheck(NewPosition(b, WHITE)) {
+		if !isKingInCheck(NewPosition(b, p.player)) {
 			list = append(list, m)
 		}
 	}

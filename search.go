@@ -46,7 +46,7 @@ func generateMoveListWe(p *position) (list []*Move, err error) {
 	}
 	return list, err
 }
-func IsTheKingInCheck(p *position) (kingInCheck bool) {
+func CanPlayerCaptureKing(p *position) (kingInCheck bool) {
 	_, kingCaptured := generateMoveListWe(p)
 	if kingCaptured != nil {
 		return true
