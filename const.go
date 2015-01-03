@@ -27,6 +27,19 @@ const (
 	SQUARES = 64
 )
 
+var (
+	//FirstSquares of rank a to print the board
+	FirstSquares = [...]int{A8, A7, A6, A5, A4, A3, A2, A1}
+
+	//BoardSquares an array of *Square of the board
+	BoardSquares [SQUARES]*Square
+
+	// a map from square name to index in BoardSquares array
+	squareMap map[string]int
+
+	squaresDistances [SQUARES][SQUARES]int
+)
+
 // Pieces values
 const (
 	kingValue   = 10000
@@ -35,26 +48,21 @@ const (
 	bishopValue = 300
 	knightValue = 301
 	pawnValue   = 100
+	Empty       = 0
 
-	Empty = 0
+	WhiteKing   = WHITE * kingValue
+	WhiteQueen  = WHITE * queenValue
+	WhiteRock   = WHITE * rockValue
+	WhiteBishop = WHITE * bishopValue
+	WhiteKnight = WHITE * knightValue
+	WhitePawn   = WHITE * pawnValue
 
-	WhiteKing = kingValue
-	BlackKing = BLACK * kingValue
-
-	WhiteQueen = queenValue
-	BlackQueen = BLACK * queenValue
-
-	WhiteRock = rockValue
-	BlackRock = BLACK * rockValue
-
-	WhiteBishop = bishopValue
+	BlackKing   = BLACK * kingValue
+	BlackQueen  = BLACK * queenValue
+	BlackRock   = BLACK * rockValue
 	BlackBishop = BLACK * bishopValue
-
-	WhiteKnight = knightValue
+	BlackPawn   = BLACK * pawnValue
 	BlackKnight = BLACK * knightValue
-
-	WhitePawn = pawnValue
-	BlackPawn = BLACK * pawnValue
 )
 
 // Pieces symbols
@@ -89,16 +97,4 @@ var (
 		"p": BlackPawn,
 		" ": Empty,
 	}
-)
-
-var (
-	//FirstSquares of rank a to print the board
-	FirstSquares = [...]int{A8, A7, A6, A5, A4, A3, A2, A1}
-
-	//BoardSquares an array of *Square of the board
-	BoardSquares [SQUARES]*Square
-
-	squareMap map[string]int
-
-	squaresDistances [SQUARES][SQUARES]int
 )

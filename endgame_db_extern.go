@@ -20,7 +20,6 @@ type EndGameDb struct {
 	Start       time.Time
 	Duration    time.Duration
 	AnalysisMap map[string]*Analysis
-	dtmDb       []map[string]bool
 }
 
 func (db *EndGameDb) Find(p *position) (bestMove *Move) {
@@ -35,15 +34,9 @@ func (db *EndGameDb) Find(p *position) (bestMove *Move) {
 }
 
 func (db *EndGameDb) FindMatesIn(dtm int) (as []*Analysis) {
-	if dtm == -1 {
-		for _, a := range db.AnalysisMap {
-			if a.playerHaveDTMs() {
-				as = append(as, a)
-			}
-		}
-	} else {
-		for str := range db.dtmDb[dtm] {
-			as = append(as, db.AnalysisMap[str])
+	for _, a := range db.AnalysisMap {
+		if a.dtm == dtm {
+			as = append(as, a)
 		}
 	}
 	return as
@@ -54,17 +47,14 @@ func (db *EndGameDb) FindMates() (as []*Analysis) {
 }
 
 func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
-	for str := range db.dtmDb[0] {
-		a := db.AnalysisMap[str]
-		if a.board.squares[square] == piece {
-			boards = append(boards, a.board)
+	for _, a := range db.AnalysisMap {
+		if a.dtm == 0 {
+			if a.board.squares[square] == piece {
+				boards = append(boards, a.board)
+			}
 		}
 	}
 	return boards
-}
-
-func (db *EndGameDb) MaxDtm() int {
-	return len(db.dtmDb)
 }
 
 func GenerateMoves(p *position) (list []*Move) {
@@ -88,12 +78,7 @@ func LoadEndGameDb() (db *EndGameDb, err error) {
 	}
 	db = &EndGameDb{
 		Start:       time.Now(),
-		AnalysisMap: make(map[string]*Analysis),
-		dtmDb:       make([]map[string]bool, 0)}
-
-	for i := 0; i < 34; i++ {
-		db.dtmDb = append(db.dtmDb, make(map[string]bool))
-	}
+		AnalysisMap: make(map[string]*Analysis)}
 
 	for fen, v := range data.AnalysisMap {
 		board := Fen2Board(fen)
@@ -131,8 +116,7 @@ func NewEndGameDb() *EndGameDb {
 
 	db := &EndGameDb{
 		Start:       time.Now(),
-		AnalysisMap: make(map[string]*Analysis),
-		dtmDb:       make([]map[string]bool, 0)}
+		AnalysisMap: make(map[string]*Analysis)}
 
 	for wk := A1; wk <= H8; wk++ {
 		//for wk := E3; wk <= E3; wk++ {

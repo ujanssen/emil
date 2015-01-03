@@ -14,9 +14,11 @@ func main() {
 	db := emil.NewEndGameDb()
 	end := time.Now()
 
-	for dtm := -1; dtm < db.MaxDtm(); dtm++ {
+	for dtm := -1; dtm < 30; dtm++ {
 		as := db.FindMatesIn(dtm)
-		fmt.Printf("db.FindMatesIn %d: %d boards\n", dtm, len(as))
+		if len(as) > 0 {
+			fmt.Printf("db.FindMatesIn %d: %d boards\n", dtm, len(as))
+		}
 	}
 
 	fmt.Printf("\n\n\ncreate duration %v\n\n\n", end.Sub(start))
