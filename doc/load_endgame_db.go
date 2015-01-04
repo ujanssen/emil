@@ -11,7 +11,7 @@ func main() {
 	emil.DEBUG = true
 
 	start := time.Now()
-	emil.LoadEndGameDb()
+	db, _ := emil.LoadEndGameDb()
 	end := time.Now()
 	fmt.Printf("\n\n\nload duration %v\n", end.Sub(start))
 	/*
@@ -36,4 +36,15 @@ func main() {
 			}
 		}
 	*/
+
+	start = time.Now()
+	db.CreateAnalysisStr()
+	end = time.Now()
+	fmt.Printf("\nCreateAnalysisSt duration %v\n", end.Sub(start))
+
+	start = time.Now()
+	err := emil.SaveEndGameDb("SaveEndGameDb.json", db.AnalysisStr)
+	end = time.Now()
+	fmt.Printf("\n\n\nsave duration %v\nerr %v\n\n", end.Sub(start), err)
+
 }

@@ -58,6 +58,12 @@ func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
 	return boards
 }
 
+func (db *EndGameDb) CreateAnalysisStr() {
+	for k, a := range db.AnalysisMap {
+		db.AnalysisStr[k] = fmt.Sprintf("%v.%v", a.dtmWhite, a.dtmBlack)
+	}
+}
+
 func GenerateMoves(p *position) (list []*Move) {
 	for _, m := range generateMoves(p) {
 		b := p.board.DoMove(m)
@@ -91,11 +97,11 @@ func LoadEndGameDb() (db *EndGameDb, err error) {
 }
 
 // SaveEndGameDb saves the an end game DB for KRK to file
-func (db *EndGameDb) SaveEndGameDb() error {
-	fmt.Println("WriteDataToFile: ", filename)
+func SaveEndGameDb(file string, analysisStr map[string]string) error {
+	fmt.Println("WriteDataToFile: ", file)
 
 	data := EndGameSave{}
-	data.AnalysisMap = db.AnalysisStr
+	data.AnalysisMap = analysisStr
 	start := time.Now()
 	fmt.Printf("json.MarshalIndent\n")
 	b, err := json.MarshalIndent(data, "", "  ")
@@ -107,7 +113,7 @@ func (db *EndGameDb) SaveEndGameDb() error {
 
 	start = time.Now()
 	fmt.Printf("ioutil.WriteFile\n")
-	err = ioutil.WriteFile(filename, b, 0666)
+	err = ioutil.WriteFile(file, b, 0666)
 	end = time.Now()
 	fmt.Printf("ioutil.WriteFile %v, error=%v\n", end.Sub(start), err)
 	return err

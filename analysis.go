@@ -74,7 +74,7 @@ func (a *Analysis) addMoveToAnalysis(move *Move, board *Board) {
 	}
 }
 
-func (a *Analysis) addDTM(move *Move, dtm int) bool {
+func (a *Analysis) addDTM(move *Move, dtm int) {
 	if dtm < a.dtm || a.dtm == initial {
 		a.dtm = dtm
 	}
@@ -92,7 +92,6 @@ func (a *Analysis) addDTM(move *Move, dtm int) bool {
 			}
 		}
 	}
-	return true
 }
 
 func (a *Analysis) playerHaveDTMs() bool {
