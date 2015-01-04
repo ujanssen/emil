@@ -11,6 +11,9 @@ func NewPosition(board *Board, player int) *position {
 		player: player}
 }
 
+func (p *position) key() positionKey {
+	return positionKey(p.String())
+}
 func (p *position) String() string {
 	s := p.board.String()
 	if p.player == WHITE {
