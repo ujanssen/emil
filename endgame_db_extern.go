@@ -20,6 +20,7 @@ type EndGameDb struct {
 	Start       time.Time
 	Duration    time.Duration
 	AnalysisMap map[string]*Analysis
+	AnalysisStr map[string]string
 }
 
 func (db *EndGameDb) Find(p *position) (bestMove *Move) {
@@ -96,12 +97,8 @@ func LoadEndGameDb() (db *EndGameDb, err error) {
 func (db *EndGameDb) SaveEndGameDb() error {
 	fmt.Println("WriteDataToFile: ", filename)
 
-	data := EndGameSave{AnalysisMap: make(map[string]string)}
-
-	for p, a := range db.AnalysisMap {
-		data.AnalysisMap[p] = fmt.Sprintf("%v", a.dtmWhite)
-	}
-
+	data := EndGameSave{}
+	data.AnalysisMap = db.AnalysisStr
 	start := time.Now()
 	fmt.Printf("json.MarshalIndent\n")
 	b, err := json.MarshalIndent(data, "", "  ")
@@ -125,7 +122,8 @@ func NewEndGameDb() *EndGameDb {
 
 	db := &EndGameDb{
 		Start:       time.Now(),
-		AnalysisMap: make(map[string]*Analysis)}
+		AnalysisMap: make(map[string]*Analysis),
+		AnalysisStr: make(map[string]string)}
 
 	if DEBUG {
 		fmt.Printf("create all position and moves\n")

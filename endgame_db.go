@@ -9,9 +9,11 @@ import (
 var errNowNewAnalysis = errors.New("errNowNewAnalysis")
 
 func (db *EndGameDb) addAnalysis(board *Board) {
+	boardStr := board.String()
 	a := NewAnalysis(board)
-	db.AnalysisMap[a.board.String()] = a
+	db.AnalysisMap[boardStr] = a
 	db.retrogradeAnalysisStep0(a)
+	db.AnalysisStr[boardStr] = fmt.Sprintf("%v.%v", a.dtmWhite, a.dtmBlack)
 }
 
 func (db *EndGameDb) addMate(board *Board) {
