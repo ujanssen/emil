@@ -27,6 +27,10 @@ func (m *Move) Source() int {
 func (m *Move) Piece() int {
 	return m.piece
 }
+func (m *Move) Player() int {
+	return m.player
+}
+
 func (m *Move) String() string {
 	if !m.isCapture {
 		return fmt.Sprintf("%s%s%s",
@@ -60,9 +64,15 @@ func (m *Move) reverse() *Move {
 // MoveFromString parses a string like Ke1e2
 // to a *Move
 func MoveFromString(str string) *Move {
+	player := WHITE
+	piece := Symbols[string(str[0])]
+	if piece < 0 {
+		player = BLACK
+	}
+
 	m := &Move{
-		player:      WHITE,
-		piece:       Symbols[string(str[0])],
+		player:      player,
+		piece:       piece,
 		capture:     Empty,
 		promotion:   Empty,
 		source:      squareMap[string(str[1:3])],
