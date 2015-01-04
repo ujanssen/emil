@@ -13,18 +13,17 @@ func main() {
 	start := time.Now()
 	db := emil.NewEndGameDb()
 	end := time.Now()
-
-	for dtm := -1; dtm < 30; dtm++ {
-		as := db.FindMatesIn(dtm)
-		if len(as) > 0 {
-			fmt.Printf("db.FindMatesIn %d: %d boards\n", dtm, len(as))
+	/*
+		for dtm := -1; dtm < 30; dtm++ {
+			as := db.FindMatesIn(dtm)
+			if len(as) > 0 {
+				fmt.Printf("db.FindMatesIn %d: %d boards\n", dtm, len(as))
+			}
 		}
-	}
-
+	*/
 	fmt.Printf("\n\n\ncreate duration %v\n\n\n", end.Sub(start))
-
 	start = time.Now()
-	err := emil.SaveEndGameDb(db)
+	err := db.SaveEndGameDb()
 	end = time.Now()
 	fmt.Printf("\n\n\nsave duration %v\nerr %v\n\n", end.Sub(start), err)
 }

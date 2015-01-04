@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const filename = "EndGameDb.json"
+const filename = "AnalysisMap.json"
 
 var IN_TEST = false
 
@@ -93,7 +93,7 @@ func LoadEndGameDb() (db *EndGameDb, err error) {
 }
 
 // SaveEndGameDb saves the an end game DB for KRK to file
-func SaveEndGameDb(db *EndGameDb) error {
+func (db *EndGameDb) SaveEndGameDb() error {
 	fmt.Println("WriteDataToFile: ", filename)
 
 	data := EndGameSave{AnalysisMap: make(map[string]string)}
@@ -102,12 +102,21 @@ func SaveEndGameDb(db *EndGameDb) error {
 		data.AnalysisMap[p] = fmt.Sprintf("%v", a.dtmWhite)
 	}
 
+	start := time.Now()
+	fmt.Printf("json.MarshalIndent\n")
 	b, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return err
 	}
+	end := time.Now()
+	fmt.Printf("json.MarshalIndent %v\n", end.Sub(start))
 
-	return ioutil.WriteFile(filename, b, 0666)
+	start = time.Now()
+	fmt.Printf("ioutil.WriteFile\n")
+	err = ioutil.WriteFile(filename, b, 0666)
+	end = time.Now()
+	fmt.Printf("ioutil.WriteFile %v, error=%v\n", end.Sub(start), err)
+	return err
 }
 
 // NewEndGameDb generates an end game DB for KRK
@@ -118,6 +127,9 @@ func NewEndGameDb() *EndGameDb {
 		Start:       time.Now(),
 		AnalysisMap: make(map[string]*Analysis)}
 
+	if DEBUG {
+		fmt.Printf("create all position and moves\n")
+	}
 	for wk := A1; wk <= H8; wk++ {
 		//for wk := E3; wk <= E3; wk++ {
 		if DEBUG {
@@ -155,14 +167,9 @@ func NewEndGameDb() *EndGameDb {
 	end := time.Now()
 	db.Duration = end.Sub(db.Start)
 	if DEBUG {
-		positions := len(db.AnalysisMap)
-
-		fmt.Printf("all positions %d\n", 64*63*62)
-		fmt.Printf("endGames.positions() %d\n", positions)
-		fmt.Printf("difference %d\n", 64*63*62-positions)
-		fmt.Printf("duration %v\n", db.Duration)
+		fmt.Printf("create all position and moves duration %v\n", db.Duration)
 	}
-	db.retrogradeAnalysis()
+	//db.retrogradeAnalysis()
 
 	return db
 }

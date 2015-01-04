@@ -11,6 +11,7 @@ var errNowNewAnalysis = errors.New("errNowNewAnalysis")
 func (db *EndGameDb) addAnalysis(board *Board) {
 	a := NewAnalysis(board)
 	db.AnalysisMap[a.board.String()] = a
+	db.retrogradeAnalysisStep0(a)
 }
 
 func (db *EndGameDb) addMate(board *Board) {
@@ -37,6 +38,27 @@ func (db *EndGameDb) addDTMToAnalysis(board *Board, dtm int, move *Move) bool {
 		}
 	}
 	return true
+}
+
+// generate all moves
+func (db *EndGameDb) retrogradeAnalysisStep0(a *Analysis) {
+	player := WHITE
+	p := NewPosition(a.board, player)
+	list := generateMoves(p)
+	moves := filterKingCaptures(p, list)
+	moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
+	for _, m := range moves {
+		newBoard := a.board.DoMove(m)
+		a.addMoveToAnalysis(m, newBoard)
+	}
+
+	player = BLACK
+	p = NewPosition(a.board, player)
+	moves = GenerateMoves(p)
+	for _, m := range moves {
+		newBoard := a.board.DoMove(m)
+		a.addMoveToAnalysis(m, newBoard)
+	}
 }
 
 // find positions where black is checkmate
