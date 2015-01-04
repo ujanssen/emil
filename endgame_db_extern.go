@@ -84,11 +84,8 @@ func LoadEndGameDb() (db *EndGameDb, err error) {
 	for fen, v := range data.AnalysisMap {
 		board := Fen2Board(fen)
 		db.addAnalysisFromStr(board, v)
-		// dtms := DTMsFromString(v)
-		// for _, d := range dtms {
-		// 	db.addDTMToAnalysis(board, d.dtm, d.move.reverse())
-		// }
 	}
+	db.retrogradeAnalysis()
 
 	return db, err
 }
@@ -167,7 +164,6 @@ func NewEndGameDb() *EndGameDb {
 	if DEBUG {
 		fmt.Printf("create all position and moves duration %v\n", db.Duration)
 	}
-	//db.retrogradeAnalysis()
 
 	return db
 }

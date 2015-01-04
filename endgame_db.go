@@ -74,6 +74,12 @@ func (db *EndGameDb) retrogradeAnalysisStep0(a *Analysis) {
 		a.addMoveToAnalysis(m, newBoard)
 	}
 }
+func playerForStepN(dtm int) (player int) {
+	if dtm%2 == 0 {
+		return BLACK
+	}
+	return WHITE
+}
 
 // find positions where black is checkmate
 func (db *EndGameDb) retrogradeAnalysisStep1() {
@@ -92,14 +98,10 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 		}
 
 		p := NewPosition(a.board, player)
-
-		move := Search(p)
-		if move == nil {
-			if isKingInCheck(p) {
-				db.addMate(a.board)
-				if DEBUG {
-					fmt.Printf("mate:\n%s\n", boardStr)
-				}
+		if len(a.dtmBlack) == 0 && isKingInCheck(p) {
+			db.addMate(a.board)
+			if DEBUG {
+				fmt.Printf("mate: %s\n", boardStr)
 			}
 		}
 	}
@@ -108,12 +110,6 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 		fmt.Printf("db.dtmDb[0] %d\n", len(db.FindMates()))
 		fmt.Printf("duration %v\n\n\n", end.Sub(start))
 	}
-}
-func playerForStepN(dtm int) (player int) {
-	if dtm%2 == 0 {
-		return BLACK
-	}
-	return WHITE
 }
 
 func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
@@ -235,17 +231,20 @@ func (db *EndGameDb) isMateIn1357(board *Board, maxDtm int) int {
 func (db *EndGameDb) retrogradeAnalysis() {
 	// find positions where black is checkmate
 	db.retrogradeAnalysisStep1()
-	dtm := 1
-	for {
-		err := db.retrogradeAnalysisStepN(dtm)
-		if err != nil {
-			break
+
+	/*
+		dtm := 1
+		for {
+			err := db.retrogradeAnalysisStepN(dtm)
+			if err != nil {
+				break
+			}
+			if IN_TEST {
+				return
+			}
+			dtm++
 		}
-		if IN_TEST {
-			return
-		}
-		dtm++
-	}
+	*/
 }
 func generateMoves(p *position) (list []*Move) {
 	for src, piece := range p.board.squares {

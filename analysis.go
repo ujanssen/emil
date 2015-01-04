@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+const initial = -1
+
 type DTM struct {
 	dtm   int // Depth to mate
 	move  *Move
@@ -58,7 +60,7 @@ func NewAnalysis(board *Board) *Analysis {
 		dtmWhite: make([]*DTM, 0),
 		dtmBlack: make([]*DTM, 0),
 		board:    board,
-		dtm:      9999,
+		dtm:      initial,
 		moves:    make(map[string]bool)}
 }
 func (a *Analysis) DTMs(player int) []*DTM {
