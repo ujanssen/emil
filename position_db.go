@@ -47,7 +47,10 @@ func (db *PositionDb) AddPrevPositions() {
 	for key, entry := range db.Positions {
 		for nextKey, moveToNext := range entry.NextPositions {
 			nextPosition := PositionFromKey(string(nextKey))
-			db.Positions[nextPosition.key()].PrevPositions[key] = moveToNext
+			nextEntry, ok := db.Positions[nextPosition.key()]
+			if ok {
+				nextEntry.PrevPositions[key] = moveToNext
+			}
 		}
 	}
 }
@@ -71,7 +74,6 @@ func NewPositionDB() *PositionDb {
 
 func (db *PositionDb) FillWithKRKPositions() {
 	var err error
-	start := time.Now()
 
 	for wk := A1; wk <= H8; wk++ {
 		//for wk := E3; wk <= E3; wk++ {
@@ -107,11 +109,6 @@ func (db *PositionDb) FillWithKRKPositions() {
 				db.addPosition(NewPosition(board, BLACK))
 			}
 		}
-	}
-	end := time.Now()
-	duration := end.Sub(start)
-	if DEBUG {
-		fmt.Printf("create all position and moves duration %v\n", duration)
 	}
 }
 
