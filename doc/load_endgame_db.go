@@ -11,9 +11,9 @@ func main() {
 	emil.DEBUG = true
 
 	start := time.Now()
-	_, err := emil.LoadEndGameDb()
+	emil.LoadEndGameDb()
 	end := time.Now()
-	fmt.Printf("\n\n\nload duration %v\nerr %v\n\n", end.Sub(start), err)
+	fmt.Printf("\n\n\nload duration %v\n", end.Sub(start))
 	/*
 		if err == nil {
 

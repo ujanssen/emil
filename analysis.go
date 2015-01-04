@@ -44,8 +44,6 @@ type Analysis struct {
 	dtm      int
 	dtmWhite []*DTM
 	dtmBlack []*DTM
-
-	moves map[string]bool
 }
 
 func (a *Analysis) String() string {
@@ -60,8 +58,7 @@ func NewAnalysis(board *Board) *Analysis {
 		dtmWhite: make([]*DTM, 0),
 		dtmBlack: make([]*DTM, 0),
 		board:    board,
-		dtm:      initial,
-		moves:    make(map[string]bool)}
+		dtm:      initial}
 }
 func (a *Analysis) DTMs(player int) []*DTM {
 	if player == WHITE {
@@ -78,18 +75,22 @@ func (a *Analysis) addMoveToAnalysis(move *Move, board *Board) {
 }
 
 func (a *Analysis) addDTM(move *Move, dtm int) bool {
-	if _, ok := a.moves[move.String()]; ok {
-		return false // we have this move allready
-	}
-	if dtm < a.dtm {
+	if dtm < a.dtm || a.dtm == initial {
 		a.dtm = dtm
 	}
-	a.moves[move.String()] = true
 
 	if move.player == WHITE {
-		a.dtmWhite = append(a.dtmWhite, &DTM{move: move, dtm: dtm})
+		for _, d := range a.dtmWhite {
+			if d.move.String() == move.String() {
+				d.dtm = dtm
+			}
+		}
 	} else {
-		a.dtmBlack = append(a.dtmBlack, &DTM{move: move, dtm: dtm})
+		for _, d := range a.dtmBlack {
+			if d.move.String() == move.String() {
+				d.dtm = dtm
+			}
+		}
 	}
 	return true
 }
