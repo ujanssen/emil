@@ -128,97 +128,6 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 	}
 }
 
-func (db *EndGameDb) retrogradeAnalysisStepN(dtm int) (noError error) {
-	start := time.Now()
-	newMovesFound := 0
-
-	player := playerForStepN(dtm)
-
-	if DEBUG {
-		positions := 0
-		for _, a := range db.AnalysisMap {
-			if db.isMateIn0246(a.board, dtm) >= 0 {
-				positions++
-			}
-		}
-		if player == WHITE {
-			fmt.Printf("WHITE Start %d positions %d / ignored positions %d\n",
-				dtm, positions, len(db.AnalysisMap)-positions)
-		} else {
-			fmt.Printf("BLACK Start %d positions %d / ignored positions %d\n",
-				dtm, len(db.AnalysisMap)-positions, positions)
-		}
-	}
-	if player == WHITE {
-		for _, a := range db.AnalysisMap {
-			positionDtm := db.isMateIn0246(a.board, dtm)
-			if positionDtm == -1 {
-				continue
-			}
-
-			p := NewPosition(a.board, player)
-			list := generateMoves(p)
-			moves := filterKingCaptures(p, list)
-			moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
-
-			for _, m := range moves {
-				newBoard := a.board.DoMove(m)
-				db.addDTMToAnalysis(newBoard, positionDtm+1, m)
-				newMovesFound++
-			}
-		}
-	} else {
-		for _, a := range db.AnalysisMap {
-			if db.isMateIn0246(a.board, dtm) >= 0 {
-				continue
-			}
-			p := NewPosition(a.board, player)
-			moves := GenerateMoves(p)
-
-			found := 0
-			minDTM := 500
-			for _, m := range moves {
-				newBoard := a.board.DoMove(m)
-				newDtm := db.isMateIn1357(newBoard, dtm)
-				if newDtm < minDTM {
-					minDTM = newDtm
-				}
-				if db.isMateIn1357(newBoard, dtm) >= 0 {
-					found++
-				}
-			}
-
-			if found == len(moves) {
-				for _, m := range moves {
-					db.addDTMToAnalysis(a.board, minDTM+1, m)
-					newMovesFound++
-				}
-			}
-		}
-	}
-	end := time.Now()
-
-	if DEBUG {
-		for i := 0; i <= dtm; i++ {
-			moves := 0
-			dtms := 0
-			for _, a := range db.AnalysisMap {
-				if a.dtm == i {
-					dtms++
-					moves += a.dtmMoves()
-				}
-			}
-			fmt.Printf("db.dtmDb[%2d] %6d/%6d\n", i, dtms, moves)
-		}
-		fmt.Printf("\nnewMovesFound %d\n", newMovesFound)
-		fmt.Printf("duration %v\n\n", end.Sub(start))
-	}
-
-	if newMovesFound == 0 {
-		return errNowNewAnalysis
-	}
-	return noError
-}
 func (db *EndGameDb) retrogradeAnalysisStepNForBlack(dtm int) (noError error) {
 	start := time.Now()
 	newMovesFound := 0
@@ -301,9 +210,13 @@ func (db *EndGameDb) retrogradeAnalysisStepNforWhite(dtm int) (noError error) {
 		for _, newA := range db.AnalysisMap {
 			for _, d := range newA.dtmWhite {
 				if a.board.String() == d.board.String() {
-					newA.dtm = 1
-					d.dtm = 1
-					newMovesFound++
+					if newA.dtm == initial {
+						newA.dtm = dtm
+					}
+					if d.dtm == initial {
+						d.dtm = dtm
+						newMovesFound++
+					}
 				}
 			}
 		}
