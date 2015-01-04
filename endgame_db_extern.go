@@ -83,11 +83,11 @@ func LoadEndGameDb() (db *EndGameDb, err error) {
 
 	for fen, v := range data.AnalysisMap {
 		board := Fen2Board(fen)
-		db.addAnalysis(board)
-		dtms := DTMsFromString(v)
-		for _, d := range dtms {
-			db.addDTMToAnalysis(board, d.dtm, d.move.reverse())
-		}
+		db.addAnalysisFromStr(board, v)
+		// dtms := DTMsFromString(v)
+		// for _, d := range dtms {
+		// 	db.addDTMToAnalysis(board, d.dtm, d.move.reverse())
+		// }
 	}
 
 	return db, err

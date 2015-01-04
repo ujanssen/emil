@@ -24,13 +24,14 @@ func DTMsFromString(s string) (list []*DTM) {
 	s = strings.Replace(s, "]", "", -1)
 
 	for _, item := range strings.Split(s, " ") {
-		parts := strings.Split(item, "/")
+		parts := strings.Split(item, ",")
 		dtm, err := strconv.Atoi(parts[0])
 		if err != nil {
 			panic("can not parse " + parts[0] + " to integer")
 		}
 		move := MoveFromString(parts[1])
-		d := &DTM{dtm: dtm, move: move}
+		board := Fen2Board(parts[2])
+		d := &DTM{dtm: dtm, move: move, board: board}
 		list = append(list, d)
 	}
 	return list

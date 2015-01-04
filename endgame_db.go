@@ -3,6 +3,7 @@ package emil
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -14,6 +15,17 @@ func (db *EndGameDb) addAnalysis(board *Board) {
 	db.AnalysisMap[boardStr] = a
 	db.retrogradeAnalysisStep0(a)
 	db.AnalysisStr[boardStr] = fmt.Sprintf("%v.%v", a.dtmWhite, a.dtmBlack)
+}
+
+func (db *EndGameDb) addAnalysisFromStr(board *Board, str string) {
+	boardStr := board.String()
+	a := NewAnalysis(board)
+	db.AnalysisMap[boardStr] = a
+
+	parts := strings.Split(str, ".")
+
+	a.dtmWhite = DTMsFromString(parts[0])
+	a.dtmBlack = DTMsFromString(parts[1])
 }
 
 func (db *EndGameDb) addMate(board *Board) {
