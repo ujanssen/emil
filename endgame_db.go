@@ -76,9 +76,7 @@ func (db *EndGameDb) addDTMToAnalysis(board *Board, dtm int, move *Move) {
 func (db *EndGameDb) retrogradeAnalysisStep0(a *Analysis) {
 	player := WHITE
 	p := NewPosition(a.board, player)
-	list := generateMoves(p)
-	moves := filterKingCaptures(p, list)
-	moves = filterKingCaptures(NewPosition(a.board, otherPlayer(player)), list)
+	moves := GenerateMoves(p)
 	for _, m := range moves {
 		newBoard := a.board.DoMove(m)
 		a.addMoveToAnalysis(m, newBoard)
@@ -287,56 +285,51 @@ func (db *EndGameDb) retrogradeAnalysisStepNForBlack(dtm int) (noError error) {
 func (db *EndGameDb) retrogradeAnalysisStepNforWhite(dtm int) (noError error) {
 	start := time.Now()
 	newMovesFound := 0
-
-	player := WHITE
-
-	if DEBUG {
-		positions := 0
-		for _, a := range db.AnalysisMap {
-			if db.isMateIn0246(a.board, dtm) >= 0 {
-				positions++
-			}
-		}
-		if player == WHITE {
-			fmt.Printf("WHITE Start %d positions %d / ignored positions %d\n",
-				dtm, positions, len(db.AnalysisMap)-positions)
+	positions := 0
+	var list []*Analysis
+	for _, a := range db.AnalysisMap {
+		if db.isMateIn0246(a.board, 0) >= 0 {
+			positions++
+			list = append(list, a)
 		}
 	}
-	for _, a := range db.AnalysisMap {
-		positionDtm := db.isMateIn0246(a.board, dtm)
-		if positionDtm == initial {
-			continue
-		}
+	fmt.Printf("WHITE Start %d positions %d / ignored positions %d\n",
+		dtm, positions, len(db.AnalysisMap)-positions)
 
-		for _, d := range a.dtmWhite {
-			db.addDTMToAnalysis(d.board, positionDtm+1, d.move)
-			newMovesFound++
+	// get mate positions
+	for _, a := range list {
+		for _, newA := range db.AnalysisMap {
+			for _, d := range newA.dtmWhite {
+				if a.board.String() == d.board.String() {
+					newA.dtm = 1
+					d.dtm = 1
+					newMovesFound++
+				}
+			}
 		}
 	}
 	end := time.Now()
 
 	if DEBUG {
 		for i := 0; i <= dtm; i++ {
-			moves := 0
 			dtms := 0
 			for _, a := range db.AnalysisMap {
 				if a.dtm == i {
 					dtms++
-					moves += a.dtmMoves()
 				}
 			}
-			if dtms > 0 {
-				fmt.Printf("db.dtmDb[%2d] %6d/%6d\n", i, dtms, moves)
-			}
+			fmt.Printf("db.dtmDb[%2d] %6d\n", i, dtms)
 		}
 		fmt.Printf("\nnewMovesFound %d\n", newMovesFound)
 		fmt.Printf("duration %v\n\n", end.Sub(start))
 	}
 
-	if newMovesFound == 0 {
-		return errNowNewAnalysis
-	}
+	// search mate positions in DTM.board
+	//mark als dtm 1
+	fmt.Printf("duration %v\n\n", end.Sub(start))
+
 	return noError
+
 }
 func (db *EndGameDb) isMateIn0246(board *Board, maxDtm int) int {
 	if a, ok := db.AnalysisMap[board.String()]; ok {
@@ -362,25 +355,29 @@ func (db *EndGameDb) isMateIn1357(board *Board, maxDtm int) int {
 func (db *EndGameDb) retrogradeAnalysis() {
 	// find positions where black is checkmate
 	db.retrogradeAnalysisStep1()
-	db.retrogradeAnalysisStepNForBlack(2)
+	db.retrogradeAnalysisStepNforWhite(1)
 
-	dtm := 1
-	for {
-		err := db.retrogradeAnalysisStepNforWhite(dtm)
-		dtm++
-		if err != nil {
-			break
-		}
-		if IN_TEST {
-			return
-		}
-		err = db.retrogradeAnalysisStepNForBlack(dtm)
-		dtm++
-		if err != nil {
-			break
-		}
-	}
+	/*
+		for {
+			err := db.retrogradeAnalysisStepNforWhite(dtm)
+			dtm++
+			if err != nil {
+				break
+			}
+			if IN_TEST {
+				return
+			}
+			err = db.retrogradeAnalysisStepNForBlack(dtm)
+			dtm++
+			if err != nil {
+				break
+			}
 
+			if dtm >= 114 {
+				break
+			}
+		}
+	*/
 }
 func generateMoves(p *position) (list []*Move) {
 	for src, piece := range p.board.squares {

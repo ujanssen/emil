@@ -59,6 +59,7 @@ func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
 }
 
 func (db *EndGameDb) CreateAnalysisStr() {
+	db.AnalysisStr = make(map[string]string)
 	for k, a := range db.AnalysisMap {
 		db.AnalysisStr[k] = fmt.Sprintf("%v.%v", a.dtmWhite, a.dtmBlack)
 	}
