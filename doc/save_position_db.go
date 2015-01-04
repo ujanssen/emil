@@ -13,9 +13,16 @@ func main() {
 	db := emil.NewPositionDB()
 	start := time.Now()
 	db.FillWithKRKPositions()
-	//	err := emil.SaveEndGameDb("AnalysisMap.json", db.AnalysisStr)
 	end := time.Now()
-	db.Positions()
-	fmt.Printf("db.Positions() %d\n\n", db.Positions())
-	fmt.Printf("\n\n\nsave duration %v\n\n", end.Sub(start))
+	fmt.Printf("db.Positions() %d\n\n", len(db.Positions))
+	fmt.Printf("FillWithKRKPositions %v\n\n", end.Sub(start))
+
+	start = time.Now()
+	db.AddPrevPositions()
+	end = time.Now()
+	fmt.Printf("db.Positions() %d\n\n", len(db.Positions))
+	fmt.Printf("AddPrevPositions %v\n\n", end.Sub(start))
+
+	db.SavePositionDb("Positions.json")
+
 }

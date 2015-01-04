@@ -1,7 +1,9 @@
 package emil
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"time"
 )
 
@@ -11,8 +13,8 @@ type positionKey string
 type PositionEntry struct {
 	Position      *position
 	Dtm           int
-	PrevPositions map[positionKey]*PositionEntry
-	NextPositions map[positionKey]*PositionEntry
+	PrevPositions map[positionKey]*Move
+	NextPositions map[positionKey]*Move
 }
 
 // NewPositionEntry ceates a new *PositionEntry
@@ -20,30 +22,51 @@ func NewPositionEntry(p *position) *PositionEntry {
 	return &PositionEntry{
 		Position:      p,
 		Dtm:           initial,
-		PrevPositions: make(map[positionKey]*PositionEntry),
-		NextPositions: make(map[positionKey]*PositionEntry)}
+		PrevPositions: make(map[positionKey]*Move),
+		NextPositions: make(map[positionKey]*Move)}
+}
+
+func (entry *PositionEntry) addMoveToNextPosition(next *position, m *Move) {
 }
 
 // PositionDb to query for mate in 1,2, etc.
 type PositionDb struct {
-	positions map[positionKey]*PositionEntry
-}
-
-func (db *PositionDb) Positions() int {
-	return len(db.positions)
+	Positions map[positionKey]*PositionEntry
 }
 
 func (db *PositionDb) addPosition(p *position) {
-	if _, ok := db.positions[p.key()]; ok {
+	if _, ok := db.Positions[p.key()]; ok {
 		panic("key exsists in db " + p.key())
 	}
-	db.positions[p.key()] = NewPositionEntry(p)
+	entry := NewPositionEntry(p)
+	db.retrogradeAnalysisStep0(entry)
+	db.Positions[p.key()] = entry
+}
+
+func (db *PositionDb) AddPrevPositions() {
+	for key, entry := range db.Positions {
+		for nextKey, moveToNext := range entry.NextPositions {
+			nextPosition := PositionFromKey(string(nextKey))
+			db.Positions[nextPosition.key()].PrevPositions[key] = moveToNext
+		}
+	}
+}
+
+// generate all moves
+func (db *PositionDb) retrogradeAnalysisStep0(entry *PositionEntry) {
+	moves := GenerateMoves(entry.Position)
+	other := otherPlayer(entry.Position.player)
+	for _, move := range moves {
+		nextBoard := entry.Position.board.DoMove(move)
+		nextPosition := NewPosition(nextBoard, other)
+		entry.NextPositions[nextPosition.key()] = move
+	}
 }
 
 // NewPositionDB creates a new *PositionDB
 func NewPositionDB() *PositionDb {
 	return &PositionDb{
-		positions: make(map[positionKey]*PositionEntry)}
+		Positions: make(map[positionKey]*PositionEntry)}
 }
 
 func (db *PositionDb) FillWithKRKPositions() {
@@ -90,4 +113,25 @@ func (db *PositionDb) FillWithKRKPositions() {
 	if DEBUG {
 		fmt.Printf("create all position and moves duration %v\n", duration)
 	}
+}
+
+// SaveEndGameDb saves the an end game DB for KRK to file
+func (db *PositionDb) SavePositionDb(file string) error {
+	fmt.Println("WriteDataToFile: ", file)
+
+	start := time.Now()
+	fmt.Printf("json.MarshalIndent\n")
+	b, err := json.MarshalIndent(db, "", "  ")
+	if err != nil {
+		return err
+	}
+	end := time.Now()
+	fmt.Printf("json.MarshalIndent %v\n", end.Sub(start))
+
+	start = time.Now()
+	fmt.Printf("ioutil.WriteFile\n")
+	err = ioutil.WriteFile(file, b, 0666)
+	end = time.Now()
+	fmt.Printf("ioutil.WriteFile %v, error=%v\n", end.Sub(start), err)
+	return err
 }
