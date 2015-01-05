@@ -132,3 +132,24 @@ func (db *PositionDb) SavePositionDb(file string) error {
 	fmt.Printf("ioutil.WriteFile %v, error=%v\n", end.Sub(start), err)
 	return err
 }
+func LoadPositionDb(file string) (db *PositionDb, err error) {
+	fmt.Println("LoadDataFromFile: ", file)
+
+	start := time.Now()
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return db, err
+	}
+	end := time.Now()
+	fmt.Printf("ioutil.ReadFile %v,b=%d, error=%v\n", end.Sub(start), len(b), err)
+
+	data := NewPositionDB()
+	start = time.Now()
+	err = json.Unmarshal(b, data)
+	if err != nil {
+		return db, err
+	}
+	end = time.Now()
+	fmt.Printf("json.Unmarshal%v\n", end.Sub(start))
+	return data, err
+}
