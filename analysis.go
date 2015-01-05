@@ -6,13 +6,16 @@ import (
 	"strings"
 )
 
+const initial = -1
+
 type DTM struct {
-	dtm  int // Depth to mate
-	move *Move
+	dtm   int // Depth to mate
+	move  *Move
+	board *Board
 }
 
 func (d *DTM) String() string {
-	return fmt.Sprintf("%d/%s", d.dtm, d.move)
+	return fmt.Sprintf("%d,%s,%s", d.dtm, d.move, d.board)
 }
 
 func DTMsFromString(s string) (list []*DTM) {
@@ -23,25 +26,24 @@ func DTMsFromString(s string) (list []*DTM) {
 	s = strings.Replace(s, "]", "", -1)
 
 	for _, item := range strings.Split(s, " ") {
-		parts := strings.Split(item, "/")
+		parts := strings.Split(item, ",")
 		dtm, err := strconv.Atoi(parts[0])
 		if err != nil {
 			panic("can not parse " + parts[0] + " to integer")
 		}
 		move := MoveFromString(parts[1])
-		d := &DTM{dtm: dtm, move: move}
+		board := Fen2Board(parts[2])
+		d := &DTM{dtm: dtm, move: move, board: board}
 		list = append(list, d)
 	}
 	return list
 }
 
 type Analysis struct {
-	board    *Board `json:"-"`
+	board    *Board
 	dtm      int
-	dtmWhite []*DTM `json:"dtmWhite"`
-	dtmBlack []*DTM `json:"dtmBlack"`
-
-	moves map[string]bool
+	dtmWhite []*DTM
+	dtmBlack []*DTM
 }
 
 func (a *Analysis) String() string {
@@ -56,8 +58,7 @@ func NewAnalysis(board *Board) *Analysis {
 		dtmWhite: make([]*DTM, 0),
 		dtmBlack: make([]*DTM, 0),
 		board:    board,
-		dtm:      9999,
-		moves:    make(map[string]bool)}
+		dtm:      initial}
 }
 func (a *Analysis) DTMs(player int) []*DTM {
 	if player == WHITE {
@@ -65,22 +66,32 @@ func (a *Analysis) DTMs(player int) []*DTM {
 	}
 	return a.dtmBlack
 }
-
-func (a *Analysis) addDTM(move *Move, dtm int) bool {
-	if _, ok := a.moves[move.String()]; ok {
-		return false // we have this move allready
+func (a *Analysis) addMoveToAnalysis(move *Move, board *Board) {
+	if move.player == WHITE {
+		a.dtmWhite = append(a.dtmWhite, &DTM{move: move, board: board})
+	} else {
+		a.dtmBlack = append(a.dtmBlack, &DTM{move: move, board: board})
 	}
-	if dtm < a.dtm {
+}
+
+func (a *Analysis) addDTM(move *Move, dtm int) {
+	if dtm < a.dtm || a.dtm == initial {
 		a.dtm = dtm
 	}
-	a.moves[move.String()] = true
 
 	if move.player == WHITE {
-		a.dtmWhite = append(a.dtmWhite, &DTM{move: move, dtm: dtm})
+		for _, d := range a.dtmWhite {
+			if d.move.String() == move.String() {
+				d.dtm = dtm
+			}
+		}
 	} else {
-		a.dtmBlack = append(a.dtmBlack, &DTM{move: move, dtm: dtm})
+		for _, d := range a.dtmBlack {
+			if d.move.String() == move.String() {
+				d.dtm = dtm
+			}
+		}
 	}
-	return true
 }
 
 func (a *Analysis) playerHaveDTMs() bool {
