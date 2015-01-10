@@ -12,14 +12,14 @@ var errKingsToClose = errors.New("Kings to close")
 
 // Board with an array of field values, representing pieces
 type Board struct {
-	squares []int
+	Squares []int
 
 	str string
 }
 
 // NewBoard creates a new board
 func NewBoard() *Board {
-	return &Board{squares: make([]int, SQUARES)}
+	return &Board{Squares: make([]int, SQUARES)}
 }
 
 // Fen2Board creates a new board from a fen string
@@ -61,7 +61,7 @@ func Fen2Board(fen string) *Board {
 	return b
 }
 func (b *Board) find(piece int) (int, error) {
-	for _, s := range b.squares {
+	for _, s := range b.Squares {
 		if s == piece {
 			return s, nil
 		}
@@ -84,7 +84,7 @@ func (b *Board) BlackKing() int {
 	return s
 }
 func (b *Board) Square(i int) int {
-	return b.squares[i]
+	return b.Squares[i]
 }
 func (b *Board) String() string {
 	if len(b.str) > 0 {
@@ -96,7 +96,7 @@ func (b *Board) String() string {
 			s += "/"
 		}
 		for f := 0; f < 8; f++ {
-			s += fmt.Sprintf("%s", Pieces[b.squares[r+f]])
+			s += fmt.Sprintf("%s", Pieces[b.Squares[r+f]])
 		}
 	}
 	s = strings.Replace(s, "        ", "8", -1)
@@ -116,7 +116,7 @@ func (b *Board) Picture() string {
 	for _, r := range FirstSquares {
 		s += fmt.Sprintf("%d ", BoardSquares[r].rank)
 		for f := 0; f < 8; f++ {
-			s += fmt.Sprintf("%s ", Pieces[b.squares[r+f]])
+			s += fmt.Sprintf("%s ", Pieces[b.Squares[r+f]])
 		}
 		s += fmt.Sprintf("%d\n", BoardSquares[r].rank)
 	}
@@ -127,25 +127,25 @@ func (b *Board) Picture() string {
 
 //Empty removes a piece from a square
 func (b *Board) Empty(square int) {
-	b.squares[square] = Empty
+	b.Squares[square] = Empty
 	b.str = ""
 }
 
 //Setup a piece on a square
 func (b *Board) Setup(piece, square int) (noError error) {
-	if b.squares[square] != Empty {
+	if b.Squares[square] != Empty {
 		return errNotEmpty
 	}
 
-	b.squares[square] = piece
+	b.Squares[square] = piece
 
 	return noError
 }
 
 func (b *Board) DoMove(m *Move) (newBoard *Board) {
 	newBoard = NewBoard()
-	copy(newBoard.squares, b.squares)
-	newBoard.squares[m.source] = Empty
-	newBoard.squares[m.destination] = m.piece
+	copy(newBoard.Squares, b.Squares)
+	newBoard.Squares[m.source] = Empty
+	newBoard.Squares[m.destination] = m.piece
 	return newBoard
 }

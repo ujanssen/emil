@@ -5,14 +5,14 @@ import (
 )
 
 type position struct {
-	board  *Board
-	player int
+	Board  *Board
+	Player int
 }
 
 func NewPosition(board *Board, player int) *position {
 	return &position{
-		board:  board,
-		player: player}
+		Board:  board,
+		Player: player}
 }
 
 func PositionFromKey(key string) *position {
@@ -34,8 +34,8 @@ func (p *position) key() positionKey {
 	return positionKey(p.String())
 }
 func (p *position) String() string {
-	s := p.board.String()
-	if p.player == WHITE {
+	s := p.Board.String()
+	if p.Player == WHITE {
 		s += " w"
 	} else {
 		s += " b"

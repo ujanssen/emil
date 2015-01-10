@@ -23,6 +23,6 @@ func main() {
 	fmt.Printf("db.Positions() %d\n\n", len(db.Positions))
 	fmt.Printf("AddPrevPositions %v\n\n", end.Sub(start))
 
-	db.SavePositionDb("Positions.json")
+	db.SavePositionDb("Positions.gob")
 
 }

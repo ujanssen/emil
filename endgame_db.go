@@ -293,32 +293,32 @@ func (db *EndGameDb) retrogradeAnalysis() {
 	*/
 }
 func generateMoves(p *position) (list []*Move) {
-	for src, piece := range p.board.squares {
-		if isOwnPiece(p.player, piece) {
+	for src, piece := range p.Board.Squares {
+		if isOwnPiece(p.Player, piece) {
 			switch abs(piece) {
 			case kingValue:
 				for _, dst := range kingDestinationsFrom(src) {
-					capture := p.board.squares[dst]
-					if isOtherKing(p.player, capture) {
+					capture := p.Board.Squares[dst]
+					if isOtherKing(p.Player, capture) {
 						continue
 					}
 					if capture == Empty {
-						list = append(list, newSilentMove(p.player, piece, src, dst))
-					} else if !isOwnPiece(p.player, capture) {
-						list = append(list, newCaptureMove(p.player, piece, capture, src, dst))
+						list = append(list, newSilentMove(p.Player, piece, src, dst))
+					} else if !isOwnPiece(p.Player, capture) {
+						list = append(list, newCaptureMove(p.Player, piece, capture, src, dst))
 					}
 				}
 			case rockValue:
 				for _, dsts := range rockDestinationsFrom(src) {
 					for _, dst := range dsts {
-						capture := p.board.squares[dst]
-						if isOtherKing(p.player, capture) {
+						capture := p.Board.Squares[dst]
+						if isOtherKing(p.Player, capture) {
 							break
 						}
 						if capture == Empty {
-							list = append(list, newSilentMove(p.player, piece, src, dst))
-						} else if !isOwnPiece(p.player, capture) {
-							list = append(list, newCaptureMove(p.player, piece, capture, src, dst))
+							list = append(list, newSilentMove(p.Player, piece, src, dst))
+						} else if !isOwnPiece(p.Player, capture) {
+							list = append(list, newCaptureMove(p.Player, piece, capture, src, dst))
 							break
 						} else {
 							break // onOwnPiece

@@ -1,6 +1,8 @@
 package emil
 
 import (
+	"bytes"
+	"encoding/gob"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -60,12 +62,12 @@ func (db *PositionDb) AddPrevPositions() {
 	}
 }
 
-// generate all moves
+// generate NextPositions
 func (db *PositionDb) retrogradeAnalysisStep0(entry *PositionEntry) {
 	moves := GenerateMoves(entry.Position)
-	other := otherPlayer(entry.Position.player)
+	other := otherPlayer(entry.Position.Player)
 	for _, move := range moves {
-		nextBoard := entry.Position.board.DoMove(move)
+		nextBoard := entry.Position.Board.DoMove(move)
 		nextPosition := NewPosition(nextBoard, other)
 		entry.NextPositions[nextPosition.key()] = move
 	}
@@ -118,20 +120,26 @@ func (db *PositionDb) FillWithKRKPositions() {
 
 // SaveEndGameDb saves the an end game DB for KRK to file
 func (db *PositionDb) SavePositionDb(file string) error {
+	var network bytes.Buffer        // Stand-in for a network connection
+	enc := gob.NewEncoder(&network) // Will write to network.
+
 	fmt.Println("WriteDataToFile: ", file)
 
 	start := time.Now()
-	fmt.Printf("json.MarshalIndent\n")
-	b, err := json.MarshalIndent(db, "", "  ")
+	fmt.Printf("enc.Encode\n")
+
+	// Encode (send) some values.
+	err := enc.Encode(db)
 	if err != nil {
-		return err
+		panic("encode error:" + err.Error())
 	}
+
 	end := time.Now()
-	fmt.Printf("json.MarshalIndent %v\n", end.Sub(start))
+	fmt.Printf("enc.Encode %v\n", end.Sub(start))
 
 	start = time.Now()
 	fmt.Printf("ioutil.WriteFile\n")
-	err = ioutil.WriteFile(file, b, 0666)
+	err = ioutil.WriteFile(file, network.Bytes(), 0666)
 	end = time.Now()
 	fmt.Printf("ioutil.WriteFile %v, error=%v\n", end.Sub(start), err)
 	return err

@@ -25,13 +25,13 @@ type EndGameDb struct {
 
 func (db *EndGameDb) Find(p *position) (bestMove *Move) {
 	if DEBUG {
-		fmt.Printf("Find:\n%s\n", p.board)
+		fmt.Printf("Find:\n%s\n", p.Board)
 	}
-	a := db.AnalysisMap[p.board.String()]
+	a := db.AnalysisMap[p.Board.String()]
 	if DEBUG {
-		fmt.Printf("Found: AnalysisMap with dtms %v\n", a.DTMs(p.player))
+		fmt.Printf("Found: AnalysisMap with dtms %v\n", a.DTMs(p.Player))
 	}
-	return a.BestMove(p.player)
+	return a.BestMove(p.Player)
 }
 
 func (db *EndGameDb) FindMatesIn(dtm int) (as []*Analysis) {
@@ -50,7 +50,7 @@ func (db *EndGameDb) FindMates() (as []*Analysis) {
 func (db *EndGameDb) FindMate(piece, square int) (boards []*Board) {
 	for _, a := range db.AnalysisMap {
 		if a.dtm == 0 {
-			if a.board.squares[square] == piece {
+			if a.board.Squares[square] == piece {
 				boards = append(boards, a.board)
 			}
 		}
@@ -67,8 +67,8 @@ func (db *EndGameDb) CreateAnalysisStr() {
 
 func GenerateMoves(p *position) (list []*Move) {
 	for _, m := range generateMoves(p) {
-		b := p.board.DoMove(m)
-		if !isKingInCheck(NewPosition(b, p.player)) {
+		b := p.Board.DoMove(m)
+		if !isKingInCheck(NewPosition(b, p.Player)) {
 			list = append(list, m)
 		}
 	}
