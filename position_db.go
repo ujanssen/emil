@@ -76,32 +76,25 @@ func (db *PositionDb) FillWithKRKPositions() {
 	var err error
 
 	for wk := A1; wk <= H8; wk++ {
-		//for wk := E3; wk <= E3; wk++ {
-		if DEBUG {
-			fmt.Printf("White king on %s\n", BoardSquares[wk])
-		}
-		for wr := A1; wr <= H8; wr++ {
-			for bk := A1; bk <= H8; bk++ {
+		start := time.Now()
+		for bk := A1; bk <= H8; bk++ {
+			for wr := A1; wr <= H8; wr++ {
 
 				board := NewBoard()
 
-				err = board.Setup(WhiteKing, wk)
-				if err != nil {
+				if err = board.Setup(WhiteKing, wk); err != nil {
 					continue
 				}
 
-				err = board.Setup(WhiteRock, wr)
-				if err != nil {
+				if err = board.Setup(WhiteRock, wr); err != nil {
 					continue
 				}
 
-				err = board.Setup(BlackKing, bk)
-				if err != nil {
+				if err = board.Setup(BlackKing, bk); err != nil {
 					continue
 				}
 
-				err = board.kingsToClose()
-				if err != nil {
+				if err = board.kingsToClose(); err != nil {
 					continue
 				}
 
@@ -109,7 +102,12 @@ func (db *PositionDb) FillWithKRKPositions() {
 				db.addPosition(NewPosition(board, BLACK))
 			}
 		}
+		end := time.Now()
+		if DEBUG {
+			fmt.Printf("White king on %s, %v\n", BoardSquares[wk], end.Sub(start))
+		}
 	}
+
 }
 
 // SaveEndGameDb saves the an end game DB for KRK to file
