@@ -78,23 +78,19 @@ func (db *PositionDb) FillWithKRKPositions() {
 	for wk := A1; wk <= H8; wk++ {
 		start := time.Now()
 		for bk := A1; bk <= H8; bk++ {
+			if squaresDistances[wk][bk] <= 1 {
+				continue
+			}
 			for wr := A1; wr <= H8; wr++ {
-
 				board := NewBoard()
 
 				if err = board.Setup(WhiteKing, wk); err != nil {
 					continue
 				}
-
-				if err = board.Setup(WhiteRock, wr); err != nil {
-					continue
-				}
-
 				if err = board.Setup(BlackKing, bk); err != nil {
 					continue
 				}
-
-				if err = board.kingsToClose(); err != nil {
+				if err = board.Setup(WhiteRock, wr); err != nil {
 					continue
 				}
 
