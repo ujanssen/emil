@@ -6,14 +6,13 @@ import (
 	"strings"
 )
 
+var errPieceNotFound = errors.New("piece not found")
 var errNotEmpty = errors.New("not empty")
 var errKingsToClose = errors.New("Kings to close")
 
 // Board with an array of field values, representing pieces
 type Board struct {
-	squares   []int
-	whiteKing int
-	blackKing int
+	squares []int
 
 	str string
 }
@@ -60,6 +59,29 @@ func Fen2Board(fen string) *Board {
 		}
 	}
 	return b
+}
+func (b *Board) find(piece int) (int, error) {
+	for _, s := range b.squares {
+		if s == piece {
+			return s, nil
+		}
+	}
+	return -1, errPieceNotFound
+}
+
+func (b *Board) WhiteKing() int {
+	s, err := b.find(WhiteKing)
+	if err != nil {
+		panic("White king not found")
+	}
+	return s
+}
+func (b *Board) BlackKing() int {
+	s, err := b.find(BlackKing)
+	if err != nil {
+		panic("Black king not found")
+	}
+	return s
 }
 func (b *Board) Square(i int) int {
 	return b.squares[i]
@@ -111,25 +133,11 @@ func (b *Board) Setup(piece, square int) (noError error) {
 
 	b.squares[square] = piece
 
-	if piece == BlackKing {
-		b.blackKing = square
-	}
-	if piece == WhiteKing {
-		b.whiteKing = square
-	}
 	return noError
 }
 
-func (b *Board) kingsToClose() (noError error) {
-	if squaresDistances[b.whiteKing][b.blackKing] <= 1 {
-		return errKingsToClose
-	}
-	return noError
-}
 func (b *Board) DoMove(m *Move) (newBoard *Board) {
 	newBoard = NewBoard()
-	newBoard.whiteKing = b.whiteKing
-	newBoard.blackKing = b.blackKing
 	copy(newBoard.squares, b.squares)
 	newBoard.squares[m.source] = Empty
 	newBoard.squares[m.destination] = m.piece

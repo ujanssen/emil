@@ -157,11 +157,9 @@ func NewEndGameDb() *EndGameDb {
 					continue
 				}
 
-				err = board.kingsToClose()
-				if err != nil {
+				if squaresDistances[wk][bk] <= 1 {
 					continue
 				}
-
 				db.addAnalysis(board)
 			}
 		}

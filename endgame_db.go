@@ -104,12 +104,12 @@ func (db *EndGameDb) retrogradeAnalysisStep1() {
 	player := BLACK
 	for boardStr, a := range db.AnalysisMap {
 		// mate only on border square
-		blackKingSquare := BoardSquares[a.board.blackKing]
+		blackKingSquare := BoardSquares[a.board.BlackKing()]
 		if !blackKingSquare.isBorder {
 			continue
 		}
 		// mate only with help from king
-		if squaresDistances[a.board.blackKing][a.board.whiteKing] > 2 {
+		if squaresDistances[a.board.BlackKing()][a.board.WhiteKing()] > 2 {
 			continue
 		}
 
