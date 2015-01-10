@@ -26,3 +26,4 @@ cpu.profile
 profile_endgame_db
 log*
 *.json*
+*.gob*
