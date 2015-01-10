@@ -145,25 +145,16 @@ func (db *PositionDb) SavePositionDb(file string) error {
 	return err
 }
 func LoadPositionDb(file string) (db *PositionDb, err error) {
-	fmt.Println("LoadDataFromFile: ", file)
-
-	start := time.Now()
-
 	dataFile, err := os.Open(file)
-	defer dataFile.Close()
-
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	data := NewPositionDB()
-
-	dec := gob.NewDecoder(dataFile)
-	err = dec.Decode(data)
 	if err != nil {
 		panic("decode error " + err.Error())
 	}
-	end := time.Now()
-	fmt.Printf("load und decode%v\n", end.Sub(start))
+
+	dec := gob.NewDecoder(dataFile)
+	data := NewPositionDB()
+	if err = dec.Decode(data); err != nil {
+		panic("decode error " + err.Error())
+	}
+	dataFile.Close()
 	return data, err
 }
