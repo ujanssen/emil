@@ -125,6 +125,12 @@ func (b *Board) Picture() string {
 	return s
 }
 
+//Empty removes a piece from a square
+func (b *Board) Empty(square int) {
+	b.squares[square] = Empty
+	b.str = ""
+}
+
 //Setup a piece on a square
 func (b *Board) Setup(piece, square int) (noError error) {
 	if b.squares[square] != Empty {

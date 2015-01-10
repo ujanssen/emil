@@ -41,7 +41,7 @@ func (db *PositionDb) addPositions(board *Board) {
 
 func (db *PositionDb) addPosition(p *position) {
 	if _, ok := db.Positions[p.key()]; ok {
-		panic("key exsists in db " + p.key())
+		panic("key exsists in db " + string(p.key()))
 	}
 	entry := NewPositionEntry(p)
 	db.retrogradeAnalysisStep0(entry)
@@ -79,33 +79,37 @@ func NewPositionDB() *PositionDb {
 
 func (db *PositionDb) FillWithKRKPositions() {
 	var err error
+	board := NewBoard()
 
 	for wk := A1; wk <= H8; wk++ {
+		if err = board.Setup(WhiteKing, wk); err != nil {
+			continue
+		}
+
 		start := time.Now()
 		for bk := A1; bk <= H8; bk++ {
 			if squaresDistances[wk][bk] <= 1 {
 				continue
 			}
+			if err = board.Setup(BlackKing, bk); err != nil {
+				continue
+			}
 			for wr := A1; wr <= H8; wr++ {
-				board := NewBoard()
-
-				if err = board.Setup(WhiteKing, wk); err != nil {
-					continue
-				}
-				if err = board.Setup(BlackKing, bk); err != nil {
-					continue
-				}
 				if err = board.Setup(WhiteRock, wr); err != nil {
 					continue
 				}
 
 				db.addPositions(board)
+				board.Empty(wr)
 			}
+			board.Empty(bk)
+
 		}
 		end := time.Now()
 		if DEBUG {
 			fmt.Printf("White king on %s, %v\n", BoardSquares[wk], end.Sub(start))
 		}
+		board.Empty(wk)
 	}
 
 }
