@@ -3,9 +3,9 @@ package emil
 import (
 	"bytes"
 	"encoding/gob"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"time"
 )
 
@@ -148,20 +148,22 @@ func LoadPositionDb(file string) (db *PositionDb, err error) {
 	fmt.Println("LoadDataFromFile: ", file)
 
 	start := time.Now()
-	b, err := ioutil.ReadFile(filename)
+
+	dataFile, err := os.Open(file)
+	defer dataFile.Close()
+
 	if err != nil {
-		return db, err
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	data := NewPositionDB()
+
+	dec := gob.NewDecoder(dataFile)
+	err = dec.Decode(data)
+	if err != nil {
+		panic("decode error " + err.Error())
 	}
 	end := time.Now()
-	fmt.Printf("ioutil.ReadFile %v,b=%d, error=%v\n", end.Sub(start), len(b), err)
-
-	data := NewPositionDB()
-	start = time.Now()
-	err = json.Unmarshal(b, data)
-	if err != nil {
-		return db, err
-	}
-	end = time.Now()
-	fmt.Printf("json.Unmarshal%v\n", end.Sub(start))
+	fmt.Printf("load und decode%v\n", end.Sub(start))
 	return data, err
 }
