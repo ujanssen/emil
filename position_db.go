@@ -34,6 +34,11 @@ type PositionDb struct {
 	Positions map[positionKey]*PositionEntry
 }
 
+func (db *PositionDb) addPositions(board *Board) {
+	db.addPosition(NewPosition(board, WHITE))
+	db.addPosition(NewPosition(board, BLACK))
+}
+
 func (db *PositionDb) addPosition(p *position) {
 	if _, ok := db.Positions[p.key()]; ok {
 		panic("key exsists in db " + p.key())
@@ -94,8 +99,7 @@ func (db *PositionDb) FillWithKRKPositions() {
 					continue
 				}
 
-				db.addPosition(NewPosition(board, WHITE))
-				db.addPosition(NewPosition(board, BLACK))
+				db.addPositions(board)
 			}
 		}
 		end := time.Now()
