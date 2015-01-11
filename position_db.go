@@ -172,5 +172,6 @@ func (db *PositionDb) FindWhitePosition(fen string, pe *PositionEntry) error {
 		log.Printf("position %s not found\n", fen)
 		return errPositionNotFound
 	}
+	log.Printf("position: %v\n", pe)
 	return nil
 }
