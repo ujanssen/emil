@@ -164,7 +164,7 @@ func LoadPositionDb(file string) (db *PositionDb, err error) {
 }
 
 // FindWhitePosition serves with rpc
-func (db *PositionDb) FindWhitePosition(fen string, pe *PositionEntry) error {
+func (db *PositionDb) FindWhitePosition(fen string, result *PositionEntry) error {
 	board := Fen2Board(fen)
 	p := NewPosition(board, WHITE)
 	pe, ok := db.Positions[p.key()]
@@ -172,6 +172,6 @@ func (db *PositionDb) FindWhitePosition(fen string, pe *PositionEntry) error {
 		log.Printf("Position %s not found\n", fen)
 		return errPositionNotFound
 	}
-	log.Printf("Position: %v\n", pe)
+	*result = *pe
 	return nil
 }

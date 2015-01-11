@@ -23,7 +23,9 @@ func main() {
 	var pe emil.PositionEntry
 	err = client.Call("PositionDb.FindWhitePosition", args, &pe)
 	if err != nil {
-		log.Fatal("arith error:", err)
+		log.Fatal("db error:", err)
 	}
-	fmt.Printf("Result: %v\n", pe)
+	fmt.Printf("DTM: %v\n", pe.Dtm)
+	fmt.Printf("NextPositions: %v\n", pe.NextPositions)
+	fmt.Printf("PrevPositions: %v\n", pe.PrevPositions)
 }
