@@ -7,7 +7,7 @@ import (
 
 var errKingCapture = errors.New("king capture")
 
-func generateMoveListWe(p *position) (list []*Move, err error) {
+func generateMoveListWe(p *Position) (list []*Move, err error) {
 	var empty []*Move
 	for src, piece := range p.Board.Squares {
 		if isOwnPiece(p.Player, piece) {
@@ -46,7 +46,7 @@ func generateMoveListWe(p *position) (list []*Move, err error) {
 	}
 	return list, err
 }
-func CanPlayerCaptureKing(p *position) (kingInCheck bool) {
+func CanPlayerCaptureKing(p *Position) (kingInCheck bool) {
 	_, kingCaptured := generateMoveListWe(p)
 	if kingCaptured != nil {
 		return true
@@ -54,7 +54,7 @@ func CanPlayerCaptureKing(p *position) (kingInCheck bool) {
 	return false
 }
 
-func isKingInCheck(p *position) (kingInCheck bool) {
+func isKingInCheck(p *Position) (kingInCheck bool) {
 	newPosition := NewPosition(p.Board, otherPlayer(p.Player))
 	_, kingCaptured := generateMoveListWe(newPosition)
 	if kingCaptured != nil {
@@ -63,7 +63,7 @@ func isKingInCheck(p *position) (kingInCheck bool) {
 	return false
 
 }
-func filterKingCaptures(p *position, list []*Move) (result []*Move) {
+func filterKingCaptures(p *Position, list []*Move) (result []*Move) {
 	for _, m := range list {
 		newBoard := p.Board.DoMove(m)
 		newPosition := NewPosition(newBoard, p.Player)
@@ -75,13 +75,13 @@ func filterKingCaptures(p *position, list []*Move) (result []*Move) {
 }
 
 //Search best move for player on board
-func Search(p *position) (bestMove *Move) {
+func Search(p *Position) (bestMove *Move) {
 	bestMove, _ = deepSearch(p, 0, 1)
 	return bestMove
 }
 
 //Search best move for player on board
-func deepSearch(p *position, deep, maxDeep int) (bestMove *Move, bestScore int) {
+func deepSearch(p *Position, deep, maxDeep int) (bestMove *Move, bestScore int) {
 	if p.Player == WHITE {
 		bestScore = 2 * BlackKing
 	} else {

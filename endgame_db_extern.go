@@ -23,7 +23,7 @@ type EndGameDb struct {
 	AnalysisStr map[string]string
 }
 
-func (db *EndGameDb) Find(p *position) (bestMove *Move) {
+func (db *EndGameDb) Find(p *Position) (bestMove *Move) {
 	if DEBUG {
 		fmt.Printf("Find:\n%s\n", p.Board)
 	}
@@ -65,7 +65,7 @@ func (db *EndGameDb) CreateAnalysisStr() {
 	}
 }
 
-func GenerateMoves(p *position) (list []*Move) {
+func GenerateMoves(p *Position) (list []*Move) {
 	for _, m := range generateMoves(p) {
 		b := p.Board.DoMove(m)
 		if !isKingInCheck(NewPosition(b, p.Player)) {
@@ -130,7 +130,7 @@ func NewEndGameDb() *EndGameDb {
 		AnalysisStr: make(map[string]string)}
 
 	if DEBUG {
-		fmt.Printf("create all position and moves\n")
+		fmt.Printf("create all Position and moves\n")
 	}
 	for wk := A1; wk <= H8; wk++ {
 		//for wk := E3; wk <= E3; wk++ {
@@ -167,7 +167,7 @@ func NewEndGameDb() *EndGameDb {
 	end := time.Now()
 	db.Duration = end.Sub(db.Start)
 	if DEBUG {
-		fmt.Printf("create all position and moves duration %v\n", db.Duration)
+		fmt.Printf("create all Position and moves duration %v\n", db.Duration)
 	}
 
 	return db

@@ -292,7 +292,7 @@ func (db *EndGameDb) retrogradeAnalysis() {
 		}
 	*/
 }
-func generateMoves(p *position) (list []*Move) {
+func generateMoves(p *Position) (list []*Move) {
 	for src, piece := range p.Board.Squares {
 		if isOwnPiece(p.Player, piece) {
 			switch abs(piece) {

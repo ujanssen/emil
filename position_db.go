@@ -17,14 +17,14 @@ type positionKey string
 
 // PositionEntry is an entry in the PositionDb
 type PositionEntry struct {
-	Position      *position
+	Position      *Position
 	Dtm           int
 	PrevPositions map[positionKey]*Move
 	NextPositions map[positionKey]*Move
 }
 
 // NewPositionEntry ceates a new *PositionEntry
-func NewPositionEntry(p *position) *PositionEntry {
+func NewPositionEntry(p *Position) *PositionEntry {
 	return &PositionEntry{
 		Position:      p,
 		Dtm:           initial,
@@ -32,7 +32,7 @@ func NewPositionEntry(p *position) *PositionEntry {
 		NextPositions: make(map[positionKey]*Move)}
 }
 
-func (entry *PositionEntry) addMoveToNextPosition(next *position, m *Move) {
+func (entry *PositionEntry) addMoveToNextPosition(next *Position, m *Move) {
 }
 
 // PositionDb to query for mate in 1,2, etc.
@@ -45,7 +45,7 @@ func (db *PositionDb) addPositions(board *Board) {
 	db.addPosition(NewPosition(board, BLACK))
 }
 
-func (db *PositionDb) addPosition(p *position) {
+func (db *PositionDb) addPosition(p *Position) {
 	if _, ok := db.Positions[p.key()]; ok {
 		panic("key exsists in db " + string(p.key()))
 	}
@@ -169,9 +169,9 @@ func (db *PositionDb) FindWhitePosition(fen string, pe *PositionEntry) error {
 	p := NewPosition(board, WHITE)
 	pe, ok := db.Positions[p.key()]
 	if !ok {
-		log.Printf("position %s not found\n", fen)
+		log.Printf("Position %s not found\n", fen)
 		return errPositionNotFound
 	}
-	log.Printf("position: %v\n", pe)
+	log.Printf("Position: %v\n", pe)
 	return nil
 }
