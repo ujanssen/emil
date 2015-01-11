@@ -106,7 +106,7 @@ func deepSearch(p *Position, deep, maxDeep int) (bestMove *Move, bestScore int) 
 	result := filterKingCaptures(p, list)
 
 	if DEBUG {
-		fmt.Printf("deepSearch: %s deep:%d, moves:%s\n", players[p.Player], deep, moveList(result))
+		fmt.Printf("deepSearch: %s deep:%d, moves:%v\n", players[p.Player], deep, result)
 	}
 
 	for i, m := range result {

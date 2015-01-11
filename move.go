@@ -6,58 +6,35 @@ import (
 
 // Move represents a move on the board
 type Move struct {
-	player      int
-	piece       int
-	capture     int
-	promotion   int
-	source      int
-	destination int
-	isCapture   bool
-	isQueenside bool
-	isKingside  bool
-	Str         string `json:"move"`
-}
-
-func (m *Move) Destination() int {
-	return m.destination
-}
-func (m *Move) Source() int {
-	return m.source
-}
-func (m *Move) Piece() int {
-	return m.piece
-}
-func (m *Move) Player() int {
-	return m.player
+	Player      int
+	Piece       int
+	Capture     int
+	Source      int
+	Destination int
+	IsCapture   bool
 }
 
 func (m *Move) String() string {
-	if !m.isCapture {
+	if !m.IsCapture {
 		return fmt.Sprintf("%s%s%s",
-			Pieces[m.piece],
-			BoardSquares[m.source].name,
-			BoardSquares[m.destination].name)
+			Pieces[m.Piece],
+			BoardSquares[m.Source].name,
+			BoardSquares[m.Destination].name)
 	}
 	return fmt.Sprintf("%s%sx%s",
-		Pieces[m.piece],
-		BoardSquares[m.source].name,
-		BoardSquares[m.destination].name)
+		Pieces[m.Piece],
+		BoardSquares[m.Source].name,
+		BoardSquares[m.Destination].name)
 }
 
 func (m *Move) reverse() *Move {
-	m2 := &Move{
-		player:      m.player,
-		piece:       m.piece,
-		capture:     m.capture,
-		promotion:   m.promotion,
-		source:      m.destination,
-		destination: m.source,
-		isCapture:   m.isCapture,
-		isQueenside: m.isQueenside,
-		isKingside:  m.isKingside}
-
-	m2.Str = m2.String()
-	return m2
+	return &Move{
+		Player:      m.Player,
+		Piece:       m.Piece,
+		Capture:     m.Capture,
+		Source:      m.Destination,
+		Destination: m.Source,
+		IsCapture:   m.IsCapture}
 
 }
 
@@ -70,57 +47,26 @@ func MoveFromString(str string) *Move {
 		player = BLACK
 	}
 
-	m := &Move{
-		player:      player,
-		piece:       piece,
-		capture:     Empty,
-		promotion:   Empty,
-		source:      squareMap[string(str[1:3])],
-		destination: squareMap[string(str[3:5])],
-		isCapture:   false,
-		isQueenside: false,
-		isKingside:  false}
-	m.Str = str
-	return m
+	return &Move{
+		Player:      player,
+		Piece:       piece,
+		Capture:     Empty,
+		Source:      squareMap[string(str[1:3])],
+		Destination: squareMap[string(str[3:5])],
+		IsCapture:   false}
 }
 
 func newSilentMove(player, piece, src, dst int) *Move {
-	m := &Move{
-		player:      player,
-		piece:       piece,
-		capture:     Empty,
-		promotion:   Empty,
-		source:      src,
-		destination: dst,
-		isCapture:   false,
-		isQueenside: false,
-		isKingside:  false}
-	m.Str = m.String()
-	return m
+	return &Move{
+		Player:      player,
+		Piece:       piece,
+		Capture:     Empty,
+		Source:      src,
+		Destination: dst,
+		IsCapture:   false}
 }
 func newCaptureMove(player, piece, capture, src, dst int) *Move {
-	m := &Move{
-		player:      player,
-		piece:       piece,
-		capture:     capture,
-		promotion:   Empty,
-		source:      src,
-		destination: dst,
-		isCapture:   true,
-		isQueenside: false,
-		isKingside:  false}
-	m.Str = m.String()
+	m := newSilentMove(player, piece, src, dst)
+	m.IsCapture = true
 	return m
-}
-
-func moveList(list []*Move) string {
-	r := "["
-	for i, m := range list {
-		if i > 0 {
-			r += ", "
-		}
-		r += m.String()
-	}
-	r += "]"
-	return r
 }

@@ -64,7 +64,7 @@ func (db *EndGameDb) addDTMToAnalysis(board *Board, dtm int, move *Move) {
 	}
 
 	playerForStep := playerForStepN(dtm)
-	if playerForStep != move.player {
+	if playerForStep != move.Player {
 		panic("playerForStep != move.player")
 	}
 

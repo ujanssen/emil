@@ -145,7 +145,7 @@ func (b *Board) Setup(piece, square int) (noError error) {
 func (b *Board) DoMove(m *Move) (newBoard *Board) {
 	newBoard = NewBoard()
 	copy(newBoard.Squares, b.Squares)
-	newBoard.Squares[m.source] = Empty
-	newBoard.Squares[m.destination] = m.piece
+	newBoard.Squares[m.Source] = Empty
+	newBoard.Squares[m.Destination] = m.Piece
 	return newBoard
 }

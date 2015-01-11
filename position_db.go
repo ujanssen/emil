@@ -13,14 +13,14 @@ import (
 
 var errPositionNotFound = errors.New("Position not found")
 
-type positionKey string
+type PositionKey string
 
 // PositionEntry is an entry in the PositionDb
 type PositionEntry struct {
 	Position      *Position
 	Dtm           int
-	PrevPositions map[positionKey]*Move
-	NextPositions map[positionKey]*Move
+	PrevPositions map[PositionKey]*Move
+	NextPositions map[PositionKey]*Move
 }
 
 // NewPositionEntry ceates a new *PositionEntry
@@ -28,8 +28,8 @@ func NewPositionEntry(p *Position) *PositionEntry {
 	return &PositionEntry{
 		Position:      p,
 		Dtm:           initial,
-		PrevPositions: make(map[positionKey]*Move),
-		NextPositions: make(map[positionKey]*Move)}
+		PrevPositions: make(map[PositionKey]*Move),
+		NextPositions: make(map[PositionKey]*Move)}
 }
 
 func (entry *PositionEntry) addMoveToNextPosition(next *Position, m *Move) {
@@ -37,7 +37,7 @@ func (entry *PositionEntry) addMoveToNextPosition(next *Position, m *Move) {
 
 // PositionDb to query for mate in 1,2, etc.
 type PositionDb struct {
-	Positions map[positionKey]*PositionEntry
+	Positions map[PositionKey]*PositionEntry
 }
 
 func (db *PositionDb) addPositions(board *Board) {
@@ -80,7 +80,7 @@ func (db *PositionDb) retrogradeAnalysisStep0(entry *PositionEntry) {
 // NewPositionDB creates a new *PositionDB
 func NewPositionDB() *PositionDb {
 	return &PositionDb{
-		Positions: make(map[positionKey]*PositionEntry)}
+		Positions: make(map[PositionKey]*PositionEntry)}
 }
 
 func (db *PositionDb) FillWithKRKPositions() {

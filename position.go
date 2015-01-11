@@ -30,15 +30,13 @@ func PositionFromKey(key string) *Position {
 	return NewPosition(board, player)
 }
 
-func (p *Position) key() positionKey {
-	return positionKey(p.String())
+func (p *Position) key() PositionKey {
+	return PositionKey(p.String())
 }
 func (p *Position) String() string {
 	s := p.Board.String()
 	if p.Player == WHITE {
-		s += " w"
-	} else {
-		s += " b"
+		return s + " w"
 	}
-	return s
+	return s + " b"
 }

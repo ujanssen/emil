@@ -67,7 +67,7 @@ func (a *Analysis) DTMs(player int) []*DTM {
 	return a.dtmBlack
 }
 func (a *Analysis) addMoveToAnalysis(move *Move, board *Board) {
-	if move.player == WHITE {
+	if move.Player == WHITE {
 		a.dtmWhite = append(a.dtmWhite, &DTM{move: move, board: board})
 	} else {
 		a.dtmBlack = append(a.dtmBlack, &DTM{move: move, board: board})
@@ -79,7 +79,7 @@ func (a *Analysis) addDTM(move *Move, dtm int) {
 		a.dtm = dtm
 	}
 
-	if move.player == WHITE {
+	if move.Player == WHITE {
 		for _, d := range a.dtmWhite {
 			if d.move.String() == move.String() {
 				d.dtm = dtm
