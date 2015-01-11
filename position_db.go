@@ -32,20 +32,18 @@ func NewPositionEntry(p *Position) *PositionEntry {
 		NextPositions: make(map[PositionKey]*Move)}
 }
 
-func (entry *PositionEntry) addMoveToNextPosition(next *Position, m *Move) {
-}
-
 // PositionDb to query for mate in 1,2, etc.
 type PositionDb struct {
 	Positions map[PositionKey]*PositionEntry
 }
 
 func (db *PositionDb) addPositions(board *Board) {
-	db.addPosition(NewPosition(board, WHITE))
-	db.addPosition(NewPosition(board, BLACK))
+	db.addPosition(board, WHITE)
+	db.addPosition(board, BLACK)
 }
 
-func (db *PositionDb) addPosition(p *Position) {
+func (db *PositionDb) addPosition(board *Board, player int) {
+	p := NewPosition(board, player)
 	if _, ok := db.Positions[p.key()]; ok {
 		panic("key exsists in db " + string(p.key()))
 	}

@@ -19,13 +19,14 @@ func main() {
 		log.Fatal("dialing:", err)
 	}
 	// Synchronous call
-	args := fen
 	var pe emil.PositionEntry
-	err = client.Call("PositionDb.FindWhitePosition", args, &pe)
+	err = client.Call("PositionDb.FindWhitePosition", fen, &pe)
 	if err != nil {
 		log.Fatal("db error:", err)
+	} else {
+		fmt.Printf("Position: %v\n", pe.Position)
+		fmt.Printf("DTM: %v\n", pe.Dtm)
+		fmt.Printf("NextPositions: %v\n", pe.NextPositions)
+		fmt.Printf("PrevPositions: %v\n", pe.PrevPositions)
 	}
-	fmt.Printf("DTM: %v\n", pe.Dtm)
-	fmt.Printf("NextPositions: %v\n", pe.NextPositions)
-	fmt.Printf("PrevPositions: %v\n", pe.PrevPositions)
 }
