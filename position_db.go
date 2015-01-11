@@ -3,11 +3,15 @@ package emil
 import (
 	"bytes"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"time"
 )
+
+var errPositionNotFound = errors.New("Position not found")
 
 type positionKey string
 
@@ -157,4 +161,16 @@ func LoadPositionDb(file string) (db *PositionDb, err error) {
 	}
 	dataFile.Close()
 	return data, err
+}
+
+// FindWhitePosition serves with rpc
+func (db *PositionDb) FindWhitePosition(fen string, pe *PositionEntry) error {
+	board := Fen2Board(fen)
+	p := NewPosition(board, WHITE)
+	pe, ok := db.Positions[p.key()]
+	if !ok {
+		log.Printf("position %s not found\n", fen)
+		return errPositionNotFound
+	}
+	return nil
 }
