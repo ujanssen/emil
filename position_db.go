@@ -98,7 +98,6 @@ func (db *PositionDb) FillWithKRKPositions() {
 			if err = board.Setup(BlackKing, bk); err != nil {
 				continue
 			}
-			// no rock
 			for wr := A1; wr <= H8; wr++ {
 				if err = board.Setup(WhiteRock, wr); err != nil {
 					continue
@@ -107,6 +106,7 @@ func (db *PositionDb) FillWithKRKPositions() {
 				db.addPositions(board)
 				board.Empty(wr)
 			}
+			// no rock
 			db.addPositions(board)
 			board.Empty(bk)
 
